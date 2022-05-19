@@ -9,7 +9,7 @@ class AlphavantageClient:
         alphavantage_config_file_path = f'{os.path.expanduser("~")}{os.path.sep}.alphavantage'
 
         if os.path.exists(alphavantage_config_file_path) == True:
-            print(f'{alphavantage_config_file_path} file found')
+            print(f'{alphavantage_config_file_path} config file found')
             config = configparser.ConfigParser()
             config.read(alphavantage_config_file_path)
             self.__api_key__ = config['access']['api_key']
@@ -21,7 +21,40 @@ class AlphavantageClient:
 
         return self
 
-    def get_stock_price_for_symbol(self,event, context=None):
+    def get_latest_stock_price(self, event, context=None):
+        '''
+
+        :param event:
+        :param context:
+        :return:
+        '''
+        time_series_key = "Time Series (Daily)"
+        meta_key = "Meta Data"
+        result = self.get_stock_price(event)
+        #print(result)
+        if result != None and result['success'] == True:
+            latest_stock_price = {}
+            latest_stock_date = result[meta_key]["3. Last Refreshed"]
+            for stock_date in result[time_series_key]:
+                latest_stock_price = result[time_series_key][stock_date]
+                break
+
+            # set latest stock data to root
+            result["fetch_date"] = latest_stock_date
+            for key in latest_stock_price:
+                result[key] = latest_stock_price[key]
+            # delete extra data
+            result.pop(time_series_key)
+            result.pop(meta_key)
+        return result
+
+    def get_stock_price(self,event, context=None):
+        '''
+
+        :param event:
+        :param context:
+        :return:
+        '''
         if "symbol" not in event:
             raise ValueError("You must pass in symbol to get stock price")
         req = {
@@ -71,7 +104,7 @@ class AlphavantageClient:
         }
         return self.get_data_from_alpha_vantage(params)
 
-    def get_earnings_for_symbol(self, event=None, context=None):
+    def get_earnings(self, event=None, context=None):
         event["function"] = "EARNINGS"
         params = {
             "function": "EARNINGS",
@@ -80,6 +113,12 @@ class AlphavantageClient:
         return self.get_data_from_alpha_vantage(params)
 
     def get_company_overview(self, event=None, context=None):
+        '''
+
+        :param event:
+        :param context:
+        :return:
+        '''
         event["function"] = "OVERVIEW"
         params = {
             "function": event["function"],
@@ -87,7 +126,7 @@ class AlphavantageClient:
         }
         return self.get_data_from_alpha_vantage(params)
 
-    def get_stock_price(self, event, context=None):
+    def get_stock_price_from_alpha_vantage(self, event, context=None):
         # default params
         DEFAULTS = {"symbol": None, "datatype": "json", "function": "TIME_SERIES_DAILY",
                     "interval": "60min", "slice": "year1month1",
@@ -105,21 +144,26 @@ class AlphavantageClient:
         return self.get_data_from_alpha_vantage(json_request)
 
     def get_data_from_alpha_vantage(self, event, context=None):
-        if self.__api_key__ == None or len(self.__api_key__) == 0:
-            raise ValueError("You must call client.with_api_key([api_key]) or create config file in your profile (i.e. ~/.alphavantage) before retrieving data from alphavantage")
-
         url = f'https://www.alphavantage.co/query?'
+        # get api key if not provided
         if 'apikey' not in event:
             event["apikey"] = self.__api_key__
+        if event["apikey"] == None or len(event["apikey"]) == 0:
+            raise ValueError("You must call client.with_api_key([api_key]), create config file in your profile (i.e. ~/.alphavantage) or event[api_key] = [your api key] before retrieving data from alphavantage")
 
+        # build url from event
         for property in event:
             url += f'{property}={event[property]}&'
         url = url[:-1]
+        # fetch data from API
         r = requests.get(url)
+
         requested_data = {
 
         }
-
+        # verify request worked correctly and build response
+        # gotta check if consumer request json or csv, so we can parse the output correctly
+        # todo need to parse csv data for errors, for now we can just a pass through
         if r.status_code == 200 and 'datatype' in event and event["datatype"] == 'json' \
                 and "Error Message" not in r.text:
             requested_data = r.json()
@@ -127,7 +171,7 @@ class AlphavantageClient:
             requested_data['success'] = True
         elif r.status_code == 200 and 'datatype' in event and event["datatype"] == 'csv' \
                 and "Error Message" not in r.text:
-            requested_data = r.text
+            requested_data['csv'] = r.text
             requested_data['success'] = True
         elif "Error Message" in r.text or "Information" in r.text:
             requested_data['status_code'] = r.status_code
