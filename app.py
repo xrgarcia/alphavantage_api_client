@@ -2,9 +2,7 @@ import requests
 from client import AlphavantageClient
 import json
 
-
-
-if __name__ == "__main__":
+if __name__ == "__main__.py":
     event = {
         "symbol":"TSLA"
     }
