@@ -96,8 +96,38 @@ class AlphavantageClient:
         }
 
         return event
+    def get_latest_cash_flow(self,event=None,context=None):
+        '''
 
-    def get_cash_flow_for_symbol(self, event=None, context=None):
+        :param event:
+        :param context:
+        :return:
+        '''
+        result = self.get_cash_flow(event)
+        if result != None and result['success'] == True:
+            annualReports = result['annualReports']
+            if len(annualReports) > 0:
+                first_annualReports = annualReports[0]
+                for key in first_annualReports:
+                    result[f'annual_{key}'] = first_annualReports[key]
+                result.pop('annualReports')
+            quarterlyReports = result['quarterlyReports']
+            if len(quarterlyReports) > 0:
+                first_quarterlyReports = quarterlyReports[0]
+                for key in first_quarterlyReports:
+                    result[f'quarterly_{key}'] = first_quarterlyReports[key]
+
+                result.pop('quarterlyReports')
+
+        return result
+
+    def get_cash_flow(self, event=None, context=None):
+        '''
+
+        :param event:
+        :param context:
+        :return:
+        '''
         params = {
             "function": "CASH_FLOW",
             "symbol": event["symbol"]
@@ -105,6 +135,12 @@ class AlphavantageClient:
         return self.get_data_from_alpha_vantage(params)
 
     def get_latest_earnings(self,event=None,context=None):
+        '''
+
+        :param event:
+        :param context:
+        :return:
+        '''
         result = self.get_earnings(event)
         if result != None and result['success'] == True:
             annualEarnings = result['annualEarnings']
