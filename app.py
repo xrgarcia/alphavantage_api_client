@@ -9,7 +9,7 @@ if __name__ == "__main__":
         "symbol":"TSLA"
     }
     result = {}
-    client = AlphavantageClient()
+    client = AlphavantageClient().with_api_key('[you key here]')
     #result['overview'] = client.get_company_overview(event)
     #result['latest_stock_price'] = client.get_latest_stock_price(event)
     #result['stock_price'] = client.get_stock_price(event)
