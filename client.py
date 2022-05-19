@@ -74,7 +74,13 @@ class AlphavantageClient:
 
         return json_response
 
-    def get_income_statement_for_symbol(self, event=None, context=None):
+    def get_latest_income_statement_for_symbol(self, event=None, context=None):
+        '''
+
+        :param event:
+        :param context:
+        :return:
+        '''
         params = {
             "function": "INCOME_STATEMENT",
             "symbol": event["symbol"]
@@ -85,17 +91,39 @@ class AlphavantageClient:
             for annualReport in annualReports:
                 last_income_statement = annualReport
                 for property in last_income_statement:
-                    new_property = f'last_qrt_inc_stmt_{property}'
+                    new_property = f'annual_{property}'
                     val = last_income_statement[property]
-                    event[new_property] = val
-
+                    stock_details[new_property] = val
                 break
+            stock_details.pop("annualReports")
+        if "quarterlyReports" in stock_details:
+            quarterlyReports = stock_details["quarterlyReports"]
+            for quarterlyReport in quarterlyReports:
+                last_income_statement = quarterlyReport
+                for property in last_income_statement:
+                    new_property = f'quarterly_{property}'
+                    val = last_income_statement[property]
+                    stock_details[new_property] = val
+                break
+            stock_details.pop("quarterlyReports")
 
-        event["income_statement"] = {
-            "details": stock_details
+        return stock_details
+
+    def get_income_statement_for_symbol(self, event=None, context=None):
+        '''
+
+        :param event:
+        :param context:
+        :return:
+        '''
+        params = {
+            "function": "INCOME_STATEMENT",
+            "symbol": event["symbol"]
         }
+        stock_details = self.get_data_from_alpha_vantage(params)
 
-        return event
+        return stock_details
+
     def get_latest_cash_flow(self,event=None,context=None):
         '''
 
