@@ -104,6 +104,25 @@ class AlphavantageClient:
         }
         return self.get_data_from_alpha_vantage(params)
 
+    def get_latest_earnings(self,event=None,context=None):
+        result = self.get_earnings(event)
+        if result != None and result['success'] == True:
+            annualEarnings = result['annualEarnings']
+            if len(annualEarnings) > 0:
+                first_annualEarnings = annualEarnings[0]
+                for key in first_annualEarnings:
+                    result[f'annual_{key}'] = first_annualEarnings[key]
+                result.pop('annualEarnings')
+            quarterlyEarnings = result['quarterlyEarnings']
+            if len(quarterlyEarnings) > 0:
+                first_quarterlyEarnings = quarterlyEarnings[0]
+                for key in first_quarterlyEarnings:
+                    result[f'quarterly_{key}'] = first_quarterlyEarnings[key]
+
+                result.pop('quarterlyEarnings')
+
+        return result
+
     def get_earnings(self, event=None, context=None):
         event["function"] = "EARNINGS"
         params = {
