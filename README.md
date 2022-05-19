@@ -1,25 +1,6 @@
 # alphavantage-api-client
 Build a simple client to talk to Alphavantage API
 
-## You have three ways to define your api key:
-1. in an ini file in [your profile root]/.alphavantage
-```
-[access]
-api_key=[example api key here]
-```
-3. Pass to client builder
-```
-client = AlphavantageClient().with_api_key('[you key here]')
-```
-5. Pass in as parameter
-```
-event = {
- "api_key":"[you key here]",
- "symbol":"TSLA"
- }
-result = client.get_stock_price(event)
-```
-
 ## Sample Usage Specifying Api Key in Client Builder
 ```
 event = {
