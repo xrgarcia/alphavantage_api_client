@@ -1,5 +1,6 @@
 # alphavantage-api-client
-Build a simple client to talk to Alphavantage API
+I use these functions in my AWS Step function statemachines. Each method for querying stock data has 2 params (event,context).
+This will support AWS lambda functions, but also allow you to use it any way your want!
 
 ## Sample Usage Specifying Api Key in Client Builder
 ```
