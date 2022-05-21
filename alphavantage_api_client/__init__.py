@@ -1,1 +1,1 @@
-from client import AlphavantageClient
+from alphavantage_api_client.client import AlphavantageClient

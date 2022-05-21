@@ -2,6 +2,7 @@ import requests
 import os
 import configparser
 
+
 class AlphavantageClient:
     __api_key__ = ""
 
@@ -14,7 +15,7 @@ class AlphavantageClient:
             config.read(alphavantage_config_file_path)
             self.__api_key__ = config['access']['api_key']
 
-    def with_api_key(self ,api_key):
+    def with_api_key(self, api_key):
         if api_key == None or len(api_key) == 0:
             raise ValueError("API Key is null or empty. Please specify a valid api key")
         self.__api_key__ = api_key
@@ -31,7 +32,7 @@ class AlphavantageClient:
         time_series_key = "Time Series (Daily)"
         meta_key = "Meta Data"
         result = self.get_stock_price(event)
-        #print(result)
+        # print(result)
         if result != None and result['success'] == True:
             latest_stock_price = {}
             latest_stock_date = result[meta_key]["3. Last Refreshed"]
@@ -48,7 +49,7 @@ class AlphavantageClient:
             result.pop(meta_key)
         return result
 
-    def get_stock_price(self,event, context=None):
+    def get_stock_price(self, event, context=None):
         '''
 
         :param event:
@@ -83,7 +84,8 @@ class AlphavantageClient:
         '''
         params = {
             "function": "INCOME_STATEMENT",
-            "symbol": event["symbol"]
+            "symbol": event["symbol"],
+            "datatype": "json"
         }
         stock_details = self.get_data_from_alpha_vantage(params)
         if "annualReports" in stock_details:
@@ -118,13 +120,14 @@ class AlphavantageClient:
         '''
         params = {
             "function": "INCOME_STATEMENT",
-            "symbol": event["symbol"]
+            "symbol": event["symbol"],
+            "datatype": "json"
         }
         stock_details = self.get_data_from_alpha_vantage(params)
 
         return stock_details
 
-    def get_latest_cash_flow(self,event=None,context=None):
+    def get_latest_cash_flow(self, event=None, context=None):
         '''
 
         :param event:
@@ -132,7 +135,7 @@ class AlphavantageClient:
         :return:
         '''
         result = self.get_cash_flow(event)
-        if result != None and result['success'] == True:
+        if result != None and result['success'] == True and 'annualReports' in result and 'quarterlyReports' in result:
             annualReports = result['annualReports']
             if len(annualReports) > 0:
                 first_annualReports = annualReports[0]
@@ -158,11 +161,12 @@ class AlphavantageClient:
         '''
         params = {
             "function": "CASH_FLOW",
-            "symbol": event["symbol"]
+            "symbol": event["symbol"],
+            "datatype": "json"
         }
         return self.get_data_from_alpha_vantage(params)
 
-    def get_latest_earnings(self,event=None,context=None):
+    def get_latest_earnings(self, event=None, context=None):
         '''
 
         :param event:
@@ -191,7 +195,8 @@ class AlphavantageClient:
         event["function"] = "EARNINGS"
         params = {
             "function": "EARNINGS",
-            "symbol": event["symbol"]
+            "symbol": event["symbol"],
+            "datatype": "json"
         }
         return self.get_data_from_alpha_vantage(params)
 
@@ -205,7 +210,8 @@ class AlphavantageClient:
         event["function"] = "OVERVIEW"
         params = {
             "function": event["function"],
-            "symbol": event["symbol"]
+            "symbol": event["symbol"],
+            "datatype": "json"
         }
         return self.get_data_from_alpha_vantage(params)
 
@@ -232,7 +238,8 @@ class AlphavantageClient:
         if 'apikey' not in event:
             event["apikey"] = self.__api_key__
         if event["apikey"] == None or len(event["apikey"]) == 0:
-            raise ValueError("You must call client.with_api_key([api_key]), create config file in your profile (i.e. ~/.alphavantage) or event[api_key] = [your api key] before retrieving data from alphavantage")
+            raise ValueError(
+                "You must call client.with_api_key([api_key]), create config file in your profile (i.e. ~/.alphavantage) or event[api_key] = [your api key] before retrieving data from alphavantage")
 
         # build url from event
         for property in event:
@@ -247,26 +254,37 @@ class AlphavantageClient:
         # verify request worked correctly and build response
         # gotta check if consumer request json or csv, so we can parse the output correctly
         # todo need to parse csv data for errors, for now we can just a pass through
-        if r.status_code == 200 and 'datatype' in event and event["datatype"] == 'json' \
-                and "Error Message" not in r.text:
-            requested_data = r.json()
-            requested_data['symbol'] = event['symbol']
-            requested_data['success'] = True
-        elif r.status_code == 200 and 'datatype' in event and event["datatype"] == 'csv' \
+
+        # check for CSV data type and successful response
+        if len(r.text) > 0 and r.status_code == 200 and 'datatype' in event and event["datatype"] == 'csv' \
                 and "Error Message" not in r.text:
             requested_data['csv'] = r.text
             requested_data['success'] = True
-        elif "Error Message" in r.text or "Information" in r.text:
+        # check for failed json response
+        elif 'datatype' in event and event["datatype"] == 'json' and (
+                len(r.text) == 0 or r.text == "{}" or "Error Message" in r.text or "Information" in r.text):
             requested_data['status_code'] = r.status_code
             json_response = r.json()
             if "Error Message" in json_response:
                 requested_data['Error Message'] = json_response["Error Message"]
             if "Information" in json_response:
                 requested_data['Error Message'] = json_response["Information"]
+            if len(json_response) == 0:
+                requested_data['Error Message'] = "Symbol not found"
             requested_data['success'] = False
-        else:  # assume json
+        # check for successfully json response
+        elif 'datatype' in event and event["datatype"] == 'json' and len(
+                r.text) > 0 and r.text != "{}" and "Error Message" not in r.text and "Information" not in r.text:
             requested_data = r.json()
             requested_data['symbol'] = event['symbol']
-            requested_data['success'] = True
+            if len(requested_data) > 0:
+                requested_data['success'] = True
+            else:
+                requested_data['success'] = False
+        # assume failure
+        else:
+            requested_data['symbol'] = event['symbol']
+            requested_data['Error Message'] = r.text
+            requested_data['success'] = False
 
         return requested_data
