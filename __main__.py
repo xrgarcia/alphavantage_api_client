@@ -1,4 +1,4 @@
-# from alphavantage_api_client.client import AlphavantageClient
+from alphavantage_api_client.client import AlphavantageClient
 import json
 
 from alphavantage_api_client import AlphavantageClient
@@ -12,7 +12,7 @@ def main():
     result = {}
     # your API key can be in ~/alphavantage ini file or in event['api_key'] = 'your key here'
     client = AlphavantageClient()
-    #result['overview'] = client.get_company_overview(event)
+    result['overview'] = client.get_company_overview(event)
     #result['latest_stock_price'] = client.get_latest_stock_price(event)
     #result['stock_price'] = client.get_stock_price(event)
     #result['earnings'] = client.get_earnings(event)
