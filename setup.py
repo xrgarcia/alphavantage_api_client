@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="alphavantage-api-client",
-    version="0.1.0",
+    version="0.0.1",
     description="Interact with Alphavantage REST API",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -23,7 +23,7 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.10",
     ],
-    packages=["reader"],
+    packages=["alphavantage_api_client"],
     include_package_data=True,
     install_requires=["requests"],
     entry_points={

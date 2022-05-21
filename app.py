@@ -1,5 +1,4 @@
-import requests
-from client import AlphavantageClient
+from alphavantage_api_client.client import AlphavantageClient
 import json
 
 if __name__ == "__main__.py":
