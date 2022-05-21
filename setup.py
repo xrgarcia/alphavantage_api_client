@@ -16,8 +16,8 @@ alphavantage_api_client_version = subprocess.run(['git', 'describe', '--tags'],
                                                      stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
 assert "." in alphavantage_api_client_version
 assert os.path.isfile("alphavantage_api_client/version.py")
-with open("alphavantage_api_client/VERSION","w", encoding="utf-8") as fh:
-    fh.write(f'{alphavantage_api_client_version}\n')
+#with open("alphavantage_api_client/VERSION","w", encoding="utf-8") as fh:
+#    fh.write(f'{alphavantage_api_client_version}\n')
 
 # This call to setup() does all the work
 setup(
