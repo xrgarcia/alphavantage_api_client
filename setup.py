@@ -1,6 +1,8 @@
 import os.path
 import pathlib
 import subprocess
+
+import setuptools
 from setuptools import setup
 
 # The directory containing this file
@@ -33,7 +35,9 @@ setup(
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent"
     ],
-    package_dir={'': 'alphavantage_api_client'},
+
+    #packages=setuptools.find_packages(exclude=(".git","dist","alphavantage_api_client.edd-info")),
+    package_dir={'':'alphavantage_api_client'},
     include_package_data=True,
     install_requires=["requests"],
     python_requires=">=3.6",
