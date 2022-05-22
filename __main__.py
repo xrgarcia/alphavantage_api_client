@@ -1,7 +1,6 @@
-from alphavantage_api_client.client import AlphavantageClient
 import json
 
-from alphavantage_api_client import AlphavantageClient
+from src.alphavantage_api_client import AlphavantageClient
 
 
 def main():

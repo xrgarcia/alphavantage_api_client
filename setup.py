@@ -35,15 +35,9 @@ setup(
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent"
     ],
-
-    #packages=setuptools.find_packages(exclude=(".git","dist","alphavantage_api_client.edd-info")),
-    package_dir={'':'alphavantage_api_client'},
+    packages=setuptools.find_packages(exclude=(".git","dist","alphavantage_api_client.edd-info")),
+    package_dir={'':'src'},
     include_package_data=True,
     install_requires=["requests"],
-    python_requires=">=3.6",
-    entry_points={
-        "console_scripts": [
-            "alphavantageapiclient=__main__:main",
-        ]
-    },
+    python_requires=">=3.6"
 )

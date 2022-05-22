@@ -1,8 +1,8 @@
-include *.py
-include *.md
-recursive-include alphavantage_api_client *.txt *.py *.md
-recursive-exclude alphavantage_api_client/alphavantage_api_client.egg-info *.*
-prune .git
-prune */.git
-prune */*/.git
-prune */*/*/.git
+include *.lock
+  include *.py
+  include *.sh
+  include *.txt
+  include Pipfile
+  include alphavantage_access.ini
+  recursive-include events *.json
+  recursive-include src *.py
