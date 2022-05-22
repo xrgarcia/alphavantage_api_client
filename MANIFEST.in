@@ -1,8 +1,8 @@
 include *.lock
-  include *.py
-  include *.sh
-  include *.txt
-  include Pipfile
-  include alphavantage_access.ini
-  recursive-include events *.json
-  recursive-include src *.py
+include *.py
+include *.sh
+include *.txt
+include Pipfile
+include alphavantage_access.ini
+recursive-include events *.json
+recursive-include src *.py

@@ -1,5 +1,4 @@
 import json
-
 from src.alphavantage_api_client import AlphavantageClient
 
 
