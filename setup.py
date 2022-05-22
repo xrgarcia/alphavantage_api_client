@@ -37,7 +37,6 @@ setup(
     ],
     packages=setuptools.find_packages(),
     py_modules=["alphavantage_api_client"],
-    package_dir={'':'src'},
     include_package_data=True,
     install_requires=["requests"],
     python_requires=">=3.6"
