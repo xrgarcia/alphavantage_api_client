@@ -233,6 +233,11 @@ class AlphavantageClient:
                 json_request[default_key] = DEFAULTS[default_key]
         return self.get_data_from_alpha_vantage(json_request)
 
+    def has_reached_limit(self,response):
+        if "Note" in response and " calls per minute " in response["Note"]:
+            return True
+        else:
+            return False
     def get_data_from_alpha_vantage(self, event, context=None):
         url = f'https://www.alphavantage.co/query?'
         # get api key if not provided
@@ -263,9 +268,12 @@ class AlphavantageClient:
             requested_data['success'] = True
         # check for failed json response
         elif 'datatype' in event and event["datatype"] == 'json' and (
-                len(r.text) == 0 or r.text == "{}" or "Error Message" in r.text or "Information" in r.text):
+                len(r.text) == 0 or r.text == "{}" or "Error Message" in r.text or self.has_reached_limit(r.json())):
             requested_data['status_code'] = r.status_code
             json_response = r.json()
+            if self.has_reached_limit(json_response):
+                requested_data['limit_reached'] = True
+                requested_data['Error Message'] = json_response["Note"]
             if "Error Message" in json_response:
                 requested_data['Error Message'] = json_response["Error Message"]
             if "Information" in json_response:
@@ -275,7 +283,7 @@ class AlphavantageClient:
             requested_data['success'] = False
         # check for successfully json response
         elif 'datatype' in event and event["datatype"] == 'json' and len(
-                r.text) > 0 and r.text != "{}" and "Error Message" not in r.text and "Information" not in r.text:
+                r.text) > 0 and r.text != "{}" and "Error Message" not in r.text and not self.has_reached_limit(r.json()):
             requested_data = r.json()
             requested_data['symbol'] = event['symbol']
             if len(requested_data) > 0:
