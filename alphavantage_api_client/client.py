@@ -2,6 +2,7 @@ import requests
 import os
 import configparser
 
+
 class AlphavantageClient:
     __api_key__ = ""
 
@@ -58,7 +59,8 @@ class AlphavantageClient:
         if "symbol" not in event:
             raise ValueError("You must pass in symbol to get stock price")
         req = {
-            "symbol": event['symbol']
+            "symbol": event['symbol'],
+            "datatype": "json"
         }
         json_response = self.get_stock_price_from_alpha_vantage(req)
         if json_response == None:
