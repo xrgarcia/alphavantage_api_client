@@ -1,9 +1,15 @@
 # alphavantage-api-client
 I use these functions in my AWS Step function statemachines. Each method for querying stock data has 2 params (event,context).
 This will support AWS lambda functions, but also allow you to use it any way your want!
+## install from pip
+```
+pip install alphavantage_api_client
+```
 
 ## Sample Usage Specifying Api Key in Client Builder
 ```
+from alphavantage_api_client import AlphavantageClient
+
 event = {
         "symbol":"TSLA"
     }
@@ -23,6 +29,8 @@ event = {
 
 ## Sample Usage Specifying Api Key in request event
 ```
+from alphavantage_api_client import AlphavantageClient
+
 event = {
         "symbol":"TSLA",
         "api_key":"[your api key here]"
@@ -49,6 +57,8 @@ echo -e "[access]\napi_key=[your key here]" > ~/.alphavantage
 
 ### Now try the below
 ```
+from alphavantage_api_client import AlphavantageClient
+
 event = {
         "symbol":"TSLA"
     }

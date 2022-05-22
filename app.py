@@ -1,4 +1,4 @@
-from src.alphavantage_api_client import AlphavantageClient
+from alphavantage_api_client import AlphavantageClient
 import json
 
 if __name__ == "__main__":

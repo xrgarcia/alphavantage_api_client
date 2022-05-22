@@ -1,5 +1,5 @@
 import json
-from src.alphavantage_api_client import AlphavantageClient
+from alphavantage_api_client import AlphavantageClient
 
 
 def main():

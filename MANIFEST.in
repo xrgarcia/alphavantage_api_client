@@ -5,4 +5,3 @@ include *.txt
 include Pipfile
 include alphavantage_access.ini
 recursive-include events *.json
-recursive-include src *.py

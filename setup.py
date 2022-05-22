@@ -10,7 +10,7 @@ HERE = pathlib.Path(__file__).parent
 
 # get module version from git tag
 client_version = subprocess.run(['git', 'describe', '--tags'],
-                             stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+                                stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
 # The text of the README file
 README = (HERE / "README.md").read_text()
 
@@ -21,7 +21,7 @@ README = (HERE / "README.md").read_text()
 
 # This call to setup() does all the work
 setup(
-    name="alphavantage-api-client",
+    name="alphavantage_api_client",
     version=client_version,
     description="Interact with Alphavantage REST API",
     long_description=README,
