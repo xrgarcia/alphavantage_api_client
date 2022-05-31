@@ -285,15 +285,15 @@ class AlphavantageClient:
         elif 'datatype' in event and event["datatype"] == 'json' and len(
                 r.text) > 0 and r.text != "{}" and "Error Message" not in r.text and not self.has_reached_limit(r.json()):
             requested_data = r.json()
-            requested_data['symbol'] = event['symbol']
+
             if len(requested_data) > 0:
                 requested_data['success'] = True
             else:
                 requested_data['success'] = False
         # assume failure
         else:
-            requested_data['symbol'] = event['symbol']
             requested_data['Error Message'] = r.text
             requested_data['success'] = False
+        requested_data['symbol'] = event['symbol']
 
         return requested_data
