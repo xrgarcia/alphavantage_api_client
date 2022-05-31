@@ -3,7 +3,23 @@ import json
 from alphavantage_api_client import AlphavantageClient
 
 
-def quoteLatestPrice(success_criteria=True,event=None):
+def setup_function(function):
+    print(f"setup_function for {function}")
+
+
+def teardown_function(function):
+    print(f"teardown_function for {function}")
+
+
+def setup_module(module):
+    print(f"setup_module for {module}")
+
+
+def teardown_module(module):
+    print(f"teardown_module for {module}")
+
+
+def quoteLatestPrice(success_criteria=True, event=None):
     assert event != None
     client = AlphavantageClient()
     latest_stock_price = client.get_latest_stock_price(event)
@@ -14,19 +30,19 @@ def quoteLatestPrice(success_criteria=True,event=None):
     assert "symbol" in latest_stock_price
     assert latest_stock_price["symbol"] == event["symbol"]
 
-def test_canQuoteStock():
-    client = AlphavantageClient()
+
+def test_canQuoteStockSymbol():
     event = {
         "symbol": "tsla"
     }
-    quoteLatestPrice(True,event)
+    quoteLatestPrice(True, event)
+
 
 def test_canNotQuoteWrongSymbol():
-    client = AlphavantageClient()
     event = {
         "symbol": "tsla2233"
     }
-    quoteLatestPrice(False,event)
+    quoteLatestPrice(False, event)
 
 
 def test_canReachLimit():
