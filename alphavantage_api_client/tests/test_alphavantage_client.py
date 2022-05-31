@@ -1,5 +1,6 @@
 import pytest
 import json
+import os
 from alphavantage_api_client import AlphavantageClient
 
 
@@ -22,6 +23,10 @@ def teardown_module(module):
 def quoteLatestPrice(success_criteria=True, event=None):
     assert event != None
     client = AlphavantageClient()
+    if os.environ.get('ALPHAVANTAGE_API_KEY') != None:
+        API_KEY = os.environ.get('ALPHAVANTAGE_API_KEY')
+        client.with_api_key(API_KEY) # otherwise it will read from ~/.alphavantage
+
     latest_stock_price = client.get_latest_stock_price(event)
     if "limit_reached" in latest_stock_price:
         raise ValueError(latest_stock_price["Error Message"])
@@ -47,6 +52,9 @@ def test_canNotQuoteWrongSymbol():
 
 def test_canReachLimit():
     client = AlphavantageClient()
+    if os.environ.get('ALPHAVANTAGE_API_KEY') != None:
+        API_KEY = os.environ.get('ALPHAVANTAGE_API_KEY')
+        client.with_api_key(API_KEY) # otherwise it will read from ~/.alphavantage
     event = {
         "symbol": "tsla"
     }
