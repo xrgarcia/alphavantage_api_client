@@ -132,7 +132,7 @@ print(json.dumps(result))
 
 ### Get Economic indicators
 
-```commandline
+```
 from alphavantage_api_client import AlphavantageClient
 import json
 
@@ -149,7 +149,7 @@ event = {
 
 ### Quote Cryptocurrency
 
-```commandline
+```
 from alphavantage_api_client import AlphavantageClient
 import json
 
@@ -167,7 +167,7 @@ event = {
 
 ### Quote Technical Indicators
 
-```commandline
+```
 from alphavantage_api_client import AlphavantageClient
 import json
 
