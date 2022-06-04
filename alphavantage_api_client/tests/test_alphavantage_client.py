@@ -1,6 +1,7 @@
 import pytest
 import json
 import os
+import time
 from alphavantage_api_client import AlphavantageClient
 
 
@@ -36,6 +37,9 @@ def quoteLatestPrice(success_criteria=True, event=None):
     assert latest_stock_price["symbol"] == event[
         "symbol"], f"Symbol {latest_stock_price['symbol']} is not equal to {event['symbol']}"
 
+    # free api key is only allow 5 calls per min, so need to make sure i don't have a dependcy on function order AND
+    # I can have as many functions with the same key.
+
     return latest_stock_price
 
 
@@ -53,6 +57,19 @@ def test_canNotQuoteWrongSymbol():
     }
     quoteLatestPrice(False, event)
     print(f"Can NOT quote stock symbol {event['symbol']}")
+
+
+def test_canQuoteEth():
+    event = {
+        "function": "CRYPTO_INTRADAY",
+        "symbol": "ETH",
+        "market": "USD",
+        "interval": "5min"
+    }
+    client = AlphavantageClient()
+    results = client.get_data_from_alpha_vantage(event)
+    assert "success" in results and results["success"] == True, f"Failed to receive a quote for {event['symbol']}"
+    print(f"Successfully quoted cryptocurrency symbol {event['symbol']}")
 
 
 def test_canReachLimit():
@@ -75,3 +92,31 @@ def test_canReachLimit():
     assert "symbol" in latest_stock_price, "symbol field NOT present in response"
     assert latest_stock_price["symbol"] == event["symbol"], f"Did not find {event['symbol']} in response"
     print(f"Can Reach Limit while quoting for symbol {event['symbol']}")
+    time.sleep(60)
+
+
+def test_canQuoteRealGDP():
+    event = {
+        "function": "REAL_GDP",
+        "interval": "annual"
+    }
+    client = AlphavantageClient()
+    results = client.get_data_from_alpha_vantage(event)
+    assert "success" in results and results[
+        'success'] == True, "Success flag not present or equal to false when quoting real GDP"
+    print("Can quote Real GDP")
+
+
+def test_canQuoteTechnicalIndicator():
+    event = {
+        "function": "EMA",
+        "symbol": "IBM",
+        "interval": "weekly",
+        "time_period": "10",
+        "series_type": "open"
+    }
+    client = AlphavantageClient()
+    results = client.get_data_from_alpha_vantage(event)
+    assert "success" in results and results[
+        'success'] == True, "Success flag not present or equal to false when quoting IBM EMA technical indicator"
+    print("Can quote IBM EMA technical indicator")
