@@ -29,11 +29,12 @@ def quoteLatestPrice(success_criteria=True, event=None):
         latest_stock_price = client.get_latest_stock_price(event)
     except ValueError as error:
         assert error == None, error
-    assert "limit" not in latest_stock_price, f"{latest_stock_price['Error Message']}"
     assert len(latest_stock_price) > 0, "Response should have fields but contains zero"
     assert latest_stock_price[
                'success'] == success_criteria, f"success was found to be false: {latest_stock_price['Error Message']}"
     assert "symbol" in latest_stock_price, "Symbol field not present in response"
+    assert "limit_reached" in latest_stock_price, "limit_reached is not present in results"
+    assert latest_stock_price["limit_reached"] == False, f'{latest_stock_price["Error Message"]}'
     assert latest_stock_price["symbol"] == event[
         "symbol"], f"Symbol {latest_stock_price['symbol']} is not equal to {event['symbol']}"
 
@@ -68,8 +69,11 @@ def test_canQuoteEth():
     }
     client = AlphavantageClient()
     results = client.get_data_from_alpha_vantage(event)
+    assert "limit_reached" in results, "limit_reached is not present in results"
+    assert results["limit_reached"] == False, f'{results["Error Message"]}'
     assert "success" in results and results["success"] == True, f"Failed to receive a quote for {event['symbol']}"
     print(f"Successfully quoted cryptocurrency symbol {event['symbol']}")
+    time.sleep(20)
 
 
 def test_canReachLimit():
@@ -88,7 +92,8 @@ def test_canReachLimit():
         if limit_reached == True:
             break
 
-    assert limit_reached == True, "Did NOT reached Limit as expected"
+    assert "limit_reached" in latest_stock_price, "limit_reached is not present in results"
+    assert latest_stock_price["limit_reached"] == False, f'{latest_stock_price["Error Message"]}'
     assert "symbol" in latest_stock_price, "symbol field NOT present in response"
     assert latest_stock_price["symbol"] == event["symbol"], f"Did not find {event['symbol']} in response"
     print(f"Can Reach Limit while quoting for symbol {event['symbol']}")
@@ -102,9 +107,12 @@ def test_canQuoteRealGDP():
     }
     client = AlphavantageClient()
     results = client.get_data_from_alpha_vantage(event)
+    assert "limit_reached" in results, "limit_reached is not present in results"
+    assert results["limit_reached"] == False, f'{results["Error Message"]}'
     assert "success" in results and results[
         'success'] == True, "Success flag not present or equal to false when quoting real GDP"
     print("Can quote Real GDP")
+    time.sleep(20)
 
 
 def test_canQuoteTechnicalIndicator():
@@ -117,6 +125,8 @@ def test_canQuoteTechnicalIndicator():
     }
     client = AlphavantageClient()
     results = client.get_data_from_alpha_vantage(event)
+    assert "limit_reached" in results, "limit_reached is not present in results"
+    assert results["limit_reached"] == False, f'{results["Error Message"]}'
     assert "success" in results and results[
         'success'] == True, "Success flag not present or equal to false when quoting IBM EMA technical indicator"
     print("Can quote IBM EMA technical indicator")
