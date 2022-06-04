@@ -30,9 +30,11 @@ def quoteLatestPrice(success_criteria=True, event=None):
         assert error == None, error
     assert "limit" not in latest_stock_price, f"{latest_stock_price['Error Message']}"
     assert len(latest_stock_price) > 0, "Response should have fields but contains zero"
-    assert latest_stock_price['success'] == success_criteria, f"success was found to be false: {latest_stock_price['Error Message']}"
+    assert latest_stock_price[
+               'success'] == success_criteria, f"success was found to be false: {latest_stock_price['Error Message']}"
     assert "symbol" in latest_stock_price, "Symbol field not present in response"
-    assert latest_stock_price["symbol"] == event["symbol"], f"Symbol {latest_stock_price['symbol']} is not equal to {event['symbol']}"
+    assert latest_stock_price["symbol"] == event[
+        "symbol"], f"Symbol {latest_stock_price['symbol']} is not equal to {event['symbol']}"
 
     return latest_stock_price
 
