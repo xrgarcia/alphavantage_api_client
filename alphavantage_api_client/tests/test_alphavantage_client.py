@@ -93,7 +93,6 @@ def test_canReachLimit():
             break
 
     assert "limit_reached" in latest_stock_price, "limit_reached is not present in results"
-    assert latest_stock_price["limit_reached"] == False, f'{latest_stock_price["Error Message"]}'
     assert "symbol" in latest_stock_price, "symbol field NOT present in response"
     assert latest_stock_price["symbol"] == event["symbol"], f"Did not find {event['symbol']} in response"
     print(f"Can Reach Limit while quoting for symbol {event['symbol']}")
