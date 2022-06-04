@@ -23,6 +23,7 @@ pip install alphavantage_api_client
 
 ```
 from alphavantage_api_client import AlphavantageClient
+import json
 
 event = {
         "symbol":"TSLA"
@@ -45,6 +46,7 @@ print(json.dumps(result))
 
 ```
 from alphavantage_api_client import AlphavantageClient
+import json
 
 event = {
         "symbol":"TSLA",
@@ -76,6 +78,7 @@ echo -e "[access]\napi_key=[your key here]" > ~/.alphavantage
 
 ```
 from alphavantage_api_client import AlphavantageClient
+import json 
 
 event = {
         "symbol":"TSLA"
@@ -106,6 +109,7 @@ export ALPHAVANTAGE_API_KEY=[your key here]
 
 ```
 from alphavantage_api_client import AlphavantageClient
+import json
 
 event = {
         "symbol":"TSLA"
@@ -129,6 +133,9 @@ print(json.dumps(result))
 ### Get Economic indicators
 
 ```commandline
+from alphavantage_api_client import AlphavantageClient
+import json
+
 event = {
         "function": "REAL_GDP",
         "interval": "annual"
@@ -138,12 +145,14 @@ event = {
     assert "success" in results and results[
         'success'] == True, "Success flag not present or equal to false when quoting real GDP"
     print(json.dumps(results))
-    print("Can quote Real GDP")
 ```
 
 ### Quote Cryptocurrency
 
 ```commandline
+from alphavantage_api_client import AlphavantageClient
+import json
+
 event = {
         "function": "CRYPTO_INTRADAY",
         "symbol": "ETH",
@@ -153,12 +162,15 @@ event = {
     client = AlphavantageClient()
     results = client.get_data_from_alpha_vantage(event)
     assert "success" in results and results["success"] == True, f"Failed to receive a quote for {event['symbol']}"
-    print(f"Successfully quoted cryptocurrency symbol {event['symbol']}")
+    print(json.dumps(results))
 ```
 
 ### Quote Technical Indicators
 
 ```commandline
+from alphavantage_api_client import AlphavantageClient
+import json
+
 event = {
         "function": "EMA",
         "symbol": "IBM",
@@ -170,5 +182,5 @@ event = {
     results = client.get_data_from_alpha_vantage(event)
     assert "success" in results and results[
         'success'] == True, "Success flag not present or equal to false when quoting IBM EMA technical indicator"
-    print("Can quote IBM EMA technical indicator")
+    print(json.dumps(results))
 ```
