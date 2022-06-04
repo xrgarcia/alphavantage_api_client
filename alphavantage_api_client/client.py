@@ -7,13 +7,21 @@ class AlphavantageClient:
     __api_key__ = ""
 
     def __init__(self):
-        alphavantage_config_file_path = f'{os.path.expanduser("~")}{os.path.sep}.alphavantage'
 
+        # try to get api key from USER_PROFILE/.alphavantage
+        alphavantage_config_file_path = f'{os.path.expanduser("~")}{os.path.sep}.alphavantage'
         if os.path.exists(alphavantage_config_file_path) == True:
-            print(f'{alphavantage_config_file_path} config file found')
+            #print(f'{alphavantage_config_file_path} config file found')
             config = configparser.ConfigParser()
             config.read(alphavantage_config_file_path)
             self.__api_key__ = config['access']['api_key']
+            return
+
+        # try to get from an environment variable
+        if os.environ.get('ALPHAVANTAGE_API_KEY') != None:
+            self.__api_key__ = os.environ.get('ALPHAVANTAGE_API_KEY')
+            #print(f'api key found from environment')
+            return
 
     def with_api_key(self, api_key):
         if api_key == None or len(api_key) == 0:
@@ -233,11 +241,12 @@ class AlphavantageClient:
                 json_request[default_key] = DEFAULTS[default_key]
         return self.get_data_from_alpha_vantage(json_request)
 
-    def has_reached_limit(self,response):
+    def has_reached_limit(self, response):
         if "Note" in response and " calls per minute " in response["Note"]:
             return True
         else:
             return False
+
     def get_data_from_alpha_vantage(self, event, context=None):
         url = f'https://www.alphavantage.co/query?'
         # get api key if not provided
@@ -283,7 +292,8 @@ class AlphavantageClient:
             requested_data['success'] = False
         # check for successfully json response
         elif 'datatype' in event and event["datatype"] == 'json' and len(
-                r.text) > 0 and r.text != "{}" and "Error Message" not in r.text and not self.has_reached_limit(r.json()):
+                r.text) > 0 and r.text != "{}" and "Error Message" not in r.text and not self.has_reached_limit(
+            r.json()):
             requested_data = r.json()
 
             if len(requested_data) > 0:
