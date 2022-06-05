@@ -5,7 +5,7 @@ from alphavantage_api_client import AlphavantageClient
 def main():
     event = {
         "symbol": "AAPL"
-        #,"api_key":"your key here"
+        # ,"api_key":"your key here"
     }
     result = {}
     # your API key can be in ~/alphavantage ini file or in event['api_key'] = 'your key here'
@@ -20,6 +20,7 @@ def main():
     result['income_statement'] = client.get_income_statement_for_symbol(event)
     result['latest_income_statement'] = client.get_latest_income_statement_for_symbol(event)
     print(json.dumps(result))
+
 
 if __name__ == "__main__":
     main()
