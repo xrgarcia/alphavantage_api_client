@@ -11,7 +11,7 @@ class AlphavantageClient:
         # try to get api key from USER_PROFILE/.alphavantage
         alphavantage_config_file_path = f'{os.path.expanduser("~")}{os.path.sep}.alphavantage'
         if os.path.exists(alphavantage_config_file_path) == True:
-            #print(f'{alphavantage_config_file_path} config file found')
+            # print(f'{alphavantage_config_file_path} config file found')
             config = configparser.ConfigParser()
             config.read(alphavantage_config_file_path)
             self.__api_key__ = config['access']['api_key']
@@ -20,7 +20,7 @@ class AlphavantageClient:
         # try to get from an environment variable
         if os.environ.get('ALPHAVANTAGE_API_KEY') != None:
             self.__api_key__ = os.environ.get('ALPHAVANTAGE_API_KEY')
-            #print(f'api key found from environment')
+            # print(f'api key found from environment')
             return
 
     def with_api_key(self, api_key):
@@ -256,6 +256,10 @@ class AlphavantageClient:
             raise ValueError(
                 "You must call client.with_api_key([api_key]), create config file in your profile (i.e. ~/.alphavantage) or event[api_key] = [your api key] before retrieving data from alphavantage")
 
+        # default dataType is json
+        if "datatype" not in event:
+            event["datatype"] = "json"
+
         # build url from event
         for property in event:
             url += f'{property}={event[property]}&'
@@ -264,7 +268,8 @@ class AlphavantageClient:
         r = requests.get(url)
 
         requested_data = {
-
+            "limit_reached": False,
+            "success": False
         }
         # verify request worked correctly and build response
         # gotta check if consumer request json or csv, so we can parse the output correctly
@@ -294,7 +299,10 @@ class AlphavantageClient:
         elif 'datatype' in event and event["datatype"] == 'json' and len(
                 r.text) > 0 and r.text != "{}" and "Error Message" not in r.text and not self.has_reached_limit(
             r.json()):
-            requested_data = r.json()
+            json_response = r.json()
+            for field in json_response:
+                requested_data[field] = json_response[field]
+
 
             if len(requested_data) > 0:
                 requested_data['success'] = True
@@ -304,6 +312,8 @@ class AlphavantageClient:
         else:
             requested_data['Error Message'] = r.text
             requested_data['success'] = False
-        requested_data['symbol'] = event['symbol']
+        # if request has a symbol then publish in response
+        if "symbol" in event:
+            requested_data['symbol'] = event['symbol']
 
         return requested_data
