@@ -12,9 +12,11 @@ on:
 permissions:
   contents: read
 
+env:
+  ALPHAVANTAGE_API_KEY: "${{ secrets.ALPHAVANTAGE_API_KEY }}"
+
 jobs:
   build:
-    environment: build
     runs-on: ubuntu-latest
 
     steps:
