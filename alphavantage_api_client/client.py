@@ -1,6 +1,7 @@
 import requests
 import os
 import configparser
+from .response_validation_rules import ValidationRuleChecks
 
 
 class AlphavantageClient:
@@ -241,32 +242,33 @@ class AlphavantageClient:
                 json_request[default_key] = DEFAULTS[default_key]
         return self.get_data_from_alpha_vantage(json_request)
 
-    def has_reached_limit(self, response):
-        if "Note" in response and " calls per minute " in response["Note"]:
-            return True
-        else:
-            return False
-
-    def get_data_from_alpha_vantage(self, event, context=None):
+    def __build_url_from_args(self, event):
         url = f'https://www.alphavantage.co/query?'
-        # get api key if not provided
-        if 'apikey' not in event:
-            event["apikey"] = self.__api_key__
-        if event["apikey"] == None or len(event["apikey"]) == 0:
-            raise ValueError(
-                "You must call client.with_api_key([api_key]), create config file in your profile (i.e. ~/.alphavantage) or event[api_key] = [your api key] before retrieving data from alphavantage")
-
-        # default dataType is json
-        if "datatype" not in event:
-            event["datatype"] = "json"
-
         # build url from event
         for property in event:
             url += f'{property}={event[property]}&'
         url = url[:-1]
-        # fetch data from API
-        r = requests.get(url)
+        return url
 
+    def inject_default_values(self, event):
+        if "datatype" not in event:
+            event["datatype"] = "json"
+
+    def get_data_from_alpha_vantage(self, event, context=None):
+
+        self.inject_default_values(event)
+        checks = ValidationRuleChecks().from_customer_request(event)
+        # get api key if not provided
+        if checks.expect_api_key_in_event().failed():
+            event["apikey"] = self.__api_key__
+        elif self.__api_key__ is None or len(self.__api_key__) == 0:  # consumer didn't tell me where to get api key
+            raise ValueError(
+                "You must call client.with_api_key([api_key]), create config file in your profile (i.e. ~/.alphavantage) or event[api_key] = [your api key] before retrieving data from alphavantage")
+
+        # fetch data from API
+        url = self.__build_url_from_args(event)
+        r = requests.get(url)
+        checks.with_response(r)
         requested_data = {
             "limit_reached": False,
             "success": False
@@ -275,42 +277,24 @@ class AlphavantageClient:
         # gotta check if consumer request json or csv, so we can parse the output correctly
         # todo need to parse csv data for errors, for now we can just a pass through
 
-        # check for CSV data type and successful response
-        if len(r.text) > 0 and r.status_code == 200 and 'datatype' in event and event["datatype"] == 'csv' \
-                and "Error Message" not in r.text:
-            requested_data['csv'] = r.text
+        if checks.clear().expect_successful_response().expect_csv_datatype().passed():  # successful csv response
+            requested_data['csv'] = checks.get_obj()
             requested_data['success'] = True
-        # check for failed json response
-        elif 'datatype' in event and event["datatype"] == 'json' and (
-                len(r.text) == 0 or r.text == "{}" or "Error Message" in r.text or self.has_reached_limit(r.json())):
-            requested_data['status_code'] = r.status_code
-            json_response = r.json()
-            if self.has_reached_limit(json_response):
-                requested_data['limit_reached'] = True
-                requested_data['Error Message'] = json_response["Note"]
-            if "Error Message" in json_response:
-                requested_data['Error Message'] = json_response["Error Message"]
-            if "Information" in json_response:
-                requested_data['Error Message'] = json_response["Information"]
-            if len(json_response) == 0:
-                requested_data['Error Message'] = "Symbol not found"
+        elif checks.clear().expect_limit_not_reached().failed():  # limit reached failure
+            requested_data['limit_reached'] = True
+            requested_data['Error Message'] = checks.get_error_message()
+        elif checks.clear().expect_successful_response().failed():  # other failed json response
+            requested_data['status_code'] = checks.get_status_code()
+            requested_data['Error Message'] = checks.get_error_message()
             requested_data['success'] = False
-        # check for successfully json response
-        elif 'datatype' in event and event["datatype"] == 'json' and len(
-                r.text) > 0 and r.text != "{}" and "Error Message" not in r.text and not self.has_reached_limit(
-            r.json()):
-            json_response = r.json()
+        elif checks.clear().expect_json_datatype().expect_successful_response().passed():  # successful json response
+            json_response = checks.get_obj()
             for field in json_response:
                 requested_data[field] = json_response[field]
-
-
-            if len(requested_data) > 0:
-                requested_data['success'] = True
-            else:
-                requested_data['success'] = False
+            requested_data['success'] = True
         # assume failure
         else:
-            requested_data['Error Message'] = r.text
+            requested_data['Error Message'] = checks.get_error_message()
             requested_data['success'] = False
         # if request has a symbol then publish in response
         if "symbol" in event:
