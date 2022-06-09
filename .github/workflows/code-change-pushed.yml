@@ -19,7 +19,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
+    environment: 
+      name: "Code Push"
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3.10
