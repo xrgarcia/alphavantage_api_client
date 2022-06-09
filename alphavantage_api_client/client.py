@@ -47,6 +47,7 @@ class AlphavantageClient:
             meta_key = "Meta Data"
             latest_stock_price = {}
             latest_stock_date = result[meta_key]["3. Last Refreshed"]
+            latest_stock_date = latest_stock_date.split(" ")[0]
             latest_stock_price = result[time_series_key][latest_stock_date]
             # set latest stock data to root
             result["fetch_date"] = latest_stock_date
@@ -256,12 +257,10 @@ class AlphavantageClient:
         r = requests.get(url)
         checks.with_response(r)
         requested_data = {}
+
         # verify request worked correctly and build response
         # gotta check if consumer request json or csv, so we can parse the output correctly
-        # todo need to parse csv data for errors, for now we can just a pass through
-
         requested_data['success'] = checks.expect_successful_response().passed()  # successful csv response
-
         if not requested_data['success']:
             requested_data['Error Message'] = checks.get_error_message()
         requested_data['limit_reached'] = checks.expect_limit_not_reached().passed()
@@ -272,7 +271,7 @@ class AlphavantageClient:
             for field in json_response:
                 requested_data[field] = json_response[field]
 
-        if checks.expect_csv_datatype().expect_successful_response().passed():
+        if checks.expect_csv_datatype().expect_successful_response().passed(): # successful csv response
             requested_data['csv'] = checks.get_obj()
 
         # not all calls will have symbol in the call to alphavantage.... if so we can to capture it.

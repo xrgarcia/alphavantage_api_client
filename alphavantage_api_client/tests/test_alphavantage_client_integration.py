@@ -148,9 +148,9 @@ def test_canQuoteEthJson():
     client = AlphavantageClient()
     results = client.get_data_from_alpha_vantage(event)
     assert "limit_reached" in results, "limit_reached is not present in results"
-    assert results.get("limit_reached", None) == False, f'{results.get("Error Message", None)}'
+    assert results.get("limit_reached", None) is False, f'{results.get("Error Message", None)}'
     assert "success" in results and results.get("success",
-                                                None) == True, f"Failed to receive a quote for {event.get('symbol', None)}"
+                                                None) is True, f"Failed to receive a quote for {event.get('symbol', None)}"
     print(f"Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
 
 @pytest.mark.integration
@@ -167,7 +167,7 @@ def test_canQuoteEthCsv():
     assert "limit_reached" in results, "limit_reached is not present in results"
     assert results.get("limit_reached", None) == False, f'{results.get("Error Message", None)}'
     assert "success" in results and results.get("success",
-                                                None) == True, f"Failed to receive a quote for {event.get('symbol', None)}"
+                                                None) is True, f"Failed to receive a quote for {event.get('symbol', None)}"
     assert results.get("csv"), "Csv field is not present"
     assert len(results.get("csv")), "Csv return value has no data"
     print(f"Successfully quoted cryptocurrency symbol {event['symbol']} in CSV")
@@ -181,7 +181,7 @@ def test_canQuoteRealGDPJson():
     client = AlphavantageClient()
     results = client.get_data_from_alpha_vantage(event)
     assert "limit_reached" in results, "limit_reached is not present in results"
-    assert results.get("limit_reached", None) == False, f'{results.get("Error Message", None)}'
+    assert results.get("limit_reached", None) is False, f'{results.get("Error Message", None)}'
     assert "success" in results and results.get(
         'success', None) == True, "Success flag not present or equal to false when quoting real GDP"
     print("Can quote Real GDP")
@@ -216,7 +216,7 @@ def test_canQuoteTechnicalIndicatorJson():
     client = AlphavantageClient()
     results = client.get_data_from_alpha_vantage(event)
     assert "limit_reached" in results, "limit_reached is not present in results"
-    assert results.get("limit_reached", None) == False, f'{results.get("Error Message", None)}'
+    assert results.get("limit_reached", None) is False, f'{results.get("Error Message", None)}'
     assert "success" in results and results.get(
         'success', None) == True, "Success flag not present or equal to false when quoting IBM EMA technical indicator"
     print("Can quote IBM EMA technical indicator")
@@ -235,7 +235,7 @@ def test_canQuoteTechnicalIndicatorCsv():
     client = AlphavantageClient()
     results = client.get_data_from_alpha_vantage(event)
     assert "limit_reached" in results, "limit_reached is not present in results"
-    assert results.get("limit_reached", None) == False, f'{results.get("Error Message", None)}'
+    assert results.get("limit_reached", None) is False, f'{results.get("Error Message", None)}'
     assert "success" in results and results.get(
         'success', None) == True, "Success flag not present or equal to false when quoting IBM EMA technical indicator"
     assert results.get("csv"), "Csv field is not present"
@@ -261,7 +261,7 @@ def test_canQueryCompanyOverviewJson():
         None) == True, f"success was found to be false: {results.get('Error Message', None)}"
     assert "symbol" in results, "Symbol field not present in response"
     assert "limit_reached" in results, "limit_reached is not present in results"
-    assert results.get("limit_reached", None) == False, f'{results.get("Error Message", None)}'
+    assert results.get("limit_reached", None) is False, f'{results.get("Error Message", None)}'
     assert results.get("symbol", None) == event.get("symbol",
                                                     None), f"Symbol {results.get('symbol', None)} is not equal to {event.get('symbol', None)}"
     print(f"Can query company overview {event.get('symbol', None)}")
