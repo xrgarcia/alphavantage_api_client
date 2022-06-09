@@ -34,10 +34,7 @@ class BaseValidationRuleChecks:
     def expect_csv_datatype(self):
         self.check_response_present()
         rule_name = "expect_csv_datatype"
-        if self.__customer_event_request__.get('datatype', 'json') == 'csv':
-            self.__rules__[rule_name] = True
-        else:
-            self.__rules__[rule_name] = False
+        self.__rules__[rule_name] = self.__customer_event_request__.get('datatype', 'json') == 'csv'
 
         return self
 
@@ -178,7 +175,7 @@ class CsvValidationRuleChecks(BaseValidationRuleChecks):
         rule_name = "expect_csv_datatype"
         content_type = self.__http_get_response__.headers.get('content-type')
         datatype = self.__customer_event_request__.get('datatype', 'json')
-        if datatype == 'csv' and 'csv' in content_type:
+        if datatype == 'csv' and 'application/x-download' in content_type:
             self.__rules__[rule_name] = True
         else:
             self.__rules__[rule_name] = False

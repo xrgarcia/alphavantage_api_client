@@ -39,11 +39,12 @@ class AlphavantageClient:
         :param context:
         :return:
         '''
-        time_series_key = "Time Series (Daily)"
-        meta_key = "Meta Data"
+
         result = self.get_stock_price(event)
         # print(result)
-        if result != None and result['success'] == True:
+        if result != None and result['success'] == True and event.get("datatype","json") == "json":
+            time_series_key = "Time Series (Daily)"
+            meta_key = "Meta Data"
             latest_stock_price = {}
             latest_stock_date = result[meta_key]["3. Last Refreshed"]
             latest_stock_price = result[time_series_key][latest_stock_date]
@@ -54,6 +55,7 @@ class AlphavantageClient:
             # delete extra data
             result.pop(time_series_key)
             result.pop(meta_key)
+
         return result
 
     def inject_values(self, default_values, dest_obj):
@@ -85,6 +87,8 @@ class AlphavantageClient:
         :param context:
         :return:
         '''
+        if event.get("datatype") == "csv":
+            raise ValueError("CSV Datatype is not supported for this function")
         params = {
             "function": "INCOME_STATEMENT",
             "symbol": event["symbol"],
@@ -121,6 +125,8 @@ class AlphavantageClient:
         :param context:
         :return:
         '''
+        if event.get("datatype") == "csv":
+            raise ValueError("CSV is not a support datatype for income statement or latest income statement")
         params = {
             "function": "INCOME_STATEMENT",
             "symbol": event["symbol"],
@@ -162,6 +168,8 @@ class AlphavantageClient:
         :param context:
         :return:
         '''
+        if event.get("datatype") == "csv":
+            raise ValueError("Cash flow or latest cash flow do not support csv datatype")
         params = {
             "function": "CASH_FLOW",
             "symbol": event["symbol"],
@@ -195,6 +203,8 @@ class AlphavantageClient:
         return result
 
     def get_earnings(self, event=None, context=None):
+        if event.get("datatype") == "csv":
+            raise ValueError("Earnings or Latest Earnings does not support csv datatype")
         event["function"] = "EARNINGS"
         params = {
             "function": "EARNINGS",
@@ -210,11 +220,11 @@ class AlphavantageClient:
         :param context:
         :return:
         '''
-        event["function"] = "OVERVIEW"
+        if event.get("datatype") == "csv":
+            raise ValueError("CSV Datatype is not supported for this function")
         params = {
-            "function": event["function"],
-            "symbol": event["symbol"],
-            "datatype": "json"
+            "function": "OVERVIEW",
+            "symbol": event["symbol"]
         }
         return self.get_data_from_alpha_vantage(params)
 
@@ -245,25 +255,27 @@ class AlphavantageClient:
         url = self.__build_url_from_args(event)
         r = requests.get(url)
         checks.with_response(r)
-        requested_data = {
-            "limit_reached": False,
-            "success": False
-        }
+        requested_data = {}
         # verify request worked correctly and build response
         # gotta check if consumer request json or csv, so we can parse the output correctly
         # todo need to parse csv data for errors, for now we can just a pass through
 
         requested_data['success'] = checks.expect_successful_response().passed()  # successful csv response
+
         if not requested_data['success']:
             requested_data['Error Message'] = checks.get_error_message()
         requested_data['limit_reached'] = checks.expect_limit_not_reached().passed()
         requested_data['status_code'] = checks.get_status_code()
+
         if checks.expect_json_datatype().expect_successful_response().passed():  # successful json response
             json_response = checks.get_obj()
             for field in json_response:
                 requested_data[field] = json_response[field]
+
         if checks.expect_csv_datatype().expect_successful_response().passed():
             requested_data['csv'] = checks.get_obj()
+
+        # not all calls will have symbol in the call to alphavantage.... if so we can to capture it.
         if "symbol" in event:
             requested_data['symbol'] = event['symbol']
 
