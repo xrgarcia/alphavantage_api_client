@@ -20,8 +20,7 @@ def setup_module(module):
 def teardown_module(module):
     pass
 
-
-def quoteLatestPrice(success_criteria=True, event=None):
+def quoteLatestPriceJson(success_criteria=True, event=None):
     assert event != None
     client = AlphavantageClient()
 
@@ -51,21 +50,21 @@ def test_canQuoteStockSymbol():
     event = {
         "symbol": "tsla"
     }
-    quoteLatestPrice(True, event)
+    quoteLatestPriceJson(True, event)
     print(f"Can quote stock symbol {event.get('symbol', None)}")
 
 
 @pytest.mark.integration
-def test_canNotQuoteWrongSymbol():
+def test_canNotQuoteWrongSymbolJson():
     event = {
         "symbol": "tsla2233"
     }
-    quoteLatestPrice(False, event)
+    quoteLatestPriceJson(False, event)
     print(f"Can NOT quote stock symbol {event.get('symbol', None)}")
 
 
 @pytest.mark.integration
-def test_canQuoteEth():
+def test_canQuoteEthJson():
     event = {
         "function": "CRYPTO_INTRADAY",
         "symbol": "ETH",
@@ -108,7 +107,7 @@ def test_canReachLimit():
 
 
 @pytest.mark.integration
-def test_canQuoteRealGDP():
+def test_canQuoteRealGDPJson():
     event = {
         "function": "REAL_GDP",
         "interval": "annual"
@@ -123,7 +122,7 @@ def test_canQuoteRealGDP():
 
 
 @pytest.mark.integration
-def test_canQuoteTechnicalIndicator():
+def test_canQuoteTechnicalIndicatorJson():
     event = {
         "function": "EMA",
         "symbol": "IBM",
@@ -141,7 +140,7 @@ def test_canQuoteTechnicalIndicator():
 
 
 @pytest.mark.integration
-def test_canQueryCompanyOverview():
+def test_canQueryCompanyOverviewJson():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla"
@@ -164,7 +163,7 @@ def test_canQueryCompanyOverview():
 
 
 @pytest.mark.integration
-def test_canQueryLatestIncomeStatement():
+def test_canQueryLatestIncomeStatementJson():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla"
@@ -187,7 +186,7 @@ def test_canQueryLatestIncomeStatement():
 
 
 @pytest.mark.integration
-def test_canQueryLatestEarnings():
+def test_canQueryLatestEarningsJson():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla"
@@ -210,7 +209,7 @@ def test_canQueryLatestEarnings():
     print(f"Can query latest earnings {event.get('symbol', None)}")
 
 @pytest.mark.integration
-def test_canQueryIncomeStatement():
+def test_canQueryIncomeStatementJson():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla"
@@ -233,7 +232,7 @@ def test_canQueryIncomeStatement():
 
 
 @pytest.mark.integration
-def test_canQueryEarnings():
+def test_canQueryEarningsJson():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla"
@@ -256,7 +255,7 @@ def test_canQueryEarnings():
 
 
 @pytest.mark.integration
-def test_canQueryLatestCashFlow():
+def test_canQueryLatestCashFlowJson():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla"
@@ -279,7 +278,7 @@ def test_canQueryLatestCashFlow():
 
 
 @pytest.mark.integration
-def test_canQueryCashFlow():
+def test_canQueryCashFlowJson():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla"
