@@ -27,6 +27,7 @@ def quoteLatestPrice(success_criteria=True, event=None):
 
     try:
         latest_stock_price = client.get_latest_stock_price(event)
+        print(json.dumps(latest_stock_price))
     except ValueError as error:
         assert error is None, error
     assert len(latest_stock_price) > 0, "Response should have fields but contains zero"
@@ -37,12 +38,12 @@ def quoteLatestPrice(success_criteria=True, event=None):
     assert "symbol" in latest_stock_price, "Symbol field not present in response"
     assert "limit_reached" in latest_stock_price, "limit_reached is not present in results"
     assert latest_stock_price.get("limit_reached") == False, f'{latest_stock_price.get("Error Message", None)}'
-    assert latest_stock_price.get("symbol") == event.get("symbol"),\
+    assert latest_stock_price.get("symbol") == event.get("symbol"), \
         f"Symbol {latest_stock_price.get('symbol', None)} is not equal to {event.get('symbol', None)}"
 
     # free api key is only allow 5 calls per min, so need to make sure i don't have a dependcy on function order AND
     # I can have as many functions with the same key.
-
+    time.sleep(20)
     return latest_stock_price
 
 
@@ -51,7 +52,7 @@ def test_canQuoteStockSymbolJson():
     event = {
         "symbol": "tsla"
     }
-    quoteLatestPrice(True, event)
+    results = quoteLatestPrice(True, event)
     print(f"Can quote stock symbol in JSON {event.get('symbol', None)}")
 
 
@@ -75,11 +76,12 @@ def test_canNotQuoteWrongSymbolJson():
     quoteLatestPrice(False, event)
     print(f"Can NOT quote stock symbol in JSON {event.get('symbol', None)}")
 
+
 @pytest.mark.integration
 def test_canNotQuoteWrongSymbolCsv():
     event = {
         "symbol": "tsla2233",
-        "datatype" : "csv"
+        "datatype": "csv"
     }
     results = quoteLatestPrice(False, event)
     print(f"Can NOT quote stock symbol in csv {event.get('symbol', None)} : {results['Error Message']}")
@@ -110,12 +112,13 @@ def test_canReachLimitJson():
     print(f"Can Reach Limit while quoting for symbol {event.get('symbol', None)} in JSON")
     time.sleep(60)
 
+
 @pytest.mark.integration
 def test_canReachLimitCsv():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla",
-        "datatype" : "csv"
+        "datatype": "csv"
     }
     limit_reached = False
     # force limit reached
@@ -137,6 +140,7 @@ def test_canReachLimitCsv():
     print(f"Can Reach Limit while quoting for symbol {event.get('symbol', None)} in JSON")
     time.sleep(60)
 
+
 @pytest.mark.integration
 def test_canQuoteEthJson():
     event = {
@@ -152,6 +156,8 @@ def test_canQuoteEthJson():
     assert "success" in results and results.get("success",
                                                 None) is True, f"Failed to receive a quote for {event.get('symbol', None)}"
     print(f"Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
+    time.sleep(20)
+
 
 @pytest.mark.integration
 def test_canQuoteEthCsv():
@@ -160,7 +166,7 @@ def test_canQuoteEthCsv():
         "symbol": "ETH",
         "market": "USD",
         "interval": "5min",
-        "datatype" : "csv"
+        "datatype": "csv"
     }
     client = AlphavantageClient()
     results = client.get_data_from_alpha_vantage(event)
@@ -171,6 +177,8 @@ def test_canQuoteEthCsv():
     assert results.get("csv"), "Csv field is not present"
     assert len(results.get("csv")), "Csv return value has no data"
     print(f"Successfully quoted cryptocurrency symbol {event['symbol']} in CSV")
+    time.sleep(20)
+
 
 @pytest.mark.integration
 def test_canQuoteRealGDPJson():
@@ -182,16 +190,18 @@ def test_canQuoteRealGDPJson():
     results = client.get_data_from_alpha_vantage(event)
     assert "limit_reached" in results, "limit_reached is not present in results"
     assert results.get("limit_reached", None) is False, f'{results.get("Error Message", None)}'
-    assert "success" in results and results.get(
-        'success', None) == True, "Success flag not present or equal to false when quoting real GDP"
+    assert results.get('success', False) == True,\
+        "Success flag not present or equal to false when quoting real GDP"
     print("Can quote Real GDP")
+    time.sleep(20)
+
 
 @pytest.mark.integration
 def test_canQuoteRealGDPCsv():
     event = {
         "function": "REAL_GDP",
         "interval": "annual",
-        "datatype" : "csv"
+        "datatype": "csv"
     }
     client = AlphavantageClient()
     results = client.get_data_from_alpha_vantage(event)
@@ -202,6 +212,7 @@ def test_canQuoteRealGDPCsv():
     assert results.get("csv"), "Csv field is not present"
     assert len(results.get("csv")), "Csv return value has no data"
     print("Can quote Real GDP")
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -220,7 +231,8 @@ def test_canQuoteTechnicalIndicatorJson():
     assert "success" in results and results.get(
         'success', None) == True, "Success flag not present or equal to false when quoting IBM EMA technical indicator"
     print("Can quote IBM EMA technical indicator")
-    time.sleep(45)
+    time.sleep(20)
+
 
 @pytest.mark.integration
 def test_canQuoteTechnicalIndicatorCsv():
@@ -230,7 +242,7 @@ def test_canQuoteTechnicalIndicatorCsv():
         "interval": "weekly",
         "time_period": "10",
         "series_type": "open",
-        "datatype" : "csv"
+        "datatype": "csv"
     }
     client = AlphavantageClient()
     results = client.get_data_from_alpha_vantage(event)
@@ -242,6 +254,7 @@ def test_canQuoteTechnicalIndicatorCsv():
     assert len(results.get("csv")), "Csv return value has no data"
 
     print("Can quote IBM EMA technical indicator")
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -265,13 +278,15 @@ def test_canQueryCompanyOverviewJson():
     assert results.get("symbol", None) == event.get("symbol",
                                                     None), f"Symbol {results.get('symbol', None)} is not equal to {event.get('symbol', None)}"
     print(f"Can query company overview {event.get('symbol', None)}")
+    time.sleep(20)
+
 
 @pytest.mark.integration
 def test_canNotQueryCompanyOverviewCsv():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla",
-        "datatype" : "csv"
+        "datatype": "csv"
     }
 
     try:
@@ -281,6 +296,7 @@ def test_canNotQueryCompanyOverviewCsv():
         assert True == True, "Expected an error because company overview doesn't support csv"
 
     print(f"Querying Company Overview as CSV threw error as expected {event.get('symbol', None)}")
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -304,13 +320,15 @@ def test_canQueryLatestIncomeStatementJson():
     assert results.get("symbol", None) == event.get("symbol",
                                                     None), f"Symbol {results.get('symbol', None)} is not equal to {event.get('symbol', None)}"
     print(f"Can query latest income statement {event.get('symbol', None)}")
+    time.sleep(20)
+
 
 @pytest.mark.integration
 def test_canQueryLatestIncomeStatementCsv():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla",
-        "datatype" : "csv"
+        "datatype": "csv"
     }
 
     try:
@@ -320,7 +338,7 @@ def test_canQueryLatestIncomeStatementCsv():
         assert True == True, "Expected an error because latest income statement doesn't support csv"
 
     print(f"Querying latest income statement as CSV threw error as expected {event.get('symbol', None)}")
-    time.sleep(45)
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -344,13 +362,15 @@ def test_canQueryLatestEarningsJson():
     assert results.get("symbol", None) == event.get("symbol",
                                                     None), f"Symbol {results.get('symbol', None)} is not equal to {event.get('symbol', None)}"
     print(f"Can query latest earnings {event.get('symbol', None)}")
+    time.sleep(20)
+
 
 @pytest.mark.integration
 def test_canNotQueryLatestEarningsCsv():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla",
-        "datatype" : "csv"
+        "datatype": "csv"
     }
 
     try:
@@ -360,6 +380,7 @@ def test_canNotQueryLatestEarningsCsv():
         assert True == True, "Expected an error because earnings doesn't support csv"
 
     print(f"Querying latest earnings as CSV threw error as expected {event.get('symbol', None)}")
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -383,13 +404,15 @@ def test_canQueryIncomeStatementJson():
     assert results.get("symbol", None) == event.get("symbol",
                                                     None), f"Symbol {results.get('symbol', None)} is not equal to {event.get('symbol', None)}"
     print(f"Can query income statement {event.get('symbol', None)}")
+    time.sleep(20)
+
 
 @pytest.mark.integration
 def test_canNotQueryIncomeStatementCsv():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla",
-        "datatype" : "csv"
+        "datatype": "csv"
     }
 
     try:
@@ -399,6 +422,8 @@ def test_canNotQueryIncomeStatementCsv():
         assert True == True, "Expected an error because income statement doesn't support csv"
 
     print(f"Querying income statement as CSV threw error as expected {event.get('symbol', None)}")
+    time.sleep(20)
+
 
 @pytest.mark.integration
 def test_canQueryEarningsJson():
@@ -421,7 +446,7 @@ def test_canQueryEarningsJson():
     assert results.get("symbol", None) == event.get("symbol",
                                                     None), f"Symbol {results.get('symbol', None)} is not equal to {event.get('symbol', None)}"
     print(f"Can query earnings {event.get('symbol', None)}")
-    time.sleep(45)
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -429,7 +454,7 @@ def test_canNotQueryEarningsCsv():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla",
-        "datatype" : "csv"
+        "datatype": "csv"
     }
 
     try:
@@ -439,6 +464,8 @@ def test_canNotQueryEarningsCsv():
         assert True == True, "Expected an error because earnings doesn't support csv"
 
     print(f"Querying earnings as CSV threw error as expected {event.get('symbol', None)}")
+    time.sleep(20)
+
 
 @pytest.mark.integration
 def test_canQueryLatestCashFlowJson():
@@ -461,13 +488,15 @@ def test_canQueryLatestCashFlowJson():
     assert results.get("symbol", None) == event.get("symbol",
                                                     None), f"Symbol {results.get('symbol', None)} is not equal to {event.get('symbol', None)}"
     print(f"Can query latest cash flow {event.get('symbol', None)}")
+    time.sleep(20)
+
 
 @pytest.mark.integration
 def test_canNotQueryLatestCashFlowCsv():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla",
-        "datatype" : "csv"
+        "datatype": "csv"
     }
 
     try:
@@ -477,6 +506,8 @@ def test_canNotQueryLatestCashFlowCsv():
         assert True == True, "Expected an error because latest cash flow doesn't support csv"
 
     print(f"Querying latest cash flow as CSV threw error as expected {event.get('symbol', None)}")
+    time.sleep(20)
+
 
 @pytest.mark.integration
 def test_canQueryCashFlowJson():
@@ -499,13 +530,15 @@ def test_canQueryCashFlowJson():
     assert results.get("symbol", None) == event.get("symbol",
                                                     None), f"Symbol {results.get('symbol', None)} is not equal to {event.get('symbol', None)}"
     print(f"Can query cash flow {event.get('symbol', None)}")
+    time.sleep(20)
+
 
 @pytest.mark.integration
 def test_canNotQueryCashFlowCsv():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla",
-        "datatype" : "csv"
+        "datatype": "csv"
     }
 
     try:
@@ -515,8 +548,4 @@ def test_canNotQueryCashFlowCsv():
         assert True == True, "Expected an error because cash flow doesn't support csv"
 
     print(f"Querying cash flow as CSV threw error as expected {event.get('symbol', None)}")
-
-
-@pytest.mark.unit
-def test_something_special():
-    print("I REALLY LOVE TESTING")
+    time.sleep(20)

@@ -40,24 +40,21 @@ class AlphavantageClient:
         :return:
         '''
 
-        result = self.get_stock_price(event)
-        # print(result)
-        if result != None and result['success'] == True and event.get("datatype","json") == "json":
-            time_series_key = "Time Series (Daily)"
-            meta_key = "Meta Data"
-            latest_stock_price = {}
-            latest_stock_date = result[meta_key]["3. Last Refreshed"]
-            latest_stock_date = latest_stock_date.split(" ")[0]
-            latest_stock_price = result[time_series_key][latest_stock_date]
-            # set latest stock data to root
-            result["fetch_date"] = latest_stock_date
-            for key in latest_stock_price:
-                result[key] = latest_stock_price[key]
-            # delete extra data
-            result.pop(time_series_key)
-            result.pop(meta_key)
+        DEFAULTS = {
+            "function": "GLOBAL_QUOTE",
+        }
+        results = {}
+        self.inject_values(DEFAULTS, event)
+        results = self.get_data_from_alpha_vantage(event)
+        name = "Global Quote"
+        if results.get("success") and name in results:
+            global_quote = results.get(name)
+            for key in global_quote:
+                results[key] = global_quote[key]
 
-        return result
+            results.pop(name)
+
+        return results
 
     def inject_values(self, default_values, dest_obj):
         # inject defaults for missing values
@@ -242,7 +239,6 @@ class AlphavantageClient:
             event["datatype"] = "json"
 
     def get_data_from_alpha_vantage(self, event, context=None):
-
         self.inject_default_values(event)
         checks = ValidationRuleChecks().from_customer_request(event)
         # get api key if not provided
@@ -271,7 +267,7 @@ class AlphavantageClient:
             for field in json_response:
                 requested_data[field] = json_response[field]
 
-        if checks.expect_csv_datatype().expect_successful_response().passed(): # successful csv response
+        if checks.expect_csv_datatype().expect_successful_response().passed():  # successful csv response
             requested_data['csv'] = checks.get_obj()
 
         # not all calls will have symbol in the call to alphavantage.... if so we can to capture it.
