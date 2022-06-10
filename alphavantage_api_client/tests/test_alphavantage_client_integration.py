@@ -51,7 +51,8 @@ def test_canQuoteStockSymbolJson():
     event = {
         "symbol": "tsla"
     }
-    quoteLatestPrice(True, event)
+    results = quoteLatestPrice(True, event)
+    print(json.dumps(results))
     print(f"Can quote stock symbol in JSON {event.get('symbol', None)}")
 
 
