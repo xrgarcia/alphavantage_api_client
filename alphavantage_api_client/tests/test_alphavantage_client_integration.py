@@ -2,7 +2,7 @@ import pytest
 import json
 import os
 import time
-from .mock_client import MockAlphavantageClient
+from alphavantage_api_client import AlphavantageClient
 
 
 def setup_function(function):
@@ -22,12 +22,12 @@ def teardown_module(module):
 
 
 def quoteLatestPrice(success_criteria=True, event=None):
-
     assert event != None
-    client = MockAlphavantageClient()
+    client = AlphavantageClient()
 
     try:
         latest_stock_price = client.get_latest_stock_price(event)
+        print(json.dumps(latest_stock_price))
     except ValueError as error:
         assert error is None, error
     assert len(latest_stock_price) > 0, "Response should have fields but contains zero"
@@ -53,7 +53,6 @@ def test_canQuoteStockSymbolJson():
         "symbol": "tsla"
     }
     results = quoteLatestPrice(True, event)
-    print(json.dumps(results))
     print(f"Can quote stock symbol in JSON {event.get('symbol', None)}")
 
 
@@ -189,8 +188,8 @@ def test_canQuoteRealGDPJson():
     results = client.get_data_from_alpha_vantage(event)
     assert "limit_reached" in results, "limit_reached is not present in results"
     assert results.get("limit_reached", None) is False, f'{results.get("Error Message", None)}'
-    assert "success" in results and results.get(
-        'success', None) == True, "Success flag not present or equal to false when quoting real GDP"
+    assert results.get('success', False) == True,\
+        "Success flag not present or equal to false when quoting real GDP"
     print("Can quote Real GDP")
 
 
@@ -533,8 +532,3 @@ def test_canNotQueryCashFlowCsv():
         assert True == True, "Expected an error because cash flow doesn't support csv"
 
     print(f"Querying cash flow as CSV threw error as expected {event.get('symbol', None)}")
-
-
-@pytest.mark.unit
-def test_something_special():
-    print("I REALLY LOVE TESTING")

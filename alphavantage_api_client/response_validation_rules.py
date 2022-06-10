@@ -15,7 +15,7 @@ class BaseValidationRuleChecks:
 
         return self
 
-    def get_obj(self): #assume csv or non json
+    def get_obj(self):  # assume csv or non json
         return self.__http_get_response__.text
 
     def check_response_present(self):
@@ -42,7 +42,8 @@ class BaseValidationRuleChecks:
         return self.__http_get_response__.status_code
 
     def is_meaningful_response(self):
-        return len(self.__http_get_response__.text) > 0 and "Error Message" not in self.__http_get_response__.text
+        return len(self.__http_get_response__.text) > 0 \
+               and "Error Message" not in self.__http_get_response__.text and self.__http_get_response__.text != "{}"
 
     def expect_successful_response(self):
         self.check_response_present()
@@ -138,17 +139,21 @@ class JsonValidationRuleChecks(BaseValidationRuleChecks):
     def expect_limit_not_reached(self):
         rule_name = "has_not_reached_limit"
         response = self.__http_get_response__.json()
-        self.__rules__[rule_name] =  "Note" in response and " calls per minute " in response["Note"]
+        self.__rules__[rule_name] = "Note" in response and " calls per minute " in response["Note"]
 
         return self
+
+    def is_empty_global_quote(self, response_json):
+        return len(response_json) == 1 and len(response_json.get("Global Quote", {})) == 0
 
     def expect_successful_response(self):
         self.check_response_present()
         rule_name = "expect_meaningful_json_response"
         if self.is_meaningful_response() and self.__http_get_response__.text != "{}" \
-                and "Error Message" not in self.__http_get_response__.json()\
-                and "Information" not in self.__http_get_response__.json()\
-                and "Note" not in self.__http_get_response__.json():
+                and "Error Message" not in self.__http_get_response__.json() \
+                and "Information" not in self.__http_get_response__.json() \
+                and "Note" not in self.__http_get_response__.json() \
+                and not self.is_empty_global_quote(self.__http_get_response__.json()):
             self.__rules__[rule_name] = True
         else:
             self.__rules__[rule_name] = False
@@ -162,7 +167,7 @@ class JsonValidationRuleChecks(BaseValidationRuleChecks):
         elif "Error Message" in json_response:
             return json_response["Error Message"]
         else:
-            return self.__http_get_response__.text # just give them what came back from the server
+            return self.__http_get_response__.text  # just give them what came back from the server
 
     def get_obj(self):
         return self.__http_get_response__.json()
