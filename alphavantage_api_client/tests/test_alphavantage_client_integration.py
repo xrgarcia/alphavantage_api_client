@@ -43,7 +43,7 @@ def quoteLatestPrice(success_criteria=True, event=None):
 
     # free api key is only allow 5 calls per min, so need to make sure i don't have a dependcy on function order AND
     # I can have as many functions with the same key.
-
+    time.sleep(20)
     return latest_stock_price
 
 
@@ -156,6 +156,7 @@ def test_canQuoteEthJson():
     assert "success" in results and results.get("success",
                                                 None) is True, f"Failed to receive a quote for {event.get('symbol', None)}"
     print(f"Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -176,6 +177,7 @@ def test_canQuoteEthCsv():
     assert results.get("csv"), "Csv field is not present"
     assert len(results.get("csv")), "Csv return value has no data"
     print(f"Successfully quoted cryptocurrency symbol {event['symbol']} in CSV")
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -191,6 +193,7 @@ def test_canQuoteRealGDPJson():
     assert results.get('success', False) == True,\
         "Success flag not present or equal to false when quoting real GDP"
     print("Can quote Real GDP")
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -209,6 +212,7 @@ def test_canQuoteRealGDPCsv():
     assert results.get("csv"), "Csv field is not present"
     assert len(results.get("csv")), "Csv return value has no data"
     print("Can quote Real GDP")
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -227,7 +231,7 @@ def test_canQuoteTechnicalIndicatorJson():
     assert "success" in results and results.get(
         'success', None) == True, "Success flag not present or equal to false when quoting IBM EMA technical indicator"
     print("Can quote IBM EMA technical indicator")
-    time.sleep(45)
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -250,6 +254,7 @@ def test_canQuoteTechnicalIndicatorCsv():
     assert len(results.get("csv")), "Csv return value has no data"
 
     print("Can quote IBM EMA technical indicator")
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -273,6 +278,7 @@ def test_canQueryCompanyOverviewJson():
     assert results.get("symbol", None) == event.get("symbol",
                                                     None), f"Symbol {results.get('symbol', None)} is not equal to {event.get('symbol', None)}"
     print(f"Can query company overview {event.get('symbol', None)}")
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -290,6 +296,7 @@ def test_canNotQueryCompanyOverviewCsv():
         assert True == True, "Expected an error because company overview doesn't support csv"
 
     print(f"Querying Company Overview as CSV threw error as expected {event.get('symbol', None)}")
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -313,6 +320,7 @@ def test_canQueryLatestIncomeStatementJson():
     assert results.get("symbol", None) == event.get("symbol",
                                                     None), f"Symbol {results.get('symbol', None)} is not equal to {event.get('symbol', None)}"
     print(f"Can query latest income statement {event.get('symbol', None)}")
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -330,7 +338,7 @@ def test_canQueryLatestIncomeStatementCsv():
         assert True == True, "Expected an error because latest income statement doesn't support csv"
 
     print(f"Querying latest income statement as CSV threw error as expected {event.get('symbol', None)}")
-    time.sleep(45)
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -354,6 +362,7 @@ def test_canQueryLatestEarningsJson():
     assert results.get("symbol", None) == event.get("symbol",
                                                     None), f"Symbol {results.get('symbol', None)} is not equal to {event.get('symbol', None)}"
     print(f"Can query latest earnings {event.get('symbol', None)}")
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -371,6 +380,7 @@ def test_canNotQueryLatestEarningsCsv():
         assert True == True, "Expected an error because earnings doesn't support csv"
 
     print(f"Querying latest earnings as CSV threw error as expected {event.get('symbol', None)}")
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -394,6 +404,7 @@ def test_canQueryIncomeStatementJson():
     assert results.get("symbol", None) == event.get("symbol",
                                                     None), f"Symbol {results.get('symbol', None)} is not equal to {event.get('symbol', None)}"
     print(f"Can query income statement {event.get('symbol', None)}")
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -411,6 +422,7 @@ def test_canNotQueryIncomeStatementCsv():
         assert True == True, "Expected an error because income statement doesn't support csv"
 
     print(f"Querying income statement as CSV threw error as expected {event.get('symbol', None)}")
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -434,7 +446,7 @@ def test_canQueryEarningsJson():
     assert results.get("symbol", None) == event.get("symbol",
                                                     None), f"Symbol {results.get('symbol', None)} is not equal to {event.get('symbol', None)}"
     print(f"Can query earnings {event.get('symbol', None)}")
-    time.sleep(45)
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -452,6 +464,7 @@ def test_canNotQueryEarningsCsv():
         assert True == True, "Expected an error because earnings doesn't support csv"
 
     print(f"Querying earnings as CSV threw error as expected {event.get('symbol', None)}")
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -475,6 +488,7 @@ def test_canQueryLatestCashFlowJson():
     assert results.get("symbol", None) == event.get("symbol",
                                                     None), f"Symbol {results.get('symbol', None)} is not equal to {event.get('symbol', None)}"
     print(f"Can query latest cash flow {event.get('symbol', None)}")
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -492,6 +506,7 @@ def test_canNotQueryLatestCashFlowCsv():
         assert True == True, "Expected an error because latest cash flow doesn't support csv"
 
     print(f"Querying latest cash flow as CSV threw error as expected {event.get('symbol', None)}")
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -515,6 +530,7 @@ def test_canQueryCashFlowJson():
     assert results.get("symbol", None) == event.get("symbol",
                                                     None), f"Symbol {results.get('symbol', None)} is not equal to {event.get('symbol', None)}"
     print(f"Can query cash flow {event.get('symbol', None)}")
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -532,3 +548,4 @@ def test_canNotQueryCashFlowCsv():
         assert True == True, "Expected an error because cash flow doesn't support csv"
 
     print(f"Querying cash flow as CSV threw error as expected {event.get('symbol', None)}")
+    time.sleep(20)
