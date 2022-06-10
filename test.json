@@ -1,16 +1,1 @@
-{
-  "success": true,
-  "limit_reached": false,
-  "status_code": 200,
-  "symbol": "tsla",
-  "01. symbol": "TSLA",
-  "02. open": "748.0200",
-  "03. high": "766.6399",
-  "04. low": "717.9800",
-  "05. price": "719.1200",
-  "06. volume": "31902630",
-  "07. latest trading day": "2022-06-09",
-  "08. previous close": "725.6000",
-  "09. change": "-6.4800",
-  "10. change percent": "-0.8931%"
-}
+{"symbol": "tsla", "function": "GLOBAL_QUOTE"}

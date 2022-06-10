@@ -240,40 +240,4 @@ class AlphavantageClient:
             event["datatype"] = "json"
 
     def get_data_from_alpha_vantage(self, event, context=None):
-
-        self.inject_default_values(event)
-        checks = ValidationRuleChecks().from_customer_request(event)
-        # get api key if not provided
-        if checks.expect_api_key_in_event().failed():
-            event["apikey"] = self.__api_key__
-        elif self.__api_key__ is None or len(self.__api_key__) == 0:  # consumer didn't tell me where to get api key
-            raise ValueError(
-                "You must call client.with_api_key([api_key]), create config file in your profile (i.e. ~/.alphavantage) or event[api_key] = [your api key] before retrieving data from alphavantage")
-
-        # fetch data from API
-        url = self.__build_url_from_args(event)
-        r = requests.get(url)
-        checks.with_response(r)
-        requested_data = {}
-
-        # verify request worked correctly and build response
-        # gotta check if consumer request json or csv, so we can parse the output correctly
-        requested_data['success'] = checks.expect_successful_response().passed()  # successful csv response
-        if not requested_data['success']:
-            requested_data['Error Message'] = checks.get_error_message()
-        requested_data['limit_reached'] = checks.expect_limit_not_reached().passed()
-        requested_data['status_code'] = checks.get_status_code()
-
-        if checks.expect_json_datatype().expect_successful_response().passed():  # successful json response
-            json_response = checks.get_obj()
-            for field in json_response:
-                requested_data[field] = json_response[field]
-
-        if checks.expect_csv_datatype().expect_successful_response().passed():  # successful csv response
-            requested_data['csv'] = checks.get_obj()
-
-        # not all calls will have symbol in the call to alphavantage.... if so we can to capture it.
-        if "symbol" in event:
-            requested_data['symbol'] = event['symbol']
-
-        return requested_data
+        pass
