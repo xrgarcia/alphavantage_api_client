@@ -1,4 +1,4 @@
-# alphavantage-api-client
+# alpha vantage api client
 
 I use these functions in my AWS Step function statemachines. Each method for querying stock data has 2 params (
 event,context).
