@@ -19,7 +19,7 @@ class MockAlphavantageClient(AlphavantageClient):
             raise ValueError("Event property isn't define")
 
         text_file = None
-        if event.get("function") == "GLOBAL_QUOTES":
+        if event.get("function") == "GLOBAL_QUOTE":
             text_file = open(f"{self.base_path}/mock_stock_quote.json", "r")
         elif event.get("function") == "BALANCE_SHEET":
             text_file = open(f"{self.base_path}/mock_balance_sheet.json", "r")

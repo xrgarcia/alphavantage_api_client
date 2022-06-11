@@ -25,26 +25,15 @@ def quoteLatestPrice(success_criteria=True, event=None):
     assert event != None
     client = AlphavantageClient()
 
-    try:
-        latest_stock_price = client.get_latest_stock_price(event)
-        print(json.dumps(latest_stock_price))
-    except ValueError as error:
-        assert error is None, error
-    assert len(latest_stock_price) > 0, "Response should have fields but contains zero"
-    assert latest_stock_price.get(
-        'success',
-        None) == success_criteria, \
-        f"success was found to be {latest_stock_price.get('success')}: {latest_stock_price.get('Error Message')}"
-    assert "symbol" in latest_stock_price, "Symbol field not present in response"
-    assert "limit_reached" in latest_stock_price, "limit_reached is not present in results"
-    assert latest_stock_price.get("limit_reached") == False, f'{latest_stock_price.get("Error Message", None)}'
-    assert latest_stock_price.get("symbol") == event.get("symbol"), \
-        f"Symbol {latest_stock_price.get('symbol', None)} is not equal to {event.get('symbol', None)}"
+    results = client.get_global_quote(event)
+    assert results.success == success_criteria, f"success was found to be {results.success}: {results.error_message}"
+    assert results.symbol == event.get("symbol"), "Response symbol doesn't matched requested symbol"
+    assert not results.limit_reached, f"{results.error_message}"
 
-    # free api key is only allow 5 calls per min, so need to make sure i don't have a dependcy on function order AND
+    # free api key is only allow 5 calls per min, so need to make sure i don't have a dependency on function order AND
     # I can have as many functions with the same key.
     time.sleep(20)
-    return latest_stock_price
+    return results
 
 
 @pytest.mark.integration
@@ -53,6 +42,7 @@ def test_canQuoteStockSymbolJson():
         "symbol": "tsla"
     }
     results = quoteLatestPrice(True, event)
+    assert len(results.data) > 0, "Response should have data but contains zero"
     print(f"Can quote stock symbol in JSON {event.get('symbol', None)}")
 
 
@@ -63,17 +53,19 @@ def test_canQuoteStockSymbolCsv():
         "datatype": "csv"
     }
     latest_stock_price = quoteLatestPrice(True, event)
-    assert latest_stock_price.get("csv"), "CSV field was not found "
-    assert len(latest_stock_price.get("csv")), "Csv return value has no data"
+    assert latest_stock_price.csv, "CSV field was not found "
+    assert len(latest_stock_price.csv), "Csv return value has no data"
     print(f"Can quote stock symbol in CSV {event.get('symbol', None)}")
 
 
 @pytest.mark.integration
 def test_canNotQuoteWrongSymbolJson():
     event = {
-        "symbol": "tsla2233"
+        "symbol": "tsla2323"
     }
-    quoteLatestPrice(False, event)
+    results = quoteLatestPrice(False, event)
+    print(results)
+    assert len(results.data) == 0, "Response should not have data but contains zero"
     print(f"Can NOT quote stock symbol in JSON {event.get('symbol', None)}")
 
 
@@ -84,7 +76,7 @@ def test_canNotQuoteWrongSymbolCsv():
         "datatype": "csv"
     }
     results = quoteLatestPrice(False, event)
-    print(f"Can NOT quote stock symbol in csv {event.get('symbol', None)} : {results['Error Message']}")
+    print(f"Can NOT quote stock symbol in csv {event.get('symbol', None)} : {results.error_message}")
 
 
 @pytest.mark.integration
@@ -94,21 +86,17 @@ def test_canReachLimitJson():
         "symbol": "tsla"
     }
     limit_reached = False
+    results = None
     # force limit reached
     # my api key is free, so 5 calls per min and total of 500 per day
     for i in range(7):
-        latest_stock_price = client.get_latest_stock_price(event)
-        # print(json.dumps(latest_stock_price))
-        if "limit_reached" in latest_stock_price:
-            limit_reached = latest_stock_price.get("limit_reached", None)
-        if limit_reached == True:
+        results = client.get_global_quote(event)
+        if results.limit_reached:
+            limit_reached = True
             break
 
     assert limit_reached, "Failed to reach limit"
-    assert "limit_reached" in latest_stock_price, "limit_reached is not present in results"
-    assert "symbol" in latest_stock_price, "symbol field NOT present in response"
-    assert latest_stock_price.get("symbol", None) == event.get("symbol",
-                                                               None), f"Did not find {event.get('symbol', None)} in response"
+    assert results.symbol == event['symbol'], f" Expected symbol doesn't match given: {event.get('symbol', None)}"
     print(f"Can Reach Limit while quoting for symbol {event.get('symbol', None)} in JSON")
     time.sleep(60)
 
@@ -123,19 +111,17 @@ def test_canReachLimitCsv():
     limit_reached = False
     # force limit reached
     # my api key is free, so 5 calls per min and total of 500 per day
+    results = None
     for i in range(7):
-        latest_stock_price = client.get_latest_stock_price(event)
-        # print(json.dumps(latest_stock_price))
-        if "limit_reached" in latest_stock_price:
-            limit_reached = latest_stock_price.get("limit_reached", None)
-        if limit_reached == True:
+        results = client.get_global_quote(event)
+        if results.limit_reached:
+            limit_reached = True
             break
 
     assert limit_reached, "Failed to reach limit"
-    assert "limit_reached" in latest_stock_price, "limit_reached is not present in results"
-    assert "symbol" in latest_stock_price, "symbol field NOT present in response"
-    assert latest_stock_price.get("symbol", None) == event.get("symbol",
-                                                               None), f"Did not find {event.get('symbol', None)} in response"
+    assert results.symbol == event['symbol'], f" Expected symbol doesn't match given: {event.get('symbol', None)}"
+    print(f"Can Reach Limit while quoting for symbol {event.get('symbol', None)} in JSON")
+    time.sleep(60)
 
     print(f"Can Reach Limit while quoting for symbol {event.get('symbol', None)} in JSON")
     time.sleep(60)
@@ -150,11 +136,10 @@ def test_canQuoteEthJson():
         "interval": "5min"
     }
     client = AlphavantageClient()
-    results = client.get_data_from_alpha_vantage(event)
-    assert "limit_reached" in results, "limit_reached is not present in results"
-    assert results.get("limit_reached", None) is False, f'{results.get("Error Message", None)}'
-    assert "success" in results and results.get("success",
-                                                None) is True, f"Failed to receive a quote for {event.get('symbol', None)}"
+    results = client.get_crypto_intraday(event)
+    print(results)
+    assert not results.limit_reached, f"limit_reached should not be true {results.error_message}"
+    assert results.success, f"success is false {results.error_message}"
     print(f"Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
     time.sleep(20)
 
@@ -190,7 +175,7 @@ def test_canQuoteRealGDPJson():
     results = client.get_data_from_alpha_vantage(event)
     assert "limit_reached" in results, "limit_reached is not present in results"
     assert results.get("limit_reached", None) is False, f'{results.get("Error Message", None)}'
-    assert results.get('success', False) == True,\
+    assert results.get('success', False) == True, \
         "Success flag not present or equal to false when quoting real GDP"
     print("Can quote Real GDP")
     time.sleep(20)

@@ -10,9 +10,12 @@ def test_quote_latest_stock_price():
         "symbol": "ibm"
     }
     results = client.get_latest_stock_price(event)
-    assert results.get("success"), "Success field is missing or False"
-    assert not results.get("limit_reached"), "Limit reached is true but not hitting API"
-    assert results["symbol"] == event["symbol"], "Symbol from results don't match event"
+
+    assert results.success, "Success field is missing or False"
+    assert not results.limit_reached, "Limit reached is true but not hitting API"
+    assert results.symbol is event["symbol"], "Symbol from results don't match event"
+    assert len(results.data), "Global Quote field is missing values"
+
     print(f"Successfully tested get_latest_stock_price for {event['symbol']}")
 
 

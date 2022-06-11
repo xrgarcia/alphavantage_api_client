@@ -3,6 +3,7 @@ import os
 import configparser
 from .response_validation_rules import ValidationRuleChecks
 import json
+from .models.core import GlobalQuote, CryptoIntradayQuote
 
 
 class AlphavantageClient:
@@ -32,19 +33,39 @@ class AlphavantageClient:
 
         return self
 
-    def get_latest_stock_price(self, event, context=None):
+    def get_latest_stock_price(self, event: dict, context=None):
         '''
 
         :param event:
         :param context:
-        :return:
+        :return: GlobalQuote
         '''
-        DEFAULTS = {
-            "function": "GLOBAL_QUOTES"
+        defaults = {
+            "function": "GLOBAL_QUOTE"
         }
-        json_request = self.create_api_request_from(DEFAULTS, event)
+        json_request = self.create_api_request_from(defaults, event)
 
-        return self.get_data_from_alpha_vantage(json_request)
+        json_response = self.get_data_from_alpha_vantage(json_request)
+        global_quote = GlobalQuote.parse_obj(json_response)
+
+        return global_quote
+
+    def get_global_quote(self, event: dict, context=None):
+        '''
+
+        :param event:
+        :param context:
+        :return: GlobalQuote
+        '''
+        defaults = {
+            "function": "GLOBAL_QUOTE"
+        }
+        json_request = self.create_api_request_from(defaults, event)
+
+        json_response = self.get_data_from_alpha_vantage(json_request)
+        global_quote = GlobalQuote.parse_obj(json_response)
+
+        return global_quote
 
     def inject_values(self, default_values, dest_obj):
         # inject defaults for missing values
@@ -55,7 +76,7 @@ class AlphavantageClient:
     def create_api_request_from(self, defaults, event):
         json_request = event.copy()
         self.inject_values(defaults, json_request)
-
+        self.inject_default_values(json_request)
         return json_request
 
     def get_stock_price(self, event, context=None):
@@ -66,10 +87,10 @@ class AlphavantageClient:
         :return:
         '''
         # default params
-        DEFAULTS = {"symbol": None, "datatype": "json", "function": "TIME_SERIES_DAILY",
+        defaults = {"symbol": None, "datatype": "json", "function": "TIME_SERIES_DAILY",
                     "interval": "60min", "slice": "year1month1",
                     "outputsize": "compact"}
-        json_request = self.create_api_request_from(DEFAULTS, event)
+        json_request = self.create_api_request_from(defaults, event)
 
         return self.get_data_from_alpha_vantage(json_request)
 
@@ -82,12 +103,12 @@ class AlphavantageClient:
         '''
         if event.get("datatype") == "csv":
             raise ValueError("CSV Datatype is not supported for this function")
-        params = {
+        defaults = {
             "function": "INCOME_STATEMENT",
-            "symbol": event["symbol"],
             "datatype": "json"
         }
-        stock_details = self.get_data_from_alpha_vantage(params)
+        json_request = self.create_api_request_from(defaults, event)
+        stock_details = self.get_data_from_alpha_vantage(json_request)
         if "annualReports" in stock_details:
             annualReports = stock_details["annualReports"]
             for annualReport in annualReports:
@@ -120,12 +141,12 @@ class AlphavantageClient:
         '''
         if event.get("datatype") == "csv":
             raise ValueError("CSV is not a support datatype for income statement or latest income statement")
-        params = {
+        defaults = {
             "function": "INCOME_STATEMENT",
-            "symbol": event["symbol"],
             "datatype": "json"
         }
-        stock_details = self.get_data_from_alpha_vantage(params)
+        json_request = self.create_api_request_from(defaults, event)
+        stock_details = self.get_data_from_alpha_vantage(json_request)
 
         return stock_details
 
@@ -163,12 +184,12 @@ class AlphavantageClient:
         '''
         if event.get("datatype") == "csv":
             raise ValueError("Cash flow or latest cash flow do not support csv datatype")
-        params = {
+        defaults = {
             "function": "CASH_FLOW",
-            "symbol": event["symbol"],
             "datatype": "json"
         }
-        return self.get_data_from_alpha_vantage(params)
+        json_request = self.create_api_request_from(defaults, event)
+        return self.get_data_from_alpha_vantage(json_request)
 
     def get_latest_earnings(self, event=None, context=None):
         '''
@@ -198,13 +219,12 @@ class AlphavantageClient:
     def get_earnings(self, event=None, context=None):
         if event.get("datatype") == "csv":
             raise ValueError("Earnings or Latest Earnings does not support csv datatype")
-        event["function"] = "EARNINGS"
-        params = {
+        defaults = {
             "function": "EARNINGS",
-            "symbol": event["symbol"],
             "datatype": "json"
         }
-        return self.get_data_from_alpha_vantage(params)
+        json_request = self.create_api_request_from(defaults, event)
+        return self.get_data_from_alpha_vantage(json_request)
 
     def get_company_overview(self, event=None, context=None):
         '''
@@ -215,11 +235,11 @@ class AlphavantageClient:
         '''
         if event.get("datatype") == "csv":
             raise ValueError("CSV Datatype is not supported for this function")
-        params = {
-            "function": "OVERVIEW",
-            "symbol": event["symbol"]
+        defaults = {
+            "function": "OVERVIEW"
         }
-        return self.get_data_from_alpha_vantage(params)
+        json_request = self.create_api_request_from(defaults, event)
+        return self.get_data_from_alpha_vantage(json_request)
 
     def __build_url_from_args(self, event):
         url = f'https://www.alphavantage.co/query?'
@@ -233,9 +253,20 @@ class AlphavantageClient:
         if "datatype" not in event:
             event["datatype"] = "json"
 
+    def get_crypto_intraday(self, event, context=None):
+        defaults = {
+            "function": "CRYPTO_INTRADAY",
+            "interval": "5min",
+            "market": "USD",
+            "outputsize": "compact"
+        }
+        json_request = self.create_api_request_from(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request)
+
+        return CryptoIntradayQuote.parse_obj(json_response)
+
     def get_data_from_alpha_vantage(self, event, context=None):
 
-        self.inject_default_values(event)
         checks = ValidationRuleChecks().from_customer_request(event)
         # get api key if not provided
         if checks.expect_api_key_in_event().failed():
