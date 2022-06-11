@@ -39,28 +39,24 @@ class AlphavantageClient:
         :param context:
         :return:
         '''
-
         DEFAULTS = {
-            "function": "GLOBAL_QUOTE",
+            "function": "GLOBAL_QUOTES"
         }
-        results = {}
-        self.inject_values(DEFAULTS, event)
-        results = self.get_data_from_alpha_vantage(event)
-        name = "Global Quote"
-        if results.get("success") and name in results:
-            global_quote = results.get(name)
-            for key in global_quote:
-                results[key] = global_quote[key]
+        json_request = self.create_api_request_from(DEFAULTS, event)
 
-            results.pop(name)
-
-        return results
+        return self.get_data_from_alpha_vantage(json_request)
 
     def inject_values(self, default_values, dest_obj):
         # inject defaults for missing values
         for default_key in default_values:
             if default_key not in dest_obj or dest_obj[default_key] is None:
                 dest_obj[default_key] = default_values[default_key]
+
+    def create_api_request_from(self, defaults, event):
+        json_request = event.copy()
+        self.inject_values(defaults, json_request)
+
+        return json_request
 
     def get_stock_price(self, event, context=None):
         '''
@@ -73,8 +69,7 @@ class AlphavantageClient:
         DEFAULTS = {"symbol": None, "datatype": "json", "function": "TIME_SERIES_DAILY",
                     "interval": "60min", "slice": "year1month1",
                     "outputsize": "compact"}
-        json_request = event.copy()
-        self.inject_values(DEFAULTS, json_request)
+        json_request = self.create_api_request_from(DEFAULTS, event)
 
         return self.get_data_from_alpha_vantage(json_request)
 
@@ -239,6 +234,7 @@ class AlphavantageClient:
             event["datatype"] = "json"
 
     def get_data_from_alpha_vantage(self, event, context=None):
+
         self.inject_default_values(event)
         checks = ValidationRuleChecks().from_customer_request(event)
         # get api key if not provided
