@@ -226,7 +226,7 @@ class AlphavantageClient:
         }
         return self.get_data_from_alpha_vantage(params)
 
-    def __build_url_from_args(self, event):
+    def __build_url_from_args__(self, event):
         url = f'https://www.alphavantage.co/query?'
         # build url from event
         for property in event:
@@ -249,7 +249,7 @@ class AlphavantageClient:
                 "You must call client.with_api_key([api_key]), create config file in your profile (i.e. ~/.alphavantage) or event[api_key] = [your api key] before retrieving data from alphavantage")
 
         # fetch data from API
-        url = self.__build_url_from_args(event)
+        url = self.__build_url_from_args__(event)
         r = requests.get(url)
         checks.with_response(r)
         requested_data = {}
