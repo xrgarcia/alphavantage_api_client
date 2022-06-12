@@ -3,6 +3,8 @@ import os
 import configparser
 from .response_validation_rules import ValidationRuleChecks
 import json
+from .models.core import Quote, AccountingReport, CompanyOverview, RealGDP
+import copy
 
 
 class AlphavantageClient:
@@ -32,199 +34,128 @@ class AlphavantageClient:
 
         return self
 
-    def get_latest_stock_price(self, event, context=None):
+    def get_global_quote(self, event: dict, context=None):
         '''
-
+        Global Quote function from Alpha Vantage
         :param event:
         :param context:
-        :return:
+        :return: IntraDayQuote
+        :rtype: Quote
         '''
-
-        DEFAULTS = {
-            "function": "GLOBAL_QUOTE",
+        defaults = {
+            "function": "GLOBAL_QUOTE"
         }
-        results = {}
-        self.inject_values(DEFAULTS, event)
-        results = self.get_data_from_alpha_vantage(event)
-        name = "Global Quote"
-        if results.get("success") and name in results:
-            global_quote = results.get(name)
-            for key in global_quote:
-                results[key] = global_quote[key]
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request)
+        self.__transform_fields__(json_response)
 
-            results.pop(name)
+        return Quote.parse_obj(json_response)
 
-        return results
-
-    def inject_values(self, default_values, dest_obj):
+    def __inject_values__(self, default_values, dest_obj):
         # inject defaults for missing values
         for default_key in default_values:
             if default_key not in dest_obj or dest_obj[default_key] is None:
                 dest_obj[default_key] = default_values[default_key]
 
-    def get_stock_price(self, event, context=None):
-        '''
+    def __create_api_request_from__(self, defaults, event):
+        json_request = event.copy()
+        self.__inject_values__(defaults, json_request)
+        self.__inject_default_values__(json_request)
+        return json_request
 
+    def get_intraday_quote(self, event, context=None):
+        '''
+        Time Servies Intraday function from Alpha Vantage
         :param event:
         :param context:
-        :return:
+        :return: IntraDayQuote
+        :rtype: Quote
         '''
         # default params
-        DEFAULTS = {"symbol": None, "datatype": "json", "function": "TIME_SERIES_DAILY",
+        defaults = {"symbol": None, "datatype": "json", "function": "TIME_SERIES_INTRADAY",
                     "interval": "60min", "slice": "year1month1",
                     "outputsize": "compact"}
-        json_request = event.copy()
-        self.inject_values(DEFAULTS, json_request)
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request)
+        self.__transform_fields__(json_response)
+        return Quote.parse_obj(json_response)
 
-        return self.get_data_from_alpha_vantage(json_request)
-
-    def get_latest_income_statement_for_symbol(self, event=None, context=None):
+    def get_income_statement(self, event=None, context=None):
         '''
 
         :param event:
         :param context:
-        :return:
-        '''
-        if event.get("datatype") == "csv":
-            raise ValueError("CSV Datatype is not supported for this function")
-        params = {
-            "function": "INCOME_STATEMENT",
-            "symbol": event["symbol"],
-            "datatype": "json"
-        }
-        stock_details = self.get_data_from_alpha_vantage(params)
-        if "annualReports" in stock_details:
-            annualReports = stock_details["annualReports"]
-            for annualReport in annualReports:
-                last_income_statement = annualReport
-                for property in last_income_statement:
-                    new_property = f'annual_{property}'
-                    val = last_income_statement[property]
-                    stock_details[new_property] = val
-                break
-            stock_details.pop("annualReports")
-        if "quarterlyReports" in stock_details:
-            quarterlyReports = stock_details["quarterlyReports"]
-            for quarterlyReport in quarterlyReports:
-                last_income_statement = quarterlyReport
-                for property in last_income_statement:
-                    new_property = f'quarterly_{property}'
-                    val = last_income_statement[property]
-                    stock_details[new_property] = val
-                break
-            stock_details.pop("quarterlyReports")
-
-        return stock_details
-
-    def get_income_statement_for_symbol(self, event=None, context=None):
-        '''
-
-        :param event:
-        :param context:
-        :return:
+        :return: AccountingReport
+        :rtype: AccountingReport
         '''
         if event.get("datatype") == "csv":
             raise ValueError("CSV is not a support datatype for income statement or latest income statement")
-        params = {
+        defaults = {
             "function": "INCOME_STATEMENT",
-            "symbol": event["symbol"],
             "datatype": "json"
         }
-        stock_details = self.get_data_from_alpha_vantage(params)
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request)
 
-        return stock_details
-
-    def get_latest_cash_flow(self, event=None, context=None):
-        '''
-
-        :param event:
-        :param context:
-        :return:
-        '''
-        result = self.get_cash_flow(event)
-        if result != None and result['success'] == True and 'annualReports' in result and 'quarterlyReports' in result:
-            annualReports = result['annualReports']
-            if len(annualReports) > 0:
-                first_annualReports = annualReports[0]
-                for key in first_annualReports:
-                    result[f'annual_{key}'] = first_annualReports[key]
-                result.pop('annualReports')
-            quarterlyReports = result['quarterlyReports']
-            if len(quarterlyReports) > 0:
-                first_quarterlyReports = quarterlyReports[0]
-                for key in first_quarterlyReports:
-                    result[f'quarterly_{key}'] = first_quarterlyReports[key]
-
-                result.pop('quarterlyReports')
-
-        return result
+        return AccountingReport.parse_obj(json_response)
 
     def get_cash_flow(self, event=None, context=None):
         '''
 
         :param event:
         :param context:
-        :return:
+        :return: AccountingReport
+        :rtype: AccountingReport
         '''
         if event.get("datatype") == "csv":
             raise ValueError("Cash flow or latest cash flow do not support csv datatype")
-        params = {
+        defaults = {
             "function": "CASH_FLOW",
-            "symbol": event["symbol"],
             "datatype": "json"
         }
-        return self.get_data_from_alpha_vantage(params)
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request)
+        self.__transform_fields__(json_response)
 
-    def get_latest_earnings(self, event=None, context=None):
+        return AccountingReport.parse_obj(json_response)
+
+    def get_earnings(self, event=None, context=None):
         '''
 
         :param event:
         :param context:
-        :return:
+        :return: AccountingReport
+        :rtype: AccountingReport
         '''
-        result = self.get_earnings(event)
-        if result != None and result['success'] == True:
-            annualEarnings = result['annualEarnings']
-            if len(annualEarnings) > 0:
-                first_annualEarnings = annualEarnings[0]
-                for key in first_annualEarnings:
-                    result[f'annual_{key}'] = first_annualEarnings[key]
-                result.pop('annualEarnings')
-            quarterlyEarnings = result['quarterlyEarnings']
-            if len(quarterlyEarnings) > 0:
-                first_quarterlyEarnings = quarterlyEarnings[0]
-                for key in first_quarterlyEarnings:
-                    result[f'quarterly_{key}'] = first_quarterlyEarnings[key]
-
-                result.pop('quarterlyEarnings')
-
-        return result
-
-    def get_earnings(self, event=None, context=None):
         if event.get("datatype") == "csv":
             raise ValueError("Earnings or Latest Earnings does not support csv datatype")
-        event["function"] = "EARNINGS"
-        params = {
+        defaults = {
             "function": "EARNINGS",
-            "symbol": event["symbol"],
             "datatype": "json"
         }
-        return self.get_data_from_alpha_vantage(params)
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request)
+        self.__transform_fields__(json_response)
+
+        return AccountingReport.parse_obj(json_response)
 
     def get_company_overview(self, event=None, context=None):
         '''
 
         :param event:
         :param context:
-        :return:
+        :return: CompanyOverview
+        :rtype: CompanyOverview
         '''
         if event.get("datatype") == "csv":
             raise ValueError("CSV Datatype is not supported for this function")
-        params = {
-            "function": "OVERVIEW",
-            "symbol": event["symbol"]
+        defaults = {
+            "function": "OVERVIEW"
         }
-        return self.get_data_from_alpha_vantage(params)
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request)
+
+        return CompanyOverview.parse_obj(json_response)
 
     def __build_url_from_args__(self, event):
         url = f'https://www.alphavantage.co/query?'
@@ -234,12 +165,77 @@ class AlphavantageClient:
         url = url[:-1]
         return url
 
-    def inject_default_values(self, event):
+    def __inject_default_values__(self, event):
         if "datatype" not in event:
             event["datatype"] = "json"
 
+    def get_crypto_intraday(self, event, context=None):
+        '''
+
+        :param event:
+        :param context:
+        :return: IntraDayQuote
+        :rtype: Quote
+        '''
+        defaults = {
+            "function": "CRYPTO_INTRADAY",
+            "interval": "5min",
+            "market": "USD",
+            "outputsize": "compact"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request)
+        self.__transform_fields__(json_response)
+
+        return Quote.parse_obj(json_response)
+
+    def get_real_gdp(self, event, context=None):
+        '''
+
+        :param event:
+        :param context:
+        :return: RealGDP
+        :rtype: RealGDP
+        '''
+        defaults = {
+            "function": "REAL_GDP",
+            "interval": "annual",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request)
+        self.__transform_fields__(json_response)
+
+        return RealGDP.parse_obj(json_response)
+
+    def get_technical_indicator(self, event, context=None):
+        '''
+        Default technical indicator is SMA. You can change this by passing in function=[your indicator]
+        :param event:
+        :param context:
+        :return: IntraDayQuote
+        :rtype: Quote
+        '''
+        defaults = {
+            "function": "SMA",
+            "interval": "monthly",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request)
+        json_response["indicator"] = event.get("function")
+        self.__transform_fields__(json_response)
+
+        return Quote.parse_obj(json_response)
+
     def get_data_from_alpha_vantage(self, event, context=None):
-        self.inject_default_values(event)
+        '''
+        You can query any data from alpha vantage
+        :param event: The params from alpha vantage documentation
+        :param context:
+        :return: dict of return values
+        :rtype: dict
+        '''
         checks = ValidationRuleChecks().from_customer_request(event)
         # get api key if not provided
         if checks.expect_api_key_in_event().failed():
@@ -275,3 +271,24 @@ class AlphavantageClient:
             requested_data['symbol'] = event['symbol']
 
         return requested_data
+
+    def __transform_fields__(self, json_response):
+        # this is the same as `alias_generator = to_camel` above
+        new_json_response = copy.deepcopy(json_response)
+        for field_name in new_json_response:
+            new_field_name = field_name
+            if field_name.startswith("Time Series ("):
+                new_field_name = "data"
+            elif field_name.startswith('Time Series Crypto ('):
+                new_field_name = "data"
+            elif "Global Quote" == field_name:
+                new_field_name = "data"
+            elif "annualEarnings" == field_name:
+                new_field_name = "annualReports"
+            elif "quarterlyEarnings" == field_name:
+                new_field_name = "quarterlyReports"
+            elif field_name.startswith("Technical Analysis: "):
+                new_field_name = "data"
+            if new_field_name != field_name:
+                json_response[new_field_name] = json_response[field_name]
+                json_response.pop(field_name)
