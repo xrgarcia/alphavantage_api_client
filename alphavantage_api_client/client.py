@@ -102,7 +102,7 @@ class AlphavantageClient:
 
         return Quote.parse_obj(json_response)
 
-    def get_intraday_quote(self, event, context=None):
+    def get_intraday_quote(self, event):
         '''
         Time Servies Intraday function from Alpha Vantage
         :param event:
@@ -119,7 +119,7 @@ class AlphavantageClient:
         self.__transform_fields__(json_response)
         return Quote.parse_obj(json_response)
 
-    def get_income_statement(self, event=None, context=None):
+    def get_income_statement(self, event=None):
         '''
 
         :param event:
@@ -139,7 +139,7 @@ class AlphavantageClient:
 
         return AccountingReport.parse_obj(json_response)
 
-    def get_cash_flow(self, event=None, context=None):
+    def get_cash_flow(self, event=None):
         '''
 
         :param event:
@@ -159,7 +159,7 @@ class AlphavantageClient:
 
         return AccountingReport.parse_obj(json_response)
 
-    def get_earnings(self, event=None, context=None):
+    def get_earnings(self, event=None):
         '''
 
         :param event:
@@ -179,7 +179,7 @@ class AlphavantageClient:
 
         return AccountingReport.parse_obj(json_response)
 
-    def get_company_overview(self, event=None, context=None):
+    def get_company_overview(self, event=None):
         '''
 
         :param event:
@@ -197,7 +197,7 @@ class AlphavantageClient:
 
         return CompanyOverview.parse_obj(json_response)
 
-    def get_crypto_intraday(self, event, context=None):
+    def get_crypto_intraday(self, event):
         '''
 
         :param event:
@@ -217,7 +217,7 @@ class AlphavantageClient:
 
         return Quote.parse_obj(json_response)
 
-    def get_real_gdp(self, event, context=None):
+    def get_real_gdp(self, event):
         '''
 
         :param event:
@@ -236,7 +236,7 @@ class AlphavantageClient:
 
         return RealGDP.parse_obj(json_response)
 
-    def get_technical_indicator(self, event, context=None):
+    def get_technical_indicator(self, event):
         '''
         Default technical indicator is SMA. You can change this by passing in function=[your indicator]
         :param event:
@@ -256,7 +256,7 @@ class AlphavantageClient:
 
         return Quote.parse_obj(json_response)
 
-    def get_data_from_alpha_vantage(self, event, context=None):
+    def get_data_from_alpha_vantage(self, event):
         '''
         You can query any data from alpha vantage
         :param event: The params from alpha vantage documentation
