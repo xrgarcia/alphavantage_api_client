@@ -4,33 +4,18 @@ import json
 
 
 @pytest.mark.unit
-def test_quote_latest_stock_price():
+def test_get_intraday_quote():
     client = MockAlphavantageClient()
     event = {
-        "symbol": "ibm"
+        "symbol": "ibm",
+        "interval": "5min"
     }
-    results = client.get_latest_stock_price(event)
-
+    results = client.get_intraday_quote(event)
     assert results.success, "Success field is missing or False"
     assert not results.limit_reached, "Limit reached is true but not hitting API"
-    assert results.symbol is event["symbol"], "Symbol from results don't match event"
-    assert len(results.data), "Global Quote field is missing values"
-
-    print(f"Successfully tested get_latest_stock_price for {event['symbol']}")
-
-
-@pytest.mark.unit
-def test_quote_stock_price():
-    client = MockAlphavantageClient()
-    event = {
-        "symbol": "ibm"
-    }
-    results = client.get_stock_price(event)
-    assert results.get("success"), "Success field is missing or False"
-    assert not results.get("limit_reached"), "Limit reached is true but not hitting API"
-    assert results["symbol"] == event["symbol"], "Symbol from results don't match event"
-    assert len(results["Meta Data"]) > 0, "Meta Data field is zero or not present"
-    assert len(results["Time Series (5min)"]) > 0, "Time Series (5min) field is zero or not present"
+    assert results.symbol == event["symbol"], "Symbol from results don't match event"
+    assert len(results.meta_data) > 0, "Meta Data field is zero or not present"
+    assert len(results.data) > 0, "Time Series (5min) field is zero or not present"
     print(f"Successfully tested test_quote_stock_price for {event['symbol']}")
 
 
@@ -40,12 +25,12 @@ def test_get_cash_flow():
     event = {
         "symbol": "ibm"
     }
-    results = client.get_cash_flow(event)
-    assert results.get("success"), "Success field is missing or False"
-    assert not results.get("limit_reached"), "Limit reached is true but not hitting API"
-    assert results["symbol"] == event["symbol"], "Symbol from results don't match event"
-    assert len(results["annualReports"]) > 0, "annualReports field is zero or not present"
-    assert len(results["quarterlyReports"]) > 0, "quarterlyReports field is zero or not present"
+    accounting_report = client.get_cash_flow(event)
+    assert accounting_report.success, "Success field is missing or False"
+    assert not accounting_report.limit_reached, "Limit reached is true but not hitting API"
+    assert accounting_report.symbol == event["symbol"], "Symbol from results don't match event"
+    assert len(accounting_report.annualReports) > 0, "annualReports field is zero or not present"
+    assert len(accounting_report.quarterlyReports) > 0, "quarterlyReports field is zero or not present"
     print(f"Successfully tested test_get_cash_flow for {event['symbol']}")
 
 
@@ -53,14 +38,14 @@ def test_get_cash_flow():
 def test_company_overview():
     client = MockAlphavantageClient()
     event = {
-        "symbol": "ibm"
+        "symbol": "IBM"
     }
-    results = client.get_company_overview(event)
-    assert results.get("success"), "Success field is missing or False"
-    assert not results.get("limit_reached"), "Limit reached is true but not hitting API"
-    assert results["symbol"] == event["symbol"], "Symbol from results don't match event"
-    assert len(results["ExDividendDate"]), "ExDividendDate is missing or empty or None"
-    assert len(results["Name"]), "Name field is missing or empty or None"
+    company_overview = client.get_company_overview(event)
+    assert company_overview.success, "Success field is missing or False"
+    assert not company_overview.limit_reached, "Limit reached is true but not hitting API"
+    assert company_overview.symbol == event["symbol"], "Symbol from results don't match event"
+    assert len(company_overview.ex_dividend_date), "ExDividendDate is missing or empty or None"
+    assert len(company_overview.analyst_target_price), "analyst_target_price field is missing or empty or None"
     print(f"Successfully tested test_company_overview for {event['symbol']}")
 
 
@@ -72,10 +57,12 @@ def test_quote_crypto():
         "function": "CRYPTO_INTRADAY",
         "outputsize": "full"
     }
-    results = client.get_data_from_alpha_vantage(event)
-    assert results.get("success"), "Success field is missing or False"
-    assert not results.get("limit_reached"), "Limit reached is true but not hitting API"
-    assert results["symbol"] == event["symbol"], "Symbol from results don't match event"
+    intraday_quote = client.get_crypto_intraday(event)
+    assert intraday_quote.success, "Success field is missing or False"
+    assert not intraday_quote.limit_reached, "Limit reached is true but not hitting API"
+    assert intraday_quote.symbol == event["symbol"], "Symbol from results don't match event"
+    assert len(intraday_quote.data), "data{} is empty but it should contain properties"
+    assert len(intraday_quote.meta_data), "meta_data{} is empty but it should contain properties"
     print(f"Successfully tested test_quote_crypto for {event['symbol']}")
 
 
@@ -85,12 +72,12 @@ def test_query_earnings():
     event = {
         "symbol": "ibm"
     }
-    results = client.get_earnings(event)
-    assert results.get("success"), "Success field is missing or False"
-    assert not results.get("limit_reached"), "Limit reached is true but not hitting API"
-    assert results["symbol"] == event["symbol"], "Symbol from results don't match event"
-    assert len(results["annualEarnings"]), "annualEarnings field is missing, empty or None"
-    assert len(results["quarterlyEarnings"]), "quarterlyEarnings field is missing, empty or None"
+    accounting_report = client.get_earnings(event)
+    assert accounting_report.success, "Success field is missing or False"
+    assert not accounting_report.limit_reached, "Limit reached is true but not hitting API"
+    assert accounting_report.symbol == event["symbol"], "Symbol from results don't match event"
+    assert len(accounting_report.annualReports), "annualEarnings[] field is missing, empty or None"
+    assert len(accounting_report.quarterlyReports), "quarterlyEarnings[] field is missing, empty or None"
     print(f"Successfully tested test_query_earnings for {event['symbol']}")
 
 
@@ -98,14 +85,14 @@ def test_query_earnings():
 def test_query_income_statement():
     client = MockAlphavantageClient()
     event = {
-        "symbol": "ibm"
+        "symbol": "IBM"
     }
-    results = client.get_income_statement_for_symbol(event)
-    assert results.get("success"), "Success field is missing or False"
-    assert not results.get("limit_reached"), "Limit reached is true but not hitting API"
-    assert results["symbol"] == event["symbol"], "Symbol from results don't match event"
-    assert len(results["annualReports"]), "annualReports field is missing, empty or None"
-    assert len(results["quarterlyReports"]), "quarterlyReports field is missing, empty or None"
+    accounting_report = client.get_income_statement(event)
+    assert accounting_report.success, "Success field is missing or False"
+    assert not accounting_report.limit_reached, "Limit reached is true but not hitting API"
+    assert accounting_report.symbol == event["symbol"], "Symbol from results don't match event"
+    assert len(accounting_report.annualReports), "annualReports field is missing, empty or None"
+    assert len(accounting_report.quarterlyReports), "quarterlyReports field is missing, empty or None"
     print(f"Successfully tested test_query_income_statement for {event['symbol']}")
 
 
@@ -116,11 +103,11 @@ def test_query_real_gdp():
         "function": "REAL_GDP",
 
     }
-    results = client.get_data_from_alpha_vantage(event)
-    assert results.get("success"), "Success field is missing or False"
-    assert not results.get("limit_reached"), "Limit reached is true but not hitting API"
-    assert len(results["unit"]), "unit field is missing, empty or None"
-    assert len(results["data"]), "data field is missing, empty or None"
+    real_gdp = client.get_real_gdp(event)
+    assert real_gdp.success, "Success field is missing or False"
+    assert not real_gdp.limit_reached, "Limit reached is true but not hitting API"
+    assert len(real_gdp.unit), "unit field is missing, empty or None"
+    assert len(real_gdp.data), "data field is missing, empty or None"
     print(f"Successfully tested test_query_real_gdp")
 
 
@@ -129,12 +116,22 @@ def test_query_technical_indicator_sma():
     client = MockAlphavantageClient()
     event = {
         "symbol": "ibm",
-        "function" : "SMA"
+        "function": "SMA"
     }
-    results = client.get_data_from_alpha_vantage(event)
-    assert results.get("success"), "Success field is missing or False"
-    assert not results.get("limit_reached"), "Limit reached is true but not hitting API"
-    assert results["symbol"] == event["symbol"], "Symbol from results don't match event"
-    assert len(results["Meta Data"]), "Meta Data field is missing, empty or None"
-    assert len(results["Technical Analysis: SMA"]), "Technical Analysis: SMA field is missing, empty or None"
+    quote = client.get_technical_indicator(event)
+    assert quote.success, "Success field is missing or False"
+    assert not quote.limit_reached, "Limit reached is true but not hitting API"
+    assert quote.symbol == event["symbol"], "Symbol from results don't match event"
+    assert len(quote.meta_data), "Meta Data field is missing, empty or None"
+    assert len(quote.data), "Technical Analysis: SMA field is missing, empty or None"
     print(f"Successfully tested test_query_technical_indicator_sma for {event['symbol']}")
+
+
+@pytest.mark.unit
+def test_can_convert_to_json_string():
+    event = {
+        "symbol": "tsla"
+    }
+    client = MockAlphavantageClient()
+    quote = client.get_global_quote(event)
+    print(quote.json())

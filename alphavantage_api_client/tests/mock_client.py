@@ -12,7 +12,6 @@ class MockAlphavantageClient(AlphavantageClient):
         self.base_path = f"{path}/tests/mocks"
         if not exists(self.base_path):
             self.base_path = f"{path}/alphavantage_api_client/tests/mocks"
-        print(f"mock file directory: {self.base_path}")
 
     def get_data_from_alpha_vantage(self, event, context=None):
         if event is None:
@@ -39,6 +38,8 @@ class MockAlphavantageClient(AlphavantageClient):
             text_file = open(f"{self.base_path}/mock_technical_indicator_sma_equity.json", "r")
         elif event.get("function") == "TIME_SERIES_DAILY" and event.get("outputsize") == "compact":
             text_file = open(f"{self.base_path}/mock_stock_price_full.json", "r")
+        elif event.get("function") == "TIME_SERIES_INTRADAY" and event.get("interval") == "5min":
+            text_file = open(f"{self.base_path}/mock_intraday_series_quote.json", "r")
         else:
             raise ValueError(f"We don't have a mock data file for your request {json.dumps(event)}")
 

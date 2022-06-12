@@ -21,62 +21,65 @@ def teardown_module(module):
     pass
 
 
-def quoteLatestPrice(success_criteria=True, event=None):
-    assert event != None
-    client = AlphavantageClient()
-
-    results = client.get_global_quote(event)
-    assert results.success == success_criteria, f"success was found to be {results.success}: {results.error_message}"
-    assert results.symbol == event.get("symbol"), "Response symbol doesn't matched requested symbol"
-    assert not results.limit_reached, f"{results.error_message}"
-
-    # free api key is only allow 5 calls per min, so need to make sure i don't have a dependency on function order AND
-    # I can have as many functions with the same key.
-    time.sleep(20)
-    return results
-
-
 @pytest.mark.integration
-def test_canQuoteStockSymbolJson():
+def test_can_get_global_quote_json():
     event = {
         "symbol": "tsla"
     }
-    results = quoteLatestPrice(True, event)
-    assert len(results.data) > 0, "Response should have data but contains zero"
+    client = AlphavantageClient()
+
+    global_quote = client.get_global_quote(event)
+    assert global_quote.success, f"success was found to be {global_quote.success}: {global_quote.error_message}"
+    assert global_quote.symbol == event.get("symbol"), "Response symbol doesn't matched requested symbol"
+    assert not global_quote.limit_reached, f"{global_quote.error_message}"
+    assert len(global_quote.data) > 0, "Response should have data but contains zero"
     print(f"Can quote stock symbol in JSON {event.get('symbol', None)}")
+    time.sleep(20)
 
 
 @pytest.mark.integration
-def test_canQuoteStockSymbolCsv():
+def test_can_get_global_quote_csv():
     event = {
         "symbol": "tsla",
         "datatype": "csv"
     }
-    latest_stock_price = quoteLatestPrice(True, event)
-    assert latest_stock_price.csv, "CSV field was not found "
-    assert len(latest_stock_price.csv), "Csv return value has no data"
+    client = AlphavantageClient()
+    global_quote = client.get_global_quote(event)
+    assert global_quote.success, f"success was found to be {global_quote.success}: {global_quote.error_message}"
+    assert global_quote.symbol == event.get("symbol"), "Response symbol doesn't matched requested symbol"
+    assert not global_quote.limit_reached, f"{global_quote.error_message}"
+    assert len(global_quote.csv) > 0, "Response should have data but contains zero"
     print(f"Can quote stock symbol in CSV {event.get('symbol', None)}")
-
+    time.sleep(20)
 
 @pytest.mark.integration
-def test_canNotQuoteWrongSymbolJson():
+def test_canNotGlobalQuoteWrongSymbolJson():
     event = {
         "symbol": "tsla2323"
     }
-    results = quoteLatestPrice(False, event)
-    print(results)
-    assert len(results.data) == 0, "Response should not have data but contains zero"
+    client = AlphavantageClient()
+    global_quote = client.get_global_quote(event)
+    assert not global_quote.success, f"success was found to be {global_quote.success}: {global_quote.error_message}"
+    assert global_quote.symbol == event.get("symbol"), "Response symbol doesn't matched requested symbol"
+    assert not global_quote.limit_reached, f"{global_quote.error_message}"
+    assert not  len(global_quote.data), "Response should have data but contains zero"
     print(f"Can NOT quote stock symbol in JSON {event.get('symbol', None)}")
-
+    time.sleep(20)
 
 @pytest.mark.integration
-def test_canNotQuoteWrongSymbolCsv():
+def test_canNotGlobalQuoteWrongSymbolCsv():
     event = {
         "symbol": "tsla2233",
         "datatype": "csv"
     }
-    results = quoteLatestPrice(False, event)
-    print(f"Can NOT quote stock symbol in csv {event.get('symbol', None)} : {results.error_message}")
+    client = AlphavantageClient()
+    global_quote = client.get_global_quote(event)
+    assert not global_quote.success, f"success was found to be {global_quote.success}: {global_quote.error_message}"
+    assert global_quote.symbol == event.get("symbol"), "Response symbol doesn't matched requested symbol"
+    assert not global_quote.limit_reached, f"{global_quote.error_message}"
+    assert global_quote.csv is None, "Response should have data but contains zero"
+    print(f"Can NOT quote stock symbol in csv {event.get('symbol', None)} : {global_quote.error_message}")
+    time.sleep(20)
 
 
 @pytest.mark.integration
@@ -128,7 +131,22 @@ def test_canReachLimitCsv():
 
 
 @pytest.mark.integration
-def test_canQuoteEthJson():
+def test_can_quote_intraday():
+    event = {
+        "symbol": "TSLA",
+        "interval": "5min"
+    }
+    client = AlphavantageClient()
+    intra_day_quote = client.get_intraday_quote(event)
+    assert not intra_day_quote.limit_reached, f"limit_reached should not be true {intra_day_quote.error_message}"
+    assert intra_day_quote.success, f"success is false {intra_day_quote.error_message}"
+    assert len(intra_day_quote.data), f"Did not return data for this symbol {intra_day_quote.symbol}"
+    print(f"Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
+    time.sleep(20)
+
+
+@pytest.mark.integration
+def test_can_quote_crypto():
     event = {
         "function": "CRYPTO_INTRADAY",
         "symbol": "ETH",
@@ -137,15 +155,15 @@ def test_canQuoteEthJson():
     }
     client = AlphavantageClient()
     results = client.get_crypto_intraday(event)
-    print(results)
     assert not results.limit_reached, f"limit_reached should not be true {results.error_message}"
     assert results.success, f"success is false {results.error_message}"
+    assert len(results.data), "Data{} property is empty but should have information"
     print(f"Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
     time.sleep(20)
 
 
 @pytest.mark.integration
-def test_canQuoteEthCsv():
+def test_can_quote_crypto_csv():
     event = {
         "function": "CRYPTO_INTRADAY",
         "symbol": "ETH",
@@ -154,54 +172,47 @@ def test_canQuoteEthCsv():
         "datatype": "csv"
     }
     client = AlphavantageClient()
-    results = client.get_data_from_alpha_vantage(event)
-    assert "limit_reached" in results, "limit_reached is not present in results"
-    assert results.get("limit_reached", None) == False, f'{results.get("Error Message", None)}'
-    assert "success" in results and results.get("success",
-                                                None) is True, f"Failed to receive a quote for {event.get('symbol', None)}"
-    assert results.get("csv"), "Csv field is not present"
-    assert len(results.get("csv")), "Csv return value has no data"
+    results = client.get_crypto_intraday(event)
+    assert not results.limit_reached, f"limit_reached should not be true {results.error_message}"
+    assert results.success, f"success is false {results.error_message}"
+    assert len(results.csv), "Data{} property is empty but should have information"
     print(f"Successfully quoted cryptocurrency symbol {event['symbol']} in CSV")
     time.sleep(20)
 
 
 @pytest.mark.integration
-def test_canQuoteRealGDPJson():
+def test_can_quote_real_gdp():
     event = {
         "function": "REAL_GDP",
         "interval": "annual"
     }
     client = AlphavantageClient()
-    results = client.get_data_from_alpha_vantage(event)
-    assert "limit_reached" in results, "limit_reached is not present in results"
-    assert results.get("limit_reached", None) is False, f'{results.get("Error Message", None)}'
-    assert results.get('success', False) == True, \
-        "Success flag not present or equal to false when quoting real GDP"
+    real_gdp = client.get_real_gdp(event)
+    assert not real_gdp.limit_reached, f"limit_reached is not present in results {real_gdp.error_message}"
+    assert real_gdp.success, f"Success=False but expected true  {real_gdp.error_message}"
+    assert len(real_gdp.data), "Data{} is empty but expected results"
     print("Can quote Real GDP")
     time.sleep(20)
 
-
 @pytest.mark.integration
-def test_canQuoteRealGDPCsv():
+def test_can_quote_real_csv():
     event = {
         "function": "REAL_GDP",
         "interval": "annual",
         "datatype": "csv"
     }
     client = AlphavantageClient()
-    results = client.get_data_from_alpha_vantage(event)
-    assert "limit_reached" in results, "limit_reached is not present in results"
-    assert results.get("limit_reached", None) == False, f'{results.get("Error Message", None)}'
-    assert "success" in results and results.get(
-        'success', None) == True, "Success flag not present or equal to false when quoting real GDP"
-    assert results.get("csv"), "Csv field is not present"
-    assert len(results.get("csv")), "Csv return value has no data"
+    real_gdp = client.get_real_gdp(event)
+    assert not real_gdp.limit_reached, f"limit_reached is not present in results {real_gdp.error_message}"
+    assert real_gdp.success, f"Success=False but expected true  {real_gdp.error_message}"
+    assert real_gdp.data is None, "Data{} is empty but expected results"
+    assert len(real_gdp.csv), "CSV data is not present"
     print("Can quote Real GDP")
     time.sleep(20)
 
 
 @pytest.mark.integration
-def test_canQuoteTechnicalIndicatorJson():
+def test_can_quote_technical_indicator():
     event = {
         "function": "EMA",
         "symbol": "IBM",
@@ -210,17 +221,15 @@ def test_canQuoteTechnicalIndicatorJson():
         "series_type": "open"
     }
     client = AlphavantageClient()
-    results = client.get_data_from_alpha_vantage(event)
-    assert "limit_reached" in results, "limit_reached is not present in results"
-    assert results.get("limit_reached", None) is False, f'{results.get("Error Message", None)}'
-    assert "success" in results and results.get(
-        'success', None) == True, "Success flag not present or equal to false when quoting IBM EMA technical indicator"
+    technical_indicator = client.get_technical_indicator(event)
+    assert not technical_indicator.limit_reached, f"limit_reached is True {technical_indicator.error_message}"
+    assert technical_indicator.success, f"Success is False {technical_indicator.error_message}"
     print("Can quote IBM EMA technical indicator")
     time.sleep(20)
 
 
 @pytest.mark.integration
-def test_canQuoteTechnicalIndicatorCsv():
+def test_can_quote_technical_indicator_csv():
     event = {
         "function": "EMA",
         "symbol": "IBM",
@@ -230,44 +239,31 @@ def test_canQuoteTechnicalIndicatorCsv():
         "datatype": "csv"
     }
     client = AlphavantageClient()
-    results = client.get_data_from_alpha_vantage(event)
-    assert "limit_reached" in results, "limit_reached is not present in results"
-    assert results.get("limit_reached", None) is False, f'{results.get("Error Message", None)}'
-    assert "success" in results and results.get(
-        'success', None) == True, "Success flag not present or equal to false when quoting IBM EMA technical indicator"
-    assert results.get("csv"), "Csv field is not present"
-    assert len(results.get("csv")), "Csv return value has no data"
-
+    technical_indicator = client.get_technical_indicator(event)
+    assert not technical_indicator.limit_reached, f"limit_reached is True {technical_indicator.error_message}"
+    assert technical_indicator.success, f"Success is False {technical_indicator.error_message}"
+    assert len(technical_indicator.csv), "Csv field is empty"
     print("Can quote IBM EMA technical indicator")
     time.sleep(20)
 
 
 @pytest.mark.integration
-def test_canQueryCompanyOverviewJson():
+def test_can_query_company_overview():
     client = AlphavantageClient()
     event = {
-        "symbol": "tsla"
+        "symbol": "TSLA"
     }
 
-    try:
-        results = client.get_company_overview(event)
-    except ValueError as error:
-        assert error == None, error
-    assert len(results) > 0, "Response should have fields but contains zero"
-    assert results.get(
-        'success',
-        None) == True, f"success was found to be false: {results.get('Error Message', None)}"
-    assert "symbol" in results, "Symbol field not present in response"
-    assert "limit_reached" in results, "limit_reached is not present in results"
-    assert results.get("limit_reached", None) is False, f'{results.get("Error Message", None)}'
-    assert results.get("symbol", None) == event.get("symbol",
-                                                    None), f"Symbol {results.get('symbol', None)} is not equal to {event.get('symbol', None)}"
+    company_overview = client.get_company_overview(event)
+    assert company_overview.success, f"Unable to get comapny overview {company_overview.error_message}"
+    assert company_overview.symbol == event.get("symbol"), f"Symbols are not equal {company_overview.symbol} : {event.get('symbol')}"
+    assert not company_overview.limit_reached, "unexpected limit_reached"
     print(f"Can query company overview {event.get('symbol', None)}")
     time.sleep(20)
 
 
 @pytest.mark.integration
-def test_canNotQueryCompanyOverviewCsv():
+def test_can_not_query_company_overview():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla",
@@ -285,31 +281,23 @@ def test_canNotQueryCompanyOverviewCsv():
 
 
 @pytest.mark.integration
-def test_canQueryLatestIncomeStatementJson():
+def test_can_query_income_statement():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla"
     }
 
-    try:
-        results = client.get_latest_income_statement_for_symbol(event)
-    except ValueError as error:
-        assert error == None, error
-    assert len(results) > 0, "Response should have fields but contains zero"
-    assert results.get(
-        'success',
-        None) == True, f"success was found to be false: {results.get('Error Message', None)}"
-    assert "symbol" in results, "Symbol field not present in response"
-    assert "limit_reached" in results, "limit_reached is not present in results"
-    assert results.get("limit_reached", None) == False, f'{results.get("Error Message", None)}'
-    assert results.get("symbol", None) == event.get("symbol",
-                                                    None), f"Symbol {results.get('symbol', None)} is not equal to {event.get('symbol', None)}"
+    accounting_report = client.get_income_statement(event)
+    assert accounting_report.success, f"success was found to be false: {accounting_report.error_message}"
+    assert accounting_report.limit_reached == False, f'{accounting_report.error_message}'
+    assert accounting_report.symbol == event.get("symbol", None), f"Symbols don't match " \
+                                                                  f"{accounting_report.symbol} : {event.get('symbol')}"
     print(f"Can query latest income statement {event.get('symbol', None)}")
     time.sleep(20)
 
 
 @pytest.mark.integration
-def test_canQueryLatestIncomeStatementCsv():
+def test_can_not_query_income_statement_csv():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla",
@@ -317,7 +305,7 @@ def test_canQueryLatestIncomeStatementCsv():
     }
 
     try:
-        results = client.get_latest_income_statement_for_symbol(event)
+        results = client.get_income_statement(event)
         assert True == False, "Expected an error because latest income statement doesn't support csv"
     except ValueError as error:
         assert True == True, "Expected an error because latest income statement doesn't support csv"
@@ -327,31 +315,24 @@ def test_canQueryLatestIncomeStatementCsv():
 
 
 @pytest.mark.integration
-def test_canQueryLatestEarningsJson():
+def can_query_earnings():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla"
     }
 
-    try:
-        results = client.get_latest_earnings(event)
-    except ValueError as error:
-        assert error == None, error
-    assert len(results) > 0, "Response should have fields but contains zero"
-    assert results.get(
-        'success',
-        None) == True, f"success was found to be false: {results.get('Error Message', None)}"
-    assert "symbol" in results, "Symbol field not present in response"
-    assert "limit_reached" in results, "limit_reached is not present in results"
-    assert results.get("limit_reached", None) == False, f'{results.get("Error Message", None)}'
-    assert results.get("symbol", None) == event.get("symbol",
-                                                    None), f"Symbol {results.get('symbol', None)} is not equal to {event.get('symbol', None)}"
+    earnings = client.get_earnings(event)
+    assert earnings.success, f"success was found to be false: {earnings.error_message}"
+    assert not earnings.limit_reached, f'{earnings.error_message}'
+    assert len(earnings.quarterlyReports), "quarterlyReports is empty"
+    assert len(earnings.annualReports), "annualReports is empty"
+    assert earnings.symbol == event.get("symbol"), f"Symbols not equal {earnings.symbol} : {event.get('symbol')}"
     print(f"Can query latest earnings {event.get('symbol', None)}")
     time.sleep(20)
 
 
 @pytest.mark.integration
-def test_canNotQueryLatestEarningsCsv():
+def test_can_not_query_earnings():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla",
@@ -359,41 +340,32 @@ def test_canNotQueryLatestEarningsCsv():
     }
 
     try:
-        results = client.get_latest_earnings(event)
-        assert True == False, "Expected an error because test_canQueryIncomeStatementJson doesn't support csv"
+        results = client.get_earnings(event)
+        assert True == False, "Expected an error because get_earnings doesn't support csv"
     except ValueError as error:
-        assert True == True, "Expected an error because earnings doesn't support csv"
+        assert True == True, "Expected an error because get_earnings doesn't support csv"
 
-    print(f"Querying latest earnings as CSV threw error as expected {event.get('symbol', None)}")
+    print(f"Querying earnings as CSV threw error as expected {event.get('symbol', None)}")
     time.sleep(20)
 
 
 @pytest.mark.integration
-def test_canQueryIncomeStatementJson():
+def test_can_query_income_statement():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla"
     }
 
-    try:
-        results = client.get_income_statement_for_symbol(event)
-    except ValueError as error:
-        assert error == None, error
-    assert len(results) > 0, "Response should have fields but contains zero"
-    assert results.get(
-        'success',
-        None) == True, f"success was found to be false: {results.get('Error Message', None)}"
-    assert "symbol" in results, "Symbol field not present in response"
-    assert "limit_reached" in results, "limit_reached is not present in results"
-    assert results.get("limit_reached", None) == False, f'{results.get("Error Message", None)}'
-    assert results.get("symbol", None) == event.get("symbol",
-                                                    None), f"Symbol {results.get('symbol', None)} is not equal to {event.get('symbol', None)}"
+    income = client.get_income_statement(event)
+    assert income.success, f"Unable to get income {income.error_message}"
+    assert income.symbol == event.get("symbol"), f"Symbols are not equal {income.symbol} : {event.get('symbol')}"
+    assert not income.limit_reached, "limit_reached but should not have"
     print(f"Can query income statement {event.get('symbol', None)}")
     time.sleep(20)
 
 
 @pytest.mark.integration
-def test_canNotQueryIncomeStatementCsv():
+def test_can_not_query_income_statement():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla",
@@ -401,7 +373,7 @@ def test_canNotQueryIncomeStatementCsv():
     }
 
     try:
-        results = client.get_income_statement_for_symbol(event)
+        results = client.get_income_statement(event)
         assert True == False, "Expected an error because income statement doesn't support csv"
     except ValueError as error:
         assert True == True, "Expected an error because income statement doesn't support csv"
@@ -411,31 +383,22 @@ def test_canNotQueryIncomeStatementCsv():
 
 
 @pytest.mark.integration
-def test_canQueryEarningsJson():
+def test_can_query_earnings():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla"
     }
 
-    try:
-        results = client.get_earnings(event)
-    except ValueError as error:
-        assert error == None, error
-    assert len(results) > 0, "Response should have fields but contains zero"
-    assert results.get(
-        'success',
-        None) == True, f"success was found to be false: {results.get('Error Message', None)}"
-    assert "symbol" in results, "Symbol field not present in response"
-    assert "limit_reached" in results, "limit_reached is not present in results"
-    assert results.get("limit_reached", None) == False, f'{results.get("Error Message", None)}'
-    assert results.get("symbol", None) == event.get("symbol",
-                                                    None), f"Symbol {results.get('symbol', None)} is not equal to {event.get('symbol', None)}"
+    earnings = client.get_earnings(event)
+    assert earnings.success, f"success was found to be false: {earnings.error_message}"
+    assert not earnings.limit_reached, f"limit_reached is not present in results {earnings.error_message}"
+    assert earnings.symbol == event.get("symbol"), f"Symbols not equal {earnings.symbol} : {event.get('symbol')}"
     print(f"Can query earnings {event.get('symbol', None)}")
     time.sleep(20)
 
 
 @pytest.mark.integration
-def test_canNotQueryEarningsCsv():
+def test_can_not_query_earnings_csv():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla",
@@ -453,31 +416,24 @@ def test_canNotQueryEarningsCsv():
 
 
 @pytest.mark.integration
-def test_canQueryLatestCashFlowJson():
+def test_can_query_cash_flow():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla"
     }
 
-    try:
-        results = client.get_latest_cash_flow(event)
-    except ValueError as error:
-        assert error == None, error
-    assert len(results) > 0, "Response should have fields but contains zero"
-    assert results.get(
-        'success',
-        None) == True, f"success was found to be false: {results.get('Error Message', None)}"
-    assert "symbol" in results, "Symbol field not present in response"
-    assert "limit_reached" in results, "limit_reached is not present in results"
-    assert results.get("limit_reached", None) == False, f'{results.get("Error Message", None)}'
-    assert results.get("symbol", None) == event.get("symbol",
-                                                    None), f"Symbol {results.get('symbol', None)} is not equal to {event.get('symbol', None)}"
+    cash_flow = client.get_cash_flow(event)
+    assert cash_flow.success, f"success was found to be false: {cash_flow.error_message}"
+    assert not cash_flow.limit_reached, f"limit_reached is true {cash_flow.error_message}"
+    assert cash_flow.symbol == event.get("symbol"), f"Symbols do not match {cash_flow.symbol} : {event.get('symbol')}"
+    assert len(cash_flow.annualReports), "annualReports is empty"
+    assert len(cash_flow.quarterlyReports), "quarterlyReports are empty"
     print(f"Can query latest cash flow {event.get('symbol', None)}")
     time.sleep(20)
 
 
 @pytest.mark.integration
-def test_canNotQueryLatestCashFlowCsv():
+def test_can_not_query_cash_flow_csv():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla",
@@ -485,52 +441,10 @@ def test_canNotQueryLatestCashFlowCsv():
     }
 
     try:
-        results = client.get_latest_cash_flow(event)
+        results = client.get_cash_flow(event)
         assert True == False, "Expected an error because latest cash flow doesn't support csv"
     except ValueError as error:
         assert True == True, "Expected an error because latest cash flow doesn't support csv"
 
     print(f"Querying latest cash flow as CSV threw error as expected {event.get('symbol', None)}")
-    time.sleep(20)
-
-
-@pytest.mark.integration
-def test_canQueryCashFlowJson():
-    client = AlphavantageClient()
-    event = {
-        "symbol": "tsla"
-    }
-
-    try:
-        results = client.get_cash_flow(event)
-    except ValueError as error:
-        assert error == None, error
-    assert len(results) > 0, "Response should have fields but contains zero"
-    assert results.get(
-        'success',
-        None) == True, f"success was found to be false: {results.get('Error Message', None)}"
-    assert "symbol" in results, "Symbol field not present in response"
-    assert "limit_reached" in results, "limit_reached is not present in results"
-    assert results.get("limit_reached", None) == False, f'{results.get("Error Message", None)}'
-    assert results.get("symbol", None) == event.get("symbol",
-                                                    None), f"Symbol {results.get('symbol', None)} is not equal to {event.get('symbol', None)}"
-    print(f"Can query cash flow {event.get('symbol', None)}")
-    time.sleep(20)
-
-
-@pytest.mark.integration
-def test_canNotQueryCashFlowCsv():
-    client = AlphavantageClient()
-    event = {
-        "symbol": "tsla",
-        "datatype": "csv"
-    }
-
-    try:
-        results = client.get_cash_flow(event)
-        assert True == False, "Expected an error because cash flow doesn't support csv"
-    except ValueError as error:
-        assert True == True, "Expected an error because cash flow doesn't support csv"
-
-    print(f"Querying cash flow as CSV threw error as expected {event.get('symbol', None)}")
     time.sleep(20)
