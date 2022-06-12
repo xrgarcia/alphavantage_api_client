@@ -129,3 +129,6 @@ dmypy.json
 .pyre/
 
 .idea/
+
+# pip requirements files because we are using poetry
+requirements.txt
