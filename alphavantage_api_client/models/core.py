@@ -2,6 +2,13 @@ from pydantic import BaseModel, Field
 from typing import Optional
 
 
+class CsvNotSupported(Exception):
+    def __init__(self, function: str, event: dict):
+        self.message = f"CSV Datatype is not supported by this function {function}"
+        self.event = event
+        super().__init__(self.message)
+
+
 class BaseResponse(BaseModel):
     success: bool
     limit_reached: bool
