@@ -3,6 +3,7 @@ import json
 import os
 import time
 from alphavantage_api_client import AlphavantageClient
+from alphavantage_api_client.models.core import CsvNotSupported
 
 
 def setup_function(function):
@@ -273,7 +274,7 @@ def test_can_not_query_company_overview():
     try:
         results = client.get_company_overview(event)
         assert True == False, "Expected an error because company overview doesn't support csv"
-    except ValueError as error:
+    except CsvNotSupported as error:
         assert True == True, "Expected an error because company overview doesn't support csv"
 
     print(f"Querying Company Overview as CSV threw error as expected {event.get('symbol', None)}")
@@ -307,7 +308,7 @@ def test_can_not_query_income_statement_csv():
     try:
         results = client.get_income_statement(event)
         assert True == False, "Expected an error because latest income statement doesn't support csv"
-    except ValueError as error:
+    except CsvNotSupported as error:
         assert True == True, "Expected an error because latest income statement doesn't support csv"
 
     print(f"Querying latest income statement as CSV threw error as expected {event.get('symbol', None)}")
@@ -342,7 +343,7 @@ def test_can_not_query_earnings():
     try:
         results = client.get_earnings(event)
         assert True == False, "Expected an error because get_earnings doesn't support csv"
-    except ValueError as error:
+    except CsvNotSupported as error:
         assert True == True, "Expected an error because get_earnings doesn't support csv"
 
     print(f"Querying earnings as CSV threw error as expected {event.get('symbol', None)}")
@@ -375,7 +376,7 @@ def test_can_not_query_income_statement():
     try:
         results = client.get_income_statement(event)
         assert True == False, "Expected an error because income statement doesn't support csv"
-    except ValueError as error:
+    except CsvNotSupported as error:
         assert True == True, "Expected an error because income statement doesn't support csv"
 
     print(f"Querying income statement as CSV threw error as expected {event.get('symbol', None)}")
@@ -408,7 +409,7 @@ def test_can_not_query_earnings_csv():
     try:
         results = client.get_earnings(event)
         assert True == False, "Expected an error because earnings doesn't support csv"
-    except ValueError as error:
+    except CsvNotSupported as error:
         assert True == True, "Expected an error because earnings doesn't support csv"
 
     print(f"Querying earnings as CSV threw error as expected {event.get('symbol', None)}")
@@ -443,7 +444,7 @@ def test_can_not_query_cash_flow_csv():
     try:
         results = client.get_cash_flow(event)
         assert True == False, "Expected an error because latest cash flow doesn't support csv"
-    except ValueError as error:
+    except CsvNotSupported as error:
         assert True == True, "Expected an error because latest cash flow doesn't support csv"
 
     print(f"Querying latest cash flow as CSV threw error as expected {event.get('symbol', None)}")

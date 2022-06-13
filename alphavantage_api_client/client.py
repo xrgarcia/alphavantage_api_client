@@ -133,7 +133,7 @@ class AlphavantageClient:
             "datatype": "json"
         }
         if event.get("datatype") == "csv":
-            raise CsvNotSupported(defaults.get("function"))
+            raise CsvNotSupported(defaults.get("function"), event)
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request)
 
@@ -152,7 +152,7 @@ class AlphavantageClient:
             "datatype": "json"
         }
         if event.get("datatype") == "csv":
-            raise CsvNotSupported(defaults.get("function"))
+            raise CsvNotSupported(defaults.get("function"), event)
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request)
         self.__transform_fields__(json_response)
@@ -172,7 +172,7 @@ class AlphavantageClient:
             "datatype": "json"
         }
         if event.get("datatype") == "csv":
-            raise CsvNotSupported(defaults.get("function"))
+            raise CsvNotSupported(defaults.get("function"),event)
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request)
         self.__transform_fields__(json_response)
@@ -191,7 +191,7 @@ class AlphavantageClient:
             "function": "OVERVIEW"
         }
         if event.get("datatype") == "csv":
-            raise CsvNotSupported(defaults.get("function"))
+            raise CsvNotSupported(defaults.get("function"), event)
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request)
 
