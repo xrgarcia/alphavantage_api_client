@@ -14,7 +14,6 @@ class ApiKeyNotFound(Exception):
 
 
 class AlphavantageClient:
-    __api_key__ = ""
 
     def __init__(self):
 
@@ -26,12 +25,13 @@ class AlphavantageClient:
             config.read(alphavantage_config_file_path)
             self.__api_key__ = config['access']['api_key']
             return
-
         # try to get from an environment variable
-        if os.environ.get('ALPHAVANTAGE_API_KEY') != None:
+        elif os.environ.get('ALPHAVANTAGE_API_KEY') is not None:
             self.__api_key__ = os.environ.get('ALPHAVANTAGE_API_KEY')
             # print(f'api key found from environment')
             return
+        else:
+            self.__api_key__ = ""
 
     def __build_url_from_args__(self, event: dict):
         url = f'https://www.alphavantage.co/query?'

@@ -10,12 +10,12 @@ def test_get_intraday_quote():
         "symbol": "ibm",
         "interval": "5min"
     }
-    results = client.get_intraday_quote(event)
-    assert results.success, "Success field is missing or False"
-    assert not results.limit_reached, "Limit reached is true but not hitting API"
-    assert results.symbol == event["symbol"], "Symbol from results don't match event"
-    assert len(results.meta_data) > 0, "Meta Data field is zero or not present"
-    assert len(results.data) > 0, "Data field is zero or not present"
+    intraday_quote = client.get_intraday_quote(event)
+    assert intraday_quote.success, "Success field is missing or False"
+    assert not intraday_quote.limit_reached, "Limit reached is true but not hitting API"
+    assert intraday_quote.symbol == event["symbol"], "Symbol from results don't match event"
+    assert len(intraday_quote.meta_data) > 0, "Meta Data field is zero or not present"
+    assert len(intraday_quote.data) > 0, "Data field is zero or not present"
     print(f"Successfully tested test_quote_stock_price for {event['symbol']}")
 
 @pytest.mark.unit
@@ -29,6 +29,7 @@ def test_get_global_quote():
     assert global_quote.success, "Success field is missing or False"
     assert not global_quote.limit_reached, "Limit reached is true but not hitting API"
     assert global_quote.symbol == event["symbol"], "Symbol from results don't match event"
+    assert "metra_data" not in global_quote, "Metadata should not be present since it's not in the api"
     assert len(global_quote.data) > 0, "Data field is zero or not present"
     print(f"Successfully tested test_quote_stock_price for {event['symbol']}")
 
@@ -147,5 +148,5 @@ def test_can_convert_to_json_string():
         "symbol": "tsla"
     }
     client = MockAlphavantageClient()
-    quote = client.get_global_quote(event)
-    print(quote.json())
+    global_quote = client.get_global_quote(event)
+    print(global_quote.json())
