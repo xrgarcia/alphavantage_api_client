@@ -15,7 +15,21 @@ def test_get_intraday_quote():
     assert not results.limit_reached, "Limit reached is true but not hitting API"
     assert results.symbol == event["symbol"], "Symbol from results don't match event"
     assert len(results.meta_data) > 0, "Meta Data field is zero or not present"
-    assert len(results.data) > 0, "Time Series (5min) field is zero or not present"
+    assert len(results.data) > 0, "Data field is zero or not present"
+    print(f"Successfully tested test_quote_stock_price for {event['symbol']}")
+
+@pytest.mark.unit
+def test_get_global_quote():
+    client = MockAlphavantageClient()
+    event = {
+        "symbol": "ibm",
+        "interval": "5min"
+    }
+    global_quote = client.get_global_quote(event)
+    assert global_quote.success, "Success field is missing or False"
+    assert not global_quote.limit_reached, "Limit reached is true but not hitting API"
+    assert global_quote.symbol == event["symbol"], "Symbol from results don't match event"
+    assert len(global_quote.data) > 0, "Data field is zero or not present"
     print(f"Successfully tested test_quote_stock_price for {event['symbol']}")
 
 

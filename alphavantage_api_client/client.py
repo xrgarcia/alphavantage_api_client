@@ -3,7 +3,7 @@ import os
 import configparser
 from .response_validation_rules import ValidationRuleChecks
 import json
-from .models.core import Quote, AccountingReport, CompanyOverview, RealGDP, CsvNotSupported
+from .models.core import GlobalQuote, Quote, AccountingReport, CompanyOverview, RealGDP, CsvNotSupported
 import copy
 
 
@@ -57,27 +57,6 @@ class AlphavantageClient:
         self.__inject_default_values__(json_request)
         return json_request
 
-    def __transform_fields__(self, json_response):
-        # this is the same as `alias_generator = to_camel` above
-        new_json_response = copy.deepcopy(json_response)
-        for field_name in new_json_response:
-            new_field_name = field_name
-            if field_name.startswith("Time Series ("):
-                new_field_name = "data"
-            elif field_name.startswith('Time Series Crypto ('):
-                new_field_name = "data"
-            elif "Global Quote" == field_name:
-                new_field_name = "data"
-            elif "annualEarnings" == field_name:
-                new_field_name = "annualReports"
-            elif "quarterlyEarnings" == field_name:
-                new_field_name = "quarterlyReports"
-            elif field_name.startswith("Technical Analysis: "):
-                new_field_name = "data"
-            if new_field_name != field_name:
-                json_response[new_field_name] = json_response[field_name]
-                json_response.pop(field_name)
-
     def with_api_key(self, api_key):
         if api_key == None or len(api_key) == 0:
             raise ApiKeyNotFound("API Key is null or empty. Please specify a valid api key")
@@ -90,17 +69,16 @@ class AlphavantageClient:
         Global Quote function from Alpha Vantage
         :param event:
         :param context:
-        :return: IntraDayQuote
-        :rtype: Quote
+        :return: GlobalQuote
+        :rtype: GlobalQuote
         '''
         defaults = {
             "function": "GLOBAL_QUOTE"
         }
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request)
-        self.__transform_fields__(json_response)
 
-        return Quote.parse_obj(json_response)
+        return GlobalQuote.parse_obj(json_response)
 
     def get_intraday_quote(self, event):
         '''
@@ -116,7 +94,7 @@ class AlphavantageClient:
                     "outputsize": "compact"}
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request)
-        self.__transform_fields__(json_response)
+
         return Quote.parse_obj(json_response)
 
     def get_income_statement(self, event=None):
@@ -155,7 +133,6 @@ class AlphavantageClient:
             raise CsvNotSupported(defaults.get("function"), event)
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request)
-        self.__transform_fields__(json_response)
 
         return AccountingReport.parse_obj(json_response)
 
@@ -175,7 +152,6 @@ class AlphavantageClient:
             raise CsvNotSupported(defaults.get("function"),event)
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request)
-        self.__transform_fields__(json_response)
 
         return AccountingReport.parse_obj(json_response)
 
@@ -213,7 +189,6 @@ class AlphavantageClient:
         }
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request)
-        self.__transform_fields__(json_response)
 
         return Quote.parse_obj(json_response)
 
@@ -232,7 +207,6 @@ class AlphavantageClient:
         }
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request)
-        self.__transform_fields__(json_response)
 
         return RealGDP.parse_obj(json_response)
 
@@ -252,7 +226,6 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request)
         json_response["indicator"] = event.get("function")
-        self.__transform_fields__(json_response)
 
         return Quote.parse_obj(json_response)
 
