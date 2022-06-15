@@ -18,6 +18,7 @@ def test_get_intraday_quote():
     assert len(intraday_quote.data) > 0, "Data field is zero or not present"
     print(f"Successfully tested test_quote_stock_price for {event['symbol']}")
 
+
 @pytest.mark.unit
 def test_get_global_quote():
     client = MockAlphavantageClient()
@@ -150,3 +151,16 @@ def test_can_convert_to_json_string():
     client = MockAlphavantageClient()
     global_quote = client.get_global_quote(event)
     print(global_quote.json())
+
+
+@pytest.mark.unit
+def test_can_get_data_from_alpha_vantage():
+    event = {
+        "function": "EMA"
+    }
+    client = MockAlphavantageClient()
+    results = client.get_data_from_alpha_vantage(event)
+    assert type(results) is dict, "Results object should be a dictionary"
+    assert len(results) > 0, "There should be data in the results"
+
+    print("Successfully queried data using get_data_from_alpha_vantage")

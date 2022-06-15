@@ -451,3 +451,17 @@ def test_can_not_query_cash_flow_csv():
 
     print(f" Querying latest cash flow as CSV threw error as expected {event.get('symbol', None)}")
     time.sleep(20)
+
+
+@pytest.mark.unit
+def test_get_data_from_alpha_vantage():
+    event = {
+        "function": "EMA"
+    }
+    client = AlphavantageClient()
+    results = client.get_data_from_alpha_vantage(event)
+    assert type(results) is dict, "Results object should be a dictionary"
+    assert len(results) > 0, "There should be data in the results"
+
+    print("Successfully queried data using get_data_from_alpha_vantage")
+    time.sleep(20)
