@@ -453,7 +453,7 @@ def test_can_not_query_cash_flow_csv():
     time.sleep(20)
 
 
-@pytest.mark.unit
+@pytest.mark.integration
 def test_get_data_from_alpha_vantage():
     event = {
         "function": "EMA"
