@@ -1,5 +1,7 @@
+import pydantic
 from pydantic import BaseModel, Field
 from typing import Optional
+import copy
 
 
 class CsvNotSupported(Exception):
@@ -28,6 +30,12 @@ class Quote(BaseQuote):
     data: Optional[dict] = {}
     meta_data: Optional[dict] = Field({}, alias='Meta Data')
 
+    @pydantic.root_validator(pre=True)
+    def normalize_fields(cls, values):
+        return {
+            "data" if k.startswith("Technical Analysis: ") or k.startswith("Time Series (")
+                      or k.startswith("Time Series Crypto (") else k: v for k, v in values.items()
+        }
 
 class GlobalQuote(BaseQuote):
     data: dict = Field({}, alias='Global Quote')
@@ -36,6 +44,22 @@ class GlobalQuote(BaseQuote):
 class AccountingReport(BaseQuote):
     annualReports: list = Field(..., alias="annualReports")
     quarterlyReports: list = Field(..., alias="quarterlyReports")
+
+    @pydantic.root_validator(pre=True)
+    def normalize_fields(cls, values):
+        annual_report_fields = ["annualEarnings"]
+        quarterly_report_fields = ["quarterlyEarnings"]
+        new_values = copy.deepcopy(values)
+        for field in new_values:
+            new_field = field
+            if field in annual_report_fields:
+                new_field = "annualReports"
+            elif field in quarterly_report_fields:
+                new_field = "quarterlyReports"
+            if new_field != field:
+                values[new_field] = values[field]
+                values.pop(field)
+        return values
 
 
 class RealGDP(BaseResponse):
@@ -48,10 +72,10 @@ class RealGDP(BaseResponse):
 class CompanyOverview(BaseQuote):
     symbol: str = Field(..., alias='Symbol')
     asset_type: str = Field(..., alias='AssetType')
-    Name: str = Field(..., alias='Name')
-    Description: str = Field(..., alias='Description')
+    name: str = Field(..., alias='Name')
+    description: str = Field(..., alias='Description')
     central_index_key: str = Field(..., alias='CIK')
-    Exchange: str = Field(..., alias='Exchange')
+    exchange: str = Field(..., alias='Exchange')
     currency: str = Field(..., alias='Currency')
     country: str = Field(..., alias='Country')
     sector: str = Field(..., alias='Sector')

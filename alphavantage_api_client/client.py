@@ -3,7 +3,7 @@ import os
 import configparser
 from .response_validation_rules import ValidationRuleChecks
 import json
-from .models.core import Quote, AccountingReport, CompanyOverview, RealGDP, CsvNotSupported
+from .models.core import GlobalQuote, Quote, AccountingReport, CompanyOverview, RealGDP, CsvNotSupported
 import copy
 
 
@@ -14,7 +14,6 @@ class ApiKeyNotFound(Exception):
 
 
 class AlphavantageClient:
-    __api_key__ = ""
 
     def __init__(self):
 
@@ -26,14 +25,15 @@ class AlphavantageClient:
             config.read(alphavantage_config_file_path)
             self.__api_key__ = config['access']['api_key']
             return
-
         # try to get from an environment variable
-        if os.environ.get('ALPHAVANTAGE_API_KEY') != None:
+        elif os.environ.get('ALPHAVANTAGE_API_KEY') is not None:
             self.__api_key__ = os.environ.get('ALPHAVANTAGE_API_KEY')
             # print(f'api key found from environment')
             return
+        else:
+            self.__api_key__ = ""
 
-    def __build_url_from_args__(self, event):
+    def __build_url_from_args__(self, event: dict):
         url = f'https://www.alphavantage.co/query?'
         # build url from event
         for property in event:
@@ -41,72 +41,54 @@ class AlphavantageClient:
         url = url[:-1]
         return url
 
-    def __inject_default_values__(self, event):
+    def __inject_default_values__(self, event: dict):
         if "datatype" not in event:
             event["datatype"] = "json"
 
-    def __inject_values__(self, default_values, dest_obj):
+    def __inject_values__(self, default_values: dict, dest_obj: dict):
         # inject defaults for missing values
         for default_key in default_values:
             if default_key not in dest_obj or dest_obj[default_key] is None:
                 dest_obj[default_key] = default_values[default_key]
 
-    def __create_api_request_from__(self, defaults, event):
+    def __create_api_request_from__(self, defaults: dict, event: dict):
         json_request = event.copy()
         self.__inject_values__(defaults, json_request)
         self.__inject_default_values__(json_request)
         return json_request
 
-    def __transform_fields__(self, json_response):
-        # this is the same as `alias_generator = to_camel` above
-        new_json_response = copy.deepcopy(json_response)
-        for field_name in new_json_response:
-            new_field_name = field_name
-            if field_name.startswith("Time Series ("):
-                new_field_name = "data"
-            elif field_name.startswith('Time Series Crypto ('):
-                new_field_name = "data"
-            elif "Global Quote" == field_name:
-                new_field_name = "data"
-            elif "annualEarnings" == field_name:
-                new_field_name = "annualReports"
-            elif "quarterlyEarnings" == field_name:
-                new_field_name = "quarterlyReports"
-            elif field_name.startswith("Technical Analysis: "):
-                new_field_name = "data"
-            if new_field_name != field_name:
-                json_response[new_field_name] = json_response[field_name]
-                json_response.pop(field_name)
+    def with_api_key(self, api_key: str):
+        '''
 
-    def with_api_key(self, api_key):
+        :param api_key:
+        :return: AlphavantageClient
+        :rtype: AlphavantageClient
+        '''
         if api_key == None or len(api_key) == 0:
             raise ApiKeyNotFound("API Key is null or empty. Please specify a valid api key")
         self.__api_key__ = api_key
 
         return self
 
-    def get_global_quote(self, event: dict, context=None):
+    def get_global_quote(self, event: dict):
         '''
         Global Quote function from Alpha Vantage
         :param event:
-        :param context:
-        :return: IntraDayQuote
-        :rtype: Quote
+        :return: GlobalQuote
+        :rtype: GlobalQuote
         '''
         defaults = {
             "function": "GLOBAL_QUOTE"
         }
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request)
-        self.__transform_fields__(json_response)
 
-        return Quote.parse_obj(json_response)
+        return GlobalQuote.parse_obj(json_response)
 
-    def get_intraday_quote(self, event, context=None):
+    def get_intraday_quote(self, event: dict):
         '''
         Time Servies Intraday function from Alpha Vantage
         :param event:
-        :param context:
         :return: IntraDayQuote
         :rtype: Quote
         '''
@@ -116,14 +98,13 @@ class AlphavantageClient:
                     "outputsize": "compact"}
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request)
-        self.__transform_fields__(json_response)
+
         return Quote.parse_obj(json_response)
 
-    def get_income_statement(self, event=None, context=None):
+    def get_income_statement(self, event: dict):
         '''
-
-        :param event:
-        :param context:
+        Income Statement for a given company
+        :param event: dict
         :return: AccountingReport
         :rtype: AccountingReport
         '''
@@ -133,17 +114,16 @@ class AlphavantageClient:
             "datatype": "json"
         }
         if event.get("datatype") == "csv":
-            raise CsvNotSupported(defaults.get("function"))
+            raise CsvNotSupported(defaults.get("function"), event)
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request)
 
         return AccountingReport.parse_obj(json_response)
 
-    def get_cash_flow(self, event=None, context=None):
+    def get_cash_flow(self, event: dict):
         '''
 
         :param event:
-        :param context:
         :return: AccountingReport
         :rtype: AccountingReport
         '''
@@ -152,18 +132,16 @@ class AlphavantageClient:
             "datatype": "json"
         }
         if event.get("datatype") == "csv":
-            raise CsvNotSupported(defaults.get("function"))
+            raise CsvNotSupported(defaults.get("function"), event)
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request)
-        self.__transform_fields__(json_response)
 
         return AccountingReport.parse_obj(json_response)
 
-    def get_earnings(self, event=None, context=None):
+    def get_earnings(self, event: dict):
         '''
 
         :param event:
-        :param context:
         :return: AccountingReport
         :rtype: AccountingReport
         '''
@@ -172,18 +150,16 @@ class AlphavantageClient:
             "datatype": "json"
         }
         if event.get("datatype") == "csv":
-            raise CsvNotSupported(defaults.get("function"))
+            raise CsvNotSupported(defaults.get("function"), event)
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request)
-        self.__transform_fields__(json_response)
 
         return AccountingReport.parse_obj(json_response)
 
-    def get_company_overview(self, event=None, context=None):
+    def get_company_overview(self, event: dict):
         '''
 
         :param event:
-        :param context:
         :return: CompanyOverview
         :rtype: CompanyOverview
         '''
@@ -191,17 +167,16 @@ class AlphavantageClient:
             "function": "OVERVIEW"
         }
         if event.get("datatype") == "csv":
-            raise CsvNotSupported(defaults.get("function"))
+            raise CsvNotSupported(defaults.get("function"), event)
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request)
 
         return CompanyOverview.parse_obj(json_response)
 
-    def get_crypto_intraday(self, event, context=None):
+    def get_crypto_intraday(self, event: dict):
         '''
 
         :param event:
-        :param context:
         :return: IntraDayQuote
         :rtype: Quote
         '''
@@ -213,15 +188,13 @@ class AlphavantageClient:
         }
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request)
-        self.__transform_fields__(json_response)
 
         return Quote.parse_obj(json_response)
 
-    def get_real_gdp(self, event, context=None):
+    def get_real_gdp(self, event: dict):
         '''
-
+        Real GDP
         :param event:
-        :param context:
         :return: RealGDP
         :rtype: RealGDP
         '''
@@ -232,15 +205,13 @@ class AlphavantageClient:
         }
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request)
-        self.__transform_fields__(json_response)
 
         return RealGDP.parse_obj(json_response)
 
-    def get_technical_indicator(self, event, context=None):
+    def get_technical_indicator(self, event: dict):
         '''
         Default technical indicator is SMA. You can change this by passing in function=[your indicator]
         :param event:
-        :param context:
         :return: IntraDayQuote
         :rtype: Quote
         '''
@@ -252,15 +223,13 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request)
         json_response["indicator"] = event.get("function")
-        self.__transform_fields__(json_response)
 
         return Quote.parse_obj(json_response)
 
-    def get_data_from_alpha_vantage(self, event, context=None):
+    def get_data_from_alpha_vantage(self, event: dict):
         '''
         You can query any data from alpha vantage
         :param event: The params from alpha vantage documentation
-        :param context:
         :return: dict of return values
         :rtype: dict
         '''

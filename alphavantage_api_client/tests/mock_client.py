@@ -14,6 +14,13 @@ class MockAlphavantageClient(AlphavantageClient):
             self.base_path = f"{path}/alphavantage_api_client/tests/mocks"
 
     def get_data_from_alpha_vantage(self, event, context=None):
+        '''
+        Get all data from alpha vantage
+        :param event:
+        :param context:
+        :return:
+        :rtype: dict
+        '''
         if event is None:
             raise ValueError("Event property isn't define")
 
@@ -34,6 +41,8 @@ class MockAlphavantageClient(AlphavantageClient):
             text_file = open(f"{self.base_path}/mock_crypto_full.json", "r")
         elif event.get("function") == "REAL_GDP":
             text_file = open(f"{self.base_path}/mock_real_gdp.json", "r")
+        elif event.get("function") == "EMA":
+            text_file = open(f"{self.base_path}/mock_technical_indicator_ema.json")
         elif event.get("function") == "SMA":
             text_file = open(f"{self.base_path}/mock_technical_indicator_sma_equity.json", "r")
         elif event.get("function") == "TIME_SERIES_DAILY" and event.get("outputsize") == "compact":
