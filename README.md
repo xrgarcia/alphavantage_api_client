@@ -67,7 +67,7 @@ global_quote = client.get_global_quote(event)
 assert global_quote.success, "Success field is missing or False"
 assert not global_quote.limit_reached, "Limit reached is true but not hitting API"
 assert global_quote.symbol == event["symbol"], "Symbol from results don't match event"
-assert "metra_data" not in global_quote, "Metadata should not be present since it's not in the api"
+assert "meta_data" not in global_quote, "Metadata should not be present since it's not in the api"
 assert len(global_quote.data) > 0, "Data field is zero or not present"
 
 print(f"Response data {global_quote.json()}")
@@ -88,7 +88,7 @@ global_quote = client.get_global_quote(event)
 assert global_quote.success, "Success field is missing or False"
 assert not global_quote.limit_reached, "Limit reached is true but not hitting API"
 assert global_quote.symbol == event["symbol"], "Symbol from results don't match event"
-assert "metra_data" not in global_quote, "Metadata should not be present since it's not in the api"
+assert "meta_data" not in global_quote, "Metadata should not be present since it's not in the api"
 assert len(global_quote.data) > 0, "Data field is zero or not present"
 
 print(f"Response data {global_quote.json()}")
@@ -117,7 +117,7 @@ global_quote = client.get_global_quote(event)
 assert global_quote.success, "Success field is missing or False"
 assert not global_quote.limit_reached, "Limit reached is true but not hitting API"
 assert global_quote.symbol == event["symbol"], "Symbol from results don't match event"
-assert "metra_data" not in global_quote, "Metadata should not be present since it's not in the api"
+assert "meta_data" not in global_quote, "Metadata should not be present since it's not in the api"
 assert len(global_quote.data) > 0, "Data field is zero or not present"
 
 print(f"Response data {global_quote.json()}")
@@ -146,7 +146,7 @@ global_quote = client.get_global_quote(event)
 assert global_quote.success, "Success field is missing or False"
 assert not global_quote.limit_reached, "Limit reached is true but not hitting API"
 assert global_quote.symbol == event["symbol"], "Symbol from results don't match event"
-assert "metra_data" not in global_quote, "Metadata should not be present since it's not in the api"
+assert "meta_data" not in global_quote, "Metadata should not be present since it's not in the api"
 assert len(global_quote.data) > 0, "Data field is zero or not present"
 
 print(f"Response data {global_quote.json()}")
@@ -169,7 +169,7 @@ global_quote = client.get_global_quote(event)
 assert global_quote.success, "Success field is missing or False"
 assert not global_quote.limit_reached, "Limit reached is true but not hitting API"
 assert global_quote.symbol == event["symbol"], "Symbol from results don't match event"
-assert "metra_data" not in global_quote, "Metadata should not be present since it's not in the api"
+assert "meta_data" not in global_quote, "Metadata should not be present since it's not in the api"
 assert len(global_quote.data) > 0, "Data field is zero or not present"
 
 print(f"Response data {global_quote.json()}")

@@ -38,6 +38,6 @@ setup(
     packages=setuptools.find_packages(),
     py_modules=["alphavantage_api_client"],
     include_package_data=True,
-    install_requires=["requests"],
+    install_requires=["requests","pydantic"],
     python_requires=">=3.6"
 )
