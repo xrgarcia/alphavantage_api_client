@@ -157,11 +157,12 @@ print(f"Response data {global_quote.json()}")
 ```
 from alphavantage_api_client import AlphavantageClient
 
+# see section above to specify api key
+#
 client = AlphavantageClient()
 event = {
    "symbol": "ibm",
-   "interval": "5min",
-   "apikey" : "[your key here]"
+   "interval": "5min"
 }
 global_quote = client.get_global_quote(event)
 assert global_quote.success, "Success field is missing or False"
@@ -178,6 +179,8 @@ print(f"Response data {global_quote.json()}")
 ```
 from alphavantage_api_client import AlphavantageClient
 
+# see section above to specify api key
+#
 event = {
    "symbol": "ibm",
    "interval": "5min"
@@ -197,6 +200,8 @@ print(f"json data{intraday_quote.json()}")
 ```
 from alphavantage_api_client import AlphavantageClient
 
+# see section above to specify api key
+#
 event = {
    "symbol": "IBM"
 }
@@ -215,6 +220,8 @@ print(f"json data{company_overview.json()}")
 ```
 from alphavantage_api_client import AlphavantageClient
 
+# see section above to specify api key
+#
 event = {
    "function": "REAL_GDP"
 }
@@ -232,6 +239,8 @@ print(f"json data{real_gdp.json()}")
 ```
 from alphavantage_api_client import AlphavantageClient
 
+# see section above to specify api key
+#
 event = {
    "symbol": "ETH",
    "function": "CRYPTO_INTRADAY",
@@ -252,6 +261,8 @@ print(f"json data{intraday_quote.json()}")
 ```
 from alphavantage_api_client import AlphavantageClient
 
+# see section above to specify api key
+#
 event = {
    "symbol": "ibm",
    "function": "SMA"
@@ -266,7 +277,7 @@ assert len(quote.data), "Technical Analysis: SMA field is missing, empty or None
 print(f"json data{quote.json()}")
 ```
 
-### Any Other Data Avaialble
+### Any Other Data Available
 See https://www.alphavantage.co/documentation/
 The event{} dictionary will contain the url parameters exactly as specified in the documentation.  The response will include
 the based fields and the exact response from the api. This is bypassing the normalization process, but might be useful
@@ -275,10 +286,12 @@ for you.
 from alphavantage_api_client import AlphavantageClient
 import json
 
+# see section above to specify api key
+#
 event = {
     "function": "EMA"
 }
-client = MockAlphavantageClient()
+client = AlphavantageClient()
 results = client.get_data_from_alpha_vantage(event)
 assert type(results) is dict, "Results object should be a dictionary"
 assert len(results) > 0, "There should be data in the results"
