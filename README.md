@@ -13,7 +13,7 @@ Get your free api key here https://www.alphavantage.co/support/#api-key
 
 **NOTE: Free API keys have a limit of 5 calls per min and max of 500 calls per day.**
 
-## Notable fields:
+## Notable Class Type Information:
 
 #### Base Fields
 
@@ -36,9 +36,9 @@ Get your free api key here https://www.alphavantage.co/support/#api-key
 
 #### CompanyOverview
 
-All data from the company overview api query
-is https://www.alphavantage.co/query?function=OVERVIEW&symbol=IBM&apikey=demo
-you will get in the root object that is strongly typed and the based fields mentioned above.
+All data from the company overview api 
+(example: https://www.alphavantage.co/query?function=OVERVIEW&symbol=IBM&apikey=demo)
+will yield a strongly typed object to include the based fields mentioned above.
 
 #### RealGDP
 
