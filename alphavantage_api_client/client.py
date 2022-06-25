@@ -5,6 +5,7 @@ from .response_validation_rules import ValidationRuleChecks
 import json
 from .models.core import GlobalQuote, Quote, AccountingReport, CompanyOverview, RealGDP, CsvNotSupported
 import copy
+import logging
 
 
 class ApiKeyNotFound(Exception):
@@ -20,7 +21,7 @@ class AlphavantageClient:
         # try to get api key from USER_PROFILE/.alphavantage
         alphavantage_config_file_path = f'{os.path.expanduser("~")}{os.path.sep}.alphavantage'
         if os.path.exists(alphavantage_config_file_path) == True:
-            # print(f'{alphavantage_config_file_path} config file found')
+            logging.info(f'{alphavantage_config_file_path} config file found')
             config = configparser.ConfigParser()
             config.read(alphavantage_config_file_path)
             self.__api_key__ = config['access']['api_key']
@@ -28,7 +29,7 @@ class AlphavantageClient:
         # try to get from an environment variable
         elif os.environ.get('ALPHAVANTAGE_API_KEY') is not None:
             self.__api_key__ = os.environ.get('ALPHAVANTAGE_API_KEY')
-            # print(f'api key found from environment')
+            logging.info(f'api key found from environment')
             return
         else:
             self.__api_key__ = ""
