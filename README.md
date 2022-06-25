@@ -138,8 +138,7 @@ from alphavantage_api_client import AlphavantageClient
 client = AlphavantageClient()
 event = {
    "symbol": "ibm",
-   "interval": "5min",
-   "apikey" : "[your key here]"
+   "interval": "5min"
 }
 global_quote = client.get_global_quote(event)
 assert global_quote.success, "Success field is missing or False"
