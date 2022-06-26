@@ -17,7 +17,6 @@ class ApiKeyNotFound(Exception):
 class AlphavantageClient:
 
     def __init__(self):
-
         # try to get api key from USER_PROFILE/.alphavantage
         alphavantage_config_file_path = f'{os.path.expanduser("~")}{os.path.sep}.alphavantage'
         msg = {"method": "__init__", "action": f"{alphavantage_config_file_path} config file found"}
@@ -37,6 +36,12 @@ class AlphavantageClient:
             self.__api_key__ = ""
 
     def __build_url_from_args__(self, event: dict):
+        '''
+
+        :param event:
+        :return:
+        :rtype: str
+        '''
         url = f'https://www.alphavantage.co/query?'
         # build url from event
         for property in event:
@@ -45,16 +50,34 @@ class AlphavantageClient:
         return url
 
     def __inject_default_values__(self, event: dict):
+        '''
+
+        :param event:
+        :return:
+        '''
         if "datatype" not in event:
             event["datatype"] = "json"
 
     def __inject_values__(self, default_values: dict, dest_obj: dict):
+        '''
+
+        :param default_values:
+        :param dest_obj:
+        :return:
+        '''
         # inject defaults for missing values
         for default_key in default_values:
             if default_key not in dest_obj or dest_obj[default_key] is None:
                 dest_obj[default_key] = default_values[default_key]
 
     def __create_api_request_from__(self, defaults: dict, event: dict):
+        '''
+
+        :param defaults:
+        :param event:
+        :return:
+        :rtype: dict
+        '''
         json_request = event.copy()
         self.__inject_values__(defaults, json_request)
         self.__inject_default_values__(json_request)
@@ -250,7 +273,7 @@ class AlphavantageClient:
         checks.with_response(r)
         requested_data = {}
         logging.info(json.dumps({"method": "get_data_from_alpha_vantage", "action": "response_from_alphavantage"
-                                     , "status_code": r.status_code, "text": r.text}))
+                                    , "status_code": r.status_code, "text": r.text}))
         # verify request worked correctly and build response
         # gotta check if consumer request json or csv, so we can parse the output correctly
         requested_data['success'] = checks.expect_successful_response().passed()  # successful csv response
@@ -271,6 +294,6 @@ class AlphavantageClient:
         if "symbol" in event:
             requested_data['symbol'] = event['symbol']
         logging.info(json.dumps({"method": "get_data_from_alpha_vantage"
-                                     , "action": "return_value", "requested_data": requested_data}))
+                                    , "action": "return_value", "requested_data": requested_data}))
 
         return requested_data
