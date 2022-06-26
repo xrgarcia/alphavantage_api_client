@@ -258,13 +258,17 @@ class AlphavantageClient:
             raise ApiKeyNotFound(
                 "You must call client.with_api_key([api_key]), create config file in your profile (i.e. ~/.alphavantage) or event[api_key] = [your api key] before retrieving data from alphavantage")
 
+        # create a version of the event without api key
+        loggable_event = copy.deepcopy(event)
+        loggable_event.pop("apikey")
+
         # fetch data from API
         url = self.__build_url_from_args__(event)
         r = requests.get(url)
         checks.with_response(r)
         requested_data = {}
         logging.info(json.dumps({"method": "get_data_from_alpha_vantage", "action": "response_from_alphavantage"
-                                    , "status_code": r.status_code, "data": r.text}))
+                                    , "status_code": r.status_code, "data": r.text, "event": loggable_event}))
         # verify request worked correctly and build response
         # gotta check if consumer request json or csv, so we can parse the output correctly
         requested_data['success'] = checks.expect_successful_response().passed()  # successful csv response
@@ -285,6 +289,6 @@ class AlphavantageClient:
         if "symbol" in event:
             requested_data['symbol'] = event['symbol']
         logging.info(json.dumps({"method": "get_data_from_alpha_vantage"
-                                    , "action": "return_value", "data": requested_data}))
+                                    , "action": "return_value", "data": requested_data, "event": loggable_event}))
 
         return requested_data
