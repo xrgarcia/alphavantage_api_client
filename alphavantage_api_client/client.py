@@ -20,8 +20,9 @@ class AlphavantageClient:
 
         # try to get api key from USER_PROFILE/.alphavantage
         alphavantage_config_file_path = f'{os.path.expanduser("~")}{os.path.sep}.alphavantage'
+        msg = {"method": "__init__", "action": f"{alphavantage_config_file_path} config file found"}
         if os.path.exists(alphavantage_config_file_path) == True:
-            logging.info(f'{alphavantage_config_file_path} config file found')
+            logging.info(json.dumps(msg))
             config = configparser.ConfigParser()
             config.read(alphavantage_config_file_path)
             self.__api_key__ = config['access']['api_key']
@@ -29,7 +30,8 @@ class AlphavantageClient:
         # try to get from an environment variable
         elif os.environ.get('ALPHAVANTAGE_API_KEY') is not None:
             self.__api_key__ = os.environ.get('ALPHAVANTAGE_API_KEY')
-            logging.info(f'api key found from environment')
+            msg["action"] = f"api key found from environment"
+            logging.info(json.dumps(msg))
             return
         else:
             self.__api_key__ = ""
@@ -237,7 +239,7 @@ class AlphavantageClient:
         checks = ValidationRuleChecks().from_customer_request(event)
         # get api key if not provided
         if checks.expect_api_key_in_event().failed():
-            event["apikey"] = self.__api_key__
+            event["apikey"] = self.__api_key__  # assume they passed to builder method.
         elif self.__api_key__ is None or len(self.__api_key__) == 0:  # consumer didn't tell me where to get api key
             raise ApiKeyNotFound(
                 "You must call client.with_api_key([api_key]), create config file in your profile (i.e. ~/.alphavantage) or event[api_key] = [your api key] before retrieving data from alphavantage")
@@ -247,7 +249,8 @@ class AlphavantageClient:
         r = requests.get(url)
         checks.with_response(r)
         requested_data = {}
-
+        logging.info(json.dumps({"method": "get_data_from_alpha_vantage", "action": "response_from_alphavantage"
+                                     , "status_code": r.status_code, "text": r.text}))
         # verify request worked correctly and build response
         # gotta check if consumer request json or csv, so we can parse the output correctly
         requested_data['success'] = checks.expect_successful_response().passed()  # successful csv response
@@ -267,5 +270,7 @@ class AlphavantageClient:
         # not all calls will have symbol in the call to alphavantage.... if so we can to capture it.
         if "symbol" in event:
             requested_data['symbol'] = event['symbol']
+        logging.info(json.dumps({"method": "get_data_from_alpha_vantage"
+                                     , "action": "return_value", "requested_data": requested_data}))
 
         return requested_data
