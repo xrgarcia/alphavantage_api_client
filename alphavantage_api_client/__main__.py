@@ -1,26 +1,23 @@
 import json
 from alphavantage_api_client import AlphavantageClient
 import time
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 def main():
     event = {
-        "symbol": "AAPL"
-        # ,"api_key":"your key here"
+        "symbol": "tsla"
     }
-    result = {}
-    # your API key can be in ~/alphavantage ini file or in event['api_key'] = 'your key here'
     client = AlphavantageClient()
-    result['overview'] = client.get_company_overview(event)
-    result['latest_stock_price'] = client.get_latest_stock_price(event)
-    result['stock_price'] = client.get_stock_price(event)
-    result['earnings'] = client.get_earnings(event)
-    result['latest_earnings'] = client.get_latest_earnings(event)
-    time.sleep(60)
-    result['cash_flow'] = client.get_cash_flow(event)
-    result['latest_cash_flow'] = client.get_latest_cash_flow(event)
-    result['income_statement'] = client.get_income_statement_for_symbol(event)
-    result['latest_income_statement'] = client.get_latest_income_statement_for_symbol(event)
-    print(json.dumps(result))
+
+    global_quote = client.get_global_quote(event)
+    assert global_quote.success, f"success was found to be {global_quote.success}: {global_quote.error_message}"
+    assert global_quote.symbol == event.get("symbol"), "Response symbol doesn't matched requested symbol"
+    assert not global_quote.limit_reached, f"{global_quote.error_message}"
+    assert len(global_quote.data) > 0, "Response should have data but contains zero"
+    logging.warning(f" Can quote stock symbol in JSON {event.get('symbol', None)}")
+    logging.warning(global_quote.json())
 
 
 if __name__ == "__main__":

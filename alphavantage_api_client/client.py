@@ -20,7 +20,7 @@ class AlphavantageClient:
         # try to get api key from USER_PROFILE/.alphavantage
         alphavantage_config_file_path = f'{os.path.expanduser("~")}{os.path.sep}.alphavantage'
         msg = {"method": "__init__", "action": f"{alphavantage_config_file_path} config file found"}
-        if os.path.exists(alphavantage_config_file_path) == True:
+        if os.path.exists(alphavantage_config_file_path):
             logging.info(json.dumps(msg))
             config = configparser.ConfigParser()
             config.read(alphavantage_config_file_path)
@@ -49,15 +49,6 @@ class AlphavantageClient:
         url = url[:-1]
         return url
 
-    def __inject_default_values__(self, event: dict):
-        '''
-
-        :param event:
-        :return:
-        '''
-        if "datatype" not in event:
-            event["datatype"] = "json"
-
     def __inject_values__(self, default_values: dict, dest_obj: dict):
         '''
 
@@ -80,7 +71,7 @@ class AlphavantageClient:
         '''
         json_request = event.copy()
         self.__inject_values__(defaults, json_request)
-        self.__inject_default_values__(json_request)
+
         return json_request
 
     def with_api_key(self, api_key: str):
@@ -273,7 +264,7 @@ class AlphavantageClient:
         checks.with_response(r)
         requested_data = {}
         logging.info(json.dumps({"method": "get_data_from_alpha_vantage", "action": "response_from_alphavantage"
-                                    , "status_code": r.status_code, "text": r.text}))
+                                    , "status_code": r.status_code, "data": r.text}))
         # verify request worked correctly and build response
         # gotta check if consumer request json or csv, so we can parse the output correctly
         requested_data['success'] = checks.expect_successful_response().passed()  # successful csv response
@@ -294,6 +285,6 @@ class AlphavantageClient:
         if "symbol" in event:
             requested_data['symbol'] = event['symbol']
         logging.info(json.dumps({"method": "get_data_from_alpha_vantage"
-                                    , "action": "return_value", "requested_data": requested_data}))
+                                    , "action": "return_value", "data": requested_data}))
 
         return requested_data

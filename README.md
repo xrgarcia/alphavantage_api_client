@@ -298,3 +298,62 @@ assert len(results) > 0, "There should be data in the results"
 
 print(f"json data{json.dumps(results)}")
 ```
+
+## Debugging
+We use the built in ```import logging``` library in python. Obtaining more information from the client behavior
+is as simple as adjusting your log levels.
+
+1. ```logging.INFO``` - This will get you json log statements (in case you put these into splunk or cloudwatch)
+that show which method is doing the work, the action, and the value or data is produced (where applicable).
+
+   #### Example log showing where it found your api key
+   ```
+   {
+     "method": "__init__",
+     "action": "/home/[your user name]/.alphavantage config file found"
+   }
+   ```
+   #### Example log during client.global_quote(...) call. The text property is the raw response from alpha vantage api:
+   ```
+   {
+     "method": "get_data_from_alpha_vantage",
+     "action": "response_from_alphavantage",
+     "status_code": 200,
+     "data": "{\n    \"Global Quote\": {\n        \"01. symbol\": \"TSLA\",\n        \"02. open\": \"712.4050\",\n        \"03. high\": \"738.2000\",\n        \"04. low\": \"708.2600\",\n        \"05. price\": \"737.1200\",\n        \"06. volume\": \"31923565\",\n        \"07. latest trading day\": \"2022-06-24\",\n        \"08. previous close\": \"705.2100\",\n        \"09. change\": \"31.9100\",\n        \"10. change percent\": \"4.5249%\"\n    }\n}"
+   }
+   ```
+   #### Example log after converting response text into dictionary before returning to client:
+   ```
+   {
+     "method": "get_data_from_alpha_vantage",
+     "action": "return_value",
+     "data": {
+       "success": true,
+       "limit_reached": false,
+       "status_code": 200,
+       "Global Quote": {
+         "01. symbol": "TSLA",
+         "02. open": "712.4050",
+         "03. high": "738.2000",
+         "04. low": "708.2600",
+         "05. price": "737.1200",
+         "06. volume": "31923565",
+         "07. latest trading day": "2022-06-24",
+         "08. previous close": "705.2100",
+         "09. change": "31.9100",
+         "10. change percent": "4.5249%"
+       },
+       "symbol": "tsla"
+     }
+   }
+   ```
+
+2. ```logging.DEBUG``` - This will get you all of the statements from #1 and from the dependant libraries.
+   #### Example:
+   ```
+   INFO:root:{"method": "__init__", "action": "/home/[your username]/.alphavantage config file found"}
+   DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): www.alphavantage.co:443
+   DEBUG:urllib3.connectionpool:https://www.alphavantage.co:443 "GET /query?symbol=tsla&function=GLOBAL_QUOTE&apikey=YRV1XL63GDIFS42A HTTP/1.1" 200 None
+   INFO:root:{"method": "get_data_from_alpha_vantage", "action": "response_from_alphavantage", "status_code": 200, "data": "{\n    \"Global Quote\": {\n        \"01. symbol\": \"TSLA\",\n        \"02. open\": \"712.4050\",\n        \"03. high\": \"738.2000\",\n        \"04. low\": \"708.2600\",\n        \"05. price\": \"737.1200\",\n        \"06. volume\": \"31923565\",\n        \"07. latest trading day\": \"2022-06-24\",\n        \"08. previous close\": \"705.2100\",\n        \"09. change\": \"31.9100\",\n        \"10. change percent\": \"4.5249%\"\n    }\n}"}
+   INFO:root:{"method": "get_data_from_alpha_vantage", "action": "return_value", "data": {"success": true, "limit_reached": false, "status_code": 200, "Global Quote": {"01. symbol": "TSLA", "02. open": "712.4050", "03. high": "738.2000", "04. low": "708.2600", "05. price": "737.1200", "06. volume": "31923565", "07. latest trading day": "2022-06-24", "08. previous close": "705.2100", "09. change": "31.9100", "10. change percent": "4.5249%"}, "symbol": "tsla"}}
+   ```
