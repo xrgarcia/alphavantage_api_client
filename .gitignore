@@ -132,3 +132,5 @@ dmypy.json
 
 # pip requirements files because we are using poetry
 requirements.txt
+
+test.json

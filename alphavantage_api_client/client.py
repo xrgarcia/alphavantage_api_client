@@ -5,6 +5,7 @@ from .response_validation_rules import ValidationRuleChecks
 import json
 from .models.core import GlobalQuote, Quote, AccountingReport, CompanyOverview, RealGDP, CsvNotSupported
 import copy
+import logging
 
 
 class ApiKeyNotFound(Exception):
@@ -16,11 +17,11 @@ class ApiKeyNotFound(Exception):
 class AlphavantageClient:
 
     def __init__(self):
-
         # try to get api key from USER_PROFILE/.alphavantage
         alphavantage_config_file_path = f'{os.path.expanduser("~")}{os.path.sep}.alphavantage'
-        if os.path.exists(alphavantage_config_file_path) == True:
-            # print(f'{alphavantage_config_file_path} config file found')
+        msg = {"method": "__init__", "action": f"{alphavantage_config_file_path} config file found"}
+        if os.path.exists(alphavantage_config_file_path):
+            logging.info(json.dumps(msg))
             config = configparser.ConfigParser()
             config.read(alphavantage_config_file_path)
             self.__api_key__ = config['access']['api_key']
@@ -28,12 +29,19 @@ class AlphavantageClient:
         # try to get from an environment variable
         elif os.environ.get('ALPHAVANTAGE_API_KEY') is not None:
             self.__api_key__ = os.environ.get('ALPHAVANTAGE_API_KEY')
-            # print(f'api key found from environment')
+            msg["action"] = f"api key found from environment"
+            logging.info(json.dumps(msg))
             return
         else:
             self.__api_key__ = ""
 
     def __build_url_from_args__(self, event: dict):
+        '''
+
+        :param event:
+        :return:
+        :rtype: str
+        '''
         url = f'https://www.alphavantage.co/query?'
         # build url from event
         for property in event:
@@ -41,20 +49,29 @@ class AlphavantageClient:
         url = url[:-1]
         return url
 
-    def __inject_default_values__(self, event: dict):
-        if "datatype" not in event:
-            event["datatype"] = "json"
-
     def __inject_values__(self, default_values: dict, dest_obj: dict):
+        '''
+
+        :param default_values:
+        :param dest_obj:
+        :return:
+        '''
         # inject defaults for missing values
         for default_key in default_values:
             if default_key not in dest_obj or dest_obj[default_key] is None:
                 dest_obj[default_key] = default_values[default_key]
 
     def __create_api_request_from__(self, defaults: dict, event: dict):
+        '''
+
+        :param defaults:
+        :param event:
+        :return:
+        :rtype: dict
+        '''
         json_request = event.copy()
         self.__inject_values__(defaults, json_request)
-        self.__inject_default_values__(json_request)
+
         return json_request
 
     def with_api_key(self, api_key: str):
@@ -236,17 +253,22 @@ class AlphavantageClient:
         checks = ValidationRuleChecks().from_customer_request(event)
         # get api key if not provided
         if checks.expect_api_key_in_event().failed():
-            event["apikey"] = self.__api_key__
+            event["apikey"] = self.__api_key__  # assume they passed to builder method.
         elif self.__api_key__ is None or len(self.__api_key__) == 0:  # consumer didn't tell me where to get api key
             raise ApiKeyNotFound(
                 "You must call client.with_api_key([api_key]), create config file in your profile (i.e. ~/.alphavantage) or event[api_key] = [your api key] before retrieving data from alphavantage")
+
+        # create a version of the event without api key
+        loggable_event = copy.deepcopy(event)
+        loggable_event.pop("apikey")
 
         # fetch data from API
         url = self.__build_url_from_args__(event)
         r = requests.get(url)
         checks.with_response(r)
         requested_data = {}
-
+        logging.info(json.dumps({"method": "get_data_from_alpha_vantage", "action": "response_from_alphavantage"
+                                    , "status_code": r.status_code, "data": r.text, "event": loggable_event}))
         # verify request worked correctly and build response
         # gotta check if consumer request json or csv, so we can parse the output correctly
         requested_data['success'] = checks.expect_successful_response().passed()  # successful csv response
@@ -266,5 +288,7 @@ class AlphavantageClient:
         # not all calls will have symbol in the call to alphavantage.... if so we can to capture it.
         if "symbol" in event:
             requested_data['symbol'] = event['symbol']
+        logging.info(json.dumps({"method": "get_data_from_alpha_vantage"
+                                    , "action": "return_value", "data": requested_data, "event": loggable_event}))
 
         return requested_data
