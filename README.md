@@ -39,6 +39,7 @@ Get your free api key here https://www.alphavantage.co/support/#api-key
 All data from the company overview api 
 (example: https://www.alphavantage.co/query?function=OVERVIEW&symbol=IBM&apikey=demo)
 will yield a strongly typed object to include the based fields mentioned above.
+***Please Note*** some fields in this class have been renamed for clarity and to be more pythonic.
 
 #### RealGDP
 
