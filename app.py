@@ -2,19 +2,20 @@ from alphavantage_api_client import AlphavantageClient
 import json
 
 if __name__ == "__main__":
+    print('------ start test --------')
     event = {
-        "symbol":"TSLA"
+        "symbol": "TSLA"
     }
     result = {}
     client = AlphavantageClient()
-    #result['overview'] = client.get_company_overview(event)
-    #result['latest_stock_price'] = client.get_latest_stock_price(event)
-    #result['stock_price'] = client.get_stock_price(event)
-    #result['earnings'] = client.get_earnings(event)
-    #result['latest_earnings'] = client.get_latest_earnings(event)
-    result['cash_flow'] = client.get_cash_flow(event)
-    #result['latest_cash_flow'] = client.get_latest_cash_flow(event)
-    #result['income_statement'] = client.get_income_statement_for_symbol(event)
-    result['latest_income_statement'] = client.get_latest_income_statement_for_symbol(event)
-    print(json.dumps(result))
-
+    company_overview = client.get_company_overview(event)
+    print(company_overview.json())
+    global_quote = client.get_global_quote(event)
+    print(global_quote.json())
+    intraday_quote = client.get_intraday_quote(event)
+    print(intraday_quote.json())
+    earnings = client.get_earnings(event)
+    print(earnings.json())
+    cash_flow = client.get_cash_flow(event)
+    print(cash_flow.json())
+    print('------ complete test --------')
