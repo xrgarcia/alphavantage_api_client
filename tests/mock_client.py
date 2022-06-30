@@ -1,3 +1,5 @@
+import logging
+
 from alphavantage_api_client import AlphavantageClient
 import json
 import os
@@ -9,9 +11,16 @@ class MockAlphavantageClient(AlphavantageClient):
     def __init__(self):
         super().__init__()
         path = os.getcwd()
+        logging.info(f"current path = {path}")
         self.base_path = f"{path}/tests/mocks"
         if not exists(self.base_path):
-            self.base_path = f"{path}/alphavantage_api_client/tests/mocks"
+            logging.info(f"I must be running from pycharm as a test since cwd is {self.base_path}, need to fix")
+            path = os.path.dirname(os.getcwd())
+            os.chdir(path) # go up a directory
+            path = os.getcwd()
+            self.base_path = f"{path}/tests/mocks"
+
+        logging.info(f"self.base_path = {self.base_path}")
 
     def get_data_from_alpha_vantage(self, event, context=None):
         '''
