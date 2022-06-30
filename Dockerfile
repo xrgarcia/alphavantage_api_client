@@ -1,12 +1,12 @@
 from python:3.10-slim-buster
 
-WORKDIR /
+WORKDIR /src
 
-ADD app.py ./src/
-ADD ./tests/ ./src/tests/
+ADD app.py ./
+ADD ./tests/ ./tests/
+ADD pytest.ini ./
 ENV ALPHAVANTAGE_API_KEY = ${ALPHAVANTAGE_API_KEY}
 RUN python -m pip install --upgrade pip
 RUN pip install pytest alphavantage_api_client
-WORKDIR /src
 
 CMD ["pytest","-vv", "-raPp", "-m", "unit or integration"]
