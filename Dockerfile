@@ -7,6 +7,7 @@ ADD ./tests/ ./tests/
 ADD pytest.ini ./
 ENV ALPHAVANTAGE_API_KEY = ${ALPHAVANTAGE_API_KEY}
 RUN python -m pip install --upgrade pip
-RUN pip install pytest alphavantage_api_client
+RUN pip install -i https://test.pypi.org/simple/ alphavantage-api-client
+RUN pip install pytest
 
 CMD ["pytest","-vv", "-raPp", "-m", "unit or integration"]
