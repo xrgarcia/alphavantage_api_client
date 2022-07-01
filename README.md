@@ -13,7 +13,7 @@ Get your free api key here https://www.alphavantage.co/support/#api-key
 
 **NOTE: Free API keys have a limit of 5 calls per min and max of 500 calls per day.**
 
-## Notable Class Type Information:
+## Notable Class Information:
 
 #### Base Fields
 
@@ -153,7 +153,7 @@ print(f"Response data {global_quote.json()}")
 
 ## Available Data
 
-### Stock Price Now
+### Stock Price for Today
 
 ```
 from alphavantage_api_client import AlphavantageClient
@@ -349,7 +349,7 @@ that show which method is doing the work, the action, and the value or data is p
    }
    ```
 
-2. ```logging.DEBUG``` - This will get you all of the statements from #1 and from the dependant libraries.
+2. ```logging.DEBUG``` - This will get you all of the log statements from #1 and from the dependant libraries.
    #### Example:
    ```
    INFO:root:{"method": "__init__", "action": "/home/[your username]/.alphavantage config file found"}
