@@ -254,7 +254,8 @@ class AlphavantageClient:
         # get api key if not provided
         if checks.expect_api_key_in_event().failed():
             event["apikey"] = self.__api_key__  # assume they passed to builder method.
-        elif self.__api_key__ is None or len(self.__api_key__) == 0:  # consumer didn't tell me where to get api key
+        elif self.__api_key__ is None or len(self.__api_key__) == 0 or "apikey" not in event\
+                or not event.get("apikey"):  # consumer didn't tell me where to get api key
             raise ApiKeyNotFound(
                 "You must call client.with_api_key([api_key]), create config file in your profile (i.e. ~/.alphavantage) or event[api_key] = [your api key] before retrieving data from alphavantage")
 
