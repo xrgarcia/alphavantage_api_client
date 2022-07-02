@@ -314,7 +314,7 @@ that show which method is doing the work, the action, and the value or data is p
      "action": "/home/[your user name]/.alphavantage config file found"
    }
    ```
-   #### Example log during client.global_quote(...) call. The text property is the raw response from alpha vantage api:
+   #### Example log during client.global_quote(...) call. The data property is the raw response from alpha vantage api:
    ```
    {
      "method": "get_data_from_alpha_vantage",
