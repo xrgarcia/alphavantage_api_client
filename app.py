@@ -6,11 +6,10 @@ import json
 logging.basicConfig(level=logging.INFO)
 
 if __name__ == "__main__":
-    print('------ start test --------')
     event = {
         "symbol": "TSLA"
     }
     result = {}
     client = AlphavantageClient()
-    results = client.get_data_from_alpha_vantage(event)
-    print(json.dumps(results))
+    global_quote = client.get_global_quote(event)
+    print(global_quote.json())

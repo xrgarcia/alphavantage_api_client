@@ -1,7 +1,7 @@
 # alpha vantage api client
 
-**Simple python wrapper around alpha vantage api. This client implements the production readiness
-of storing your api key safely and a consistent data model from the api. You can log your response into splunk or cloud
+**Simple python wrapper around alpha vantage api. This client implements production readiness
+by storing your api key safely and a consistent data model from the api. You can log your response into splunk or cloud
 watch to create SRE (sight reliability engineering)
 dashboards to help you improve your stock market searches**
 
