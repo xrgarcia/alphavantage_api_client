@@ -7,7 +7,6 @@ from alphavantage_api_client.models import GlobalQuote, Quote, AccountingReport,
     CsvNotSupported
 import copy
 import logging
-from typing import Self
 
 class ApiKeyNotFound(Exception):
 
@@ -82,7 +81,7 @@ class AlphavantageClient:
 
         return json_request
 
-    def with_api_key(self, api_key: str) -> Self:
+    def with_api_key(self, api_key: str):
         """Specify the API Key when you are storing it somewhere other than in ini file or environment variable
 
         When you are storing your api key somewhere other than ~/.alphavantage or ALPHAVANTAGE_API_KEY env variable
