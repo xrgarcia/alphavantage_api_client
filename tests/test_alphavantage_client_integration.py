@@ -1,11 +1,11 @@
 import pytest
-import json
-import os
 import time
-from alphavantage_api_client import AlphavantageClient
-from alphavantage_api_client.models.core import CsvNotSupported
+from alphavantage_api_client import AlphavantageClient, CsvNotSupported
 import logging
+import json
 
+# https://intellij-support.jetbrains.com/hc/en-us/community/posts/360000218290-Configure-google-docstring
+# above is reference for setting google docstring in pycharm
 def setup_function(function):
     pass
 
@@ -37,6 +37,21 @@ def test_can_get_global_quote_json():
     logging.warning(f" Can quote stock symbol in JSON {event.get('symbol', None)}")
     time.sleep(20)
 
+@pytest.mark.integration
+def test_can_not_get_global_quote_json():
+    event = {
+        "symbol": "tsla2"
+    }
+    client = AlphavantageClient()
+
+    global_quote = client.get_global_quote(event)
+    assert not global_quote.success, f"success was found to be {global_quote.success}: {global_quote.error_message}"
+    assert global_quote.symbol == event.get("symbol"), "Response symbol doesn't matched requested symbol"
+    assert not global_quote.limit_reached, f"{global_quote.error_message}"
+    assert not len(global_quote.data), "Response should have data but contains zero"
+    logging.warning(f" Can Not quote stock symbol in JSON {event.get('symbol', None)}")
+    time.sleep(20)
+
 
 @pytest.mark.integration
 def test_can_get_global_quote_csv():
@@ -55,7 +70,7 @@ def test_can_get_global_quote_csv():
 
 
 @pytest.mark.integration
-def test_canNotGlobalQuoteWrongSymbolJson():
+def test_can_not_global_quote_wrong_symbol_json():
     event = {
         "symbol": "tsla2323"
     }
@@ -70,7 +85,7 @@ def test_canNotGlobalQuoteWrongSymbolJson():
 
 
 @pytest.mark.integration
-def test_canNotGlobalQuoteWrongSymbolCsv():
+def test_can_not_global_quote_wrong_symbol_csv():
     event = {
         "symbol": "tsla2233",
         "datatype": "csv"
@@ -183,12 +198,9 @@ def test_can_quote_crypto_csv():
 
 @pytest.mark.integration
 def test_can_quote_real_gdp():
-    event = {
-        "function": "REAL_GDP",
-        "interval": "annual"
-    }
+
     client = AlphavantageClient()
-    real_gdp = client.get_real_gdp(event)
+    real_gdp = client.get_real_gdp()
     assert not real_gdp.limit_reached, f"limit_reached is not present in results {real_gdp.error_message}"
     assert real_gdp.success, f"Success=False but expected true  {real_gdp.error_message}"
     assert len(real_gdp.data), "Data{} is empty but expected results"
@@ -266,20 +278,45 @@ def test_can_query_company_overview():
 
 
 @pytest.mark.integration
-def test_can_not_query_company_overview():
+def test_can_not_quote_company_overview():
     client = AlphavantageClient()
     event = {
-        "symbol": "tsla",
-        "datatype": "csv"
+        "symbol": "TSLA2"
     }
 
-    try:
-        results = client.get_company_overview(event)
-        assert True == False, "Expected an error because company overview doesn't support csv"
-    except CsvNotSupported as error:
-        assert True == True, "Expected an error because company overview doesn't support csv"
+    company_overview = client.get_company_overview(event)
+    assert not company_overview.success, f"{event.get('symbol')} should not have been successful"
+    assert company_overview.symbol != event.get(
+        "symbol"), f"Symbols are equal {company_overview.symbol} : {event.get('symbol')} but shouldn't be"
+    assert not company_overview.limit_reached, "unexpected limit_reached"
+    logging.warning(f" Can not query company overview: {company_overview.error_message}")
+    time.sleep(20)
 
-    logging.warning(f" Querying Company Overview as CSV threw error as expected {event.get('symbol', None)}")
+
+@pytest.mark.integration
+def test_can_not_query_csv_company_overview():
+    with pytest.raises(CsvNotSupported):
+        client = AlphavantageClient()
+        event = {
+            "symbol": "tsla",
+            "datatype": "csv"
+        }
+        client.get_company_overview(event)
+
+
+@pytest.mark.integration
+def test_can_not_query_income_statement():
+    client = AlphavantageClient()
+    event = {
+        "symbol": "tsla2"
+    }
+
+    accounting_report = client.get_income_statement(event)
+    assert not accounting_report.success, f"success was found to be True: {accounting_report.error_message}"
+    assert not accounting_report.limit_reached, f'{accounting_report.error_message}'
+    assert accounting_report.symbol == event.get("symbol", None), f"Symbols don't match " \
+                                                                  f"{accounting_report.symbol} : {event.get('symbol')}"
+    logging.warning(f" Can not query  income statement {accounting_report.error_message}")
     time.sleep(20)
 
 
@@ -292,7 +329,7 @@ def test_can_query_income_statement():
 
     accounting_report = client.get_income_statement(event)
     assert accounting_report.success, f"success was found to be false: {accounting_report.error_message}"
-    assert accounting_report.limit_reached == False, f'{accounting_report.error_message}'
+    assert not accounting_report.limit_reached, f'{accounting_report.error_message}'
     assert accounting_report.symbol == event.get("symbol", None), f"Symbols don't match " \
                                                                   f"{accounting_report.symbol} : {event.get('symbol')}"
     logging.warning(f" Can query  income statement {event.get('symbol', None)}")
@@ -301,20 +338,13 @@ def test_can_query_income_statement():
 
 @pytest.mark.integration
 def test_can_not_query_income_statement_csv():
-    client = AlphavantageClient()
-    event = {
-        "symbol": "tsla",
-        "datatype": "csv"
-    }
-
-    try:
-        results = client.get_income_statement(event)
-        assert True == False, "Expected an error because  income statement doesn't support csv"
-    except CsvNotSupported as error:
-        assert True == True, "Expected an error because  income statement doesn't support csv"
-
-    logging.warning(f" Querying  income statement as CSV threw error as expected {event.get('symbol', None)}")
-    time.sleep(20)
+    with pytest.raises(CsvNotSupported):
+        client = AlphavantageClient()
+        event = {
+            "symbol": "tsla",
+            "datatype": "csv"
+        }
+        client.get_income_statement(event)
 
 
 @pytest.mark.integration
@@ -335,24 +365,6 @@ def can_query_earnings():
 
 
 @pytest.mark.integration
-def test_can_not_query_earnings():
-    client = AlphavantageClient()
-    event = {
-        "symbol": "tsla",
-        "datatype": "csv"
-    }
-
-    try:
-        results = client.get_earnings(event)
-        assert True == False, "Expected an error because get_earnings doesn't support csv"
-    except CsvNotSupported as error:
-        assert True == True, "Expected an error because get_earnings doesn't support csv"
-
-    logging.warning(f" Querying earnings as CSV threw error as expected {event.get('symbol', None)}")
-    time.sleep(20)
-
-
-@pytest.mark.integration
 def test_can_query_income_statement():
     client = AlphavantageClient()
     event = {
@@ -364,24 +376,6 @@ def test_can_query_income_statement():
     assert income.symbol == event.get("symbol"), f"Symbols are not equal {income.symbol} : {event.get('symbol')}"
     assert not income.limit_reached, "limit_reached but should not have"
     logging.warning(f" Can query income statement {event.get('symbol', None)}")
-    time.sleep(20)
-
-
-@pytest.mark.integration
-def test_can_not_query_income_statement():
-    client = AlphavantageClient()
-    event = {
-        "symbol": "tsla",
-        "datatype": "csv"
-    }
-
-    try:
-        results = client.get_income_statement(event)
-        assert True == False, "Expected an error because income statement doesn't support csv"
-    except CsvNotSupported as error:
-        assert True == True, "Expected an error because income statement doesn't support csv"
-
-    logging.warning(f" Querying income statement as CSV threw error as expected {event.get('symbol', None)}")
     time.sleep(20)
 
 
@@ -399,23 +393,30 @@ def test_can_query_earnings():
     logging.warning(f" Can query earnings {event.get('symbol', None)}")
     time.sleep(20)
 
+@pytest.mark.integration
+def test_can_not_query_earnings():
+    client = AlphavantageClient()
+    event = {
+        "symbol": "tsla22"
+    }
+
+    earnings = client.get_earnings(event)
+    assert not earnings.success, f"success was found to be false: {earnings.error_message}"
+    assert not earnings.limit_reached, f"limit_reached is not present in results {earnings.error_message}"
+    assert earnings.symbol == event.get("symbol"), f"Symbols not equal {earnings.symbol} : {event.get('symbol')}"
+    logging.warning(f" Can not query earnings: {earnings.error_message}")
+    time.sleep(20)
+
 
 @pytest.mark.integration
 def test_can_not_query_earnings_csv():
-    client = AlphavantageClient()
-    event = {
-        "symbol": "tsla",
-        "datatype": "csv"
-    }
-
-    try:
-        results = client.get_earnings(event)
-        assert True == False, "Expected an error because earnings doesn't support csv"
-    except CsvNotSupported as error:
-        assert True == True, "Expected an error because earnings doesn't support csv"
-
-    logging.warning(f" Querying earnings as CSV threw error as expected {event.get('symbol', None)}")
-    time.sleep(20)
+    with pytest.raises(CsvNotSupported):
+        client = AlphavantageClient()
+        event = {
+            "symbol": "tsla",
+            "datatype": "csv"
+        }
+        client.get_earnings(event)
 
 
 @pytest.mark.integration
@@ -434,23 +435,32 @@ def test_can_query_cash_flow():
     logging.warning(f" Can query  cash flow {event.get('symbol', None)}")
     time.sleep(20)
 
+@pytest.mark.integration
+def test_can_not_query_cash_flow():
+    client = AlphavantageClient()
+    event = {
+        "symbol": "tsla22"
+    }
+
+    cash_flow = client.get_cash_flow(event)
+    assert not cash_flow.success, f"success was found to be True which is unexpected: {cash_flow.error_message}"
+    assert not cash_flow.limit_reached, f"limit_reached is true {cash_flow.error_message}"
+    assert cash_flow.symbol == event.get("symbol"), f"Symbols do not match {cash_flow.symbol} : {event.get('symbol')}"
+    assert not len(cash_flow.annualReports), "annualReports are not empty"
+    assert not len(cash_flow.quarterlyReports), "quarterlyReports are not empty"
+    logging.warning(f" Can not query  cash flow {cash_flow.error_message}")
+    time.sleep(20)
 
 @pytest.mark.integration
 def test_can_not_query_cash_flow_csv():
-    client = AlphavantageClient()
-    event = {
-        "symbol": "tsla",
-        "datatype": "csv"
-    }
-
-    try:
-        results = client.get_cash_flow(event)
-        assert True == False, "Expected an error because  cash flow doesn't support csv"
-    except CsvNotSupported as error:
-        assert True == True, "Expected an error because  cash flow doesn't support csv"
-
-    logging.warning(f" Querying  cash flow as CSV threw error as expected {event.get('symbol', None)}")
-    time.sleep(20)
+    with pytest.raises(CsvNotSupported):
+        client = AlphavantageClient()
+        event = {
+            "symbol": "tsla",
+            "datatype": "csv"
+        }
+        client.get_cash_flow(event)
+        logging.warning(f"Querying  cash flow as CSV threw error as expected {event.get('symbol', None)}")
 
 
 @pytest.mark.integration

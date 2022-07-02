@@ -1,7 +1,8 @@
 include *.lock
 include *.py
-include *.sh
+exclude *.sh
 include *.txt
 include Pipfile
 include alphavantage_access.ini
+exclude Dockerfile
 recursive-include events *.json

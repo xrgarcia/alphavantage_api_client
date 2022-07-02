@@ -1,9 +1,8 @@
-import json
 from alphavantage_api_client import AlphavantageClient
-import time
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
+
 
 def main():
     event = {
