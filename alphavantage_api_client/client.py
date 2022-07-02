@@ -7,7 +7,7 @@ from alphavantage_api_client.models import GlobalQuote, Quote, AccountingReport,
     CsvNotSupported
 import copy
 import logging
-
+from typing import Self
 
 class ApiKeyNotFound(Exception):
 
@@ -82,7 +82,7 @@ class AlphavantageClient:
 
         return json_request
 
-    def with_api_key(self, api_key: str):
+    def with_api_key(self, api_key: str) -> Self:
         """Specify the API Key when you are storing it somewhere other than in ini file or environment variable
 
         When you are storing your api key somewhere other than ~/.alphavantage or ALPHAVANTAGE_API_KEY env variable
@@ -98,7 +98,7 @@ class AlphavantageClient:
 
         return self
 
-    def get_global_quote(self, event: dict):
+    def get_global_quote(self, event: dict) -> GlobalQuote:
         """ Lightweight access to obtain stock quote data
 
         A lightweight alternative to the time series APIs, this service returns the price and volume information
@@ -119,7 +119,7 @@ class AlphavantageClient:
 
         return GlobalQuote.parse_obj(json_response)
 
-    def get_intraday_quote(self, event: dict):
+    def get_intraday_quote(self, event: dict) -> Quote:
         """ Intraday time series data covering extened trading hours.
 
         This API returns intraday time series of the equity specified, covering extended trading hours where applicable
@@ -145,7 +145,7 @@ class AlphavantageClient:
 
         return Quote.parse_obj(json_response)
 
-    def get_income_statement(self, event: dict):
+    def get_income_statement(self, event: dict) -> AccountingReport:
         """
         This API returns the annual and quarterly income statements for the company of interest, with
         normalized fields mapped to GAAP and IFRS taxonomies of the SEC. Data is generally refreshed on the same day
@@ -171,7 +171,7 @@ class AlphavantageClient:
 
         return AccountingReport.parse_obj(json_response)
 
-    def get_cash_flow(self, event: dict):
+    def get_cash_flow(self, event: dict) -> AccountingReport:
         """
         This API returns the annual and quarterly cash flow for the company of interest, with normalized fields
         mapped to GAAP and IFRS taxonomies of the SEC. Data is generally refreshed on the same day a company reports
@@ -195,7 +195,7 @@ class AlphavantageClient:
 
         return AccountingReport.parse_obj(json_response)
 
-    def get_earnings(self, event: dict):
+    def get_earnings(self, event: dict) -> AccountingReport:
         """
         This API returns the annual and quarterly earnings (EPS) for the company of interest. Quarterly data also
         includes analyst estimates and surprise metrics.
@@ -219,7 +219,7 @@ class AlphavantageClient:
 
         return AccountingReport.parse_obj(json_response)
 
-    def get_company_overview(self, event: dict):
+    def get_company_overview(self, event: dict) -> CompanyOverview:
         """
         This API returns the company information, financial ratios, and other key metrics for the equity specified.
         Data is generally refreshed on the same day a company reports its latest earnings and financials.
@@ -229,7 +229,7 @@ class AlphavantageClient:
             Minimum required is ``symbol`` = ``str``
 
         Returns:
-            :rtype: CompanyOverview
+            Return a CompanyOverview Object
 
         """
         defaults = {
@@ -242,7 +242,7 @@ class AlphavantageClient:
 
         return CompanyOverview.parse_obj(json_response)
 
-    def get_crypto_intraday(self, event: dict):
+    def get_crypto_intraday(self, event: dict) -> Quote:
         """
         This API returns intraday time series (timestamp, open, high, low, close, volume) of the cryptocurrency
         specified, updated realtime.
@@ -266,7 +266,7 @@ class AlphavantageClient:
 
         return Quote.parse_obj(json_response)
 
-    def get_real_gdp(self, event: dict={}):
+    def get_real_gdp(self, event: dict={}) -> RealGDP:
         """
 
         This API returns the annual and quarterly Real GDP of the United States.
@@ -288,7 +288,7 @@ class AlphavantageClient:
 
         return RealGDP.parse_obj(json_response)
 
-    def get_technical_indicator(self, event: dict):
+    def get_technical_indicator(self, event: dict) -> Quote:
         """
         Default technical indicator is SMA. You can change this by passing in ``function`` = ``[your indicator]``
 
@@ -310,7 +310,7 @@ class AlphavantageClient:
 
         return Quote.parse_obj(json_response)
 
-    def get_data_from_alpha_vantage(self, event: dict):
+    def get_data_from_alpha_vantage(self, event: dict) -> dict:
         """
         This is the underlying function that talks to alphavantage api.  Feel free to pass in any parameters supported
         by the api.  You will receive a dictionary with the response from the web api. In addition, you will obtain
