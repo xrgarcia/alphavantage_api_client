@@ -37,8 +37,59 @@ class Quote(BaseQuote):
                       or k.startswith("Time Series Crypto (") else k: v for k, v in values.items()
         }
 
+    def get_most_recent_value(self) -> Optional[dict]:
+        if len(self.data) > 0:
+            for quote_date in self.data:
+                quotes = self.data[quote_date]
+                quotes["query_date"] = quote_date
+                return quotes
+
+        return None
+
+
 class GlobalQuote(BaseQuote):
     data: dict = Field({}, alias='Global Quote')
+
+    def get_open_price(self) -> str:
+        field = "02. open"
+        return self.get_data_value(field)
+
+    def get_data_value(self, field) -> str:
+        if field in self.data:
+            return self.data[field]
+        return None
+
+    def get_high_price(self) -> str:
+        field = "03. high"
+        return self.get_data_value(field)
+
+    def get_low_price(self) -> str:
+        field = "04. low"
+        return self.get_data_value(field)
+
+    def get_price(self) -> str:
+        field = "05. price"
+        return self.get_data_value(field)
+
+    def get_volume(self) -> str:
+        field = "06. volume"
+        return self.get_data_value(field)
+
+    def get_latest_trading_day(self) -> str:
+        field = "07. latest trading day"
+        return self.get_data_value(field)
+
+    def get_previous_close_day(self) -> str:
+        field = "08. previous close"
+        return self.get_data_value(field)
+
+    def get_change_in_dollars(self) -> str:
+        field = "09. change"
+        return self.get_data_value(field)
+
+    def get_change_percent(self) -> str:
+        field = "10. change percent"
+        return self.get_data_value(field)
 
 
 class AccountingReport(BaseQuote):
@@ -60,6 +111,20 @@ class AccountingReport(BaseQuote):
                 values[new_field] = values[field]
                 values.pop(field)
         return values
+
+    def get_most_recent_annual_report(self) -> Optional[dict]:
+        if len(self.annualReports) > 0:
+            for index, annual_report in enumerate(self.annualReports):
+                return annual_report
+
+        return None
+
+    def get_most_recent_quarterly_report(self) -> Optional[dict]:
+        if len(self.quarterlyReports) > 0:
+            for index, quarterly_report in enumerate(self.quarterlyReports):
+                return quarterly_report
+
+        return None
 
 
 class RealGDP(BaseResponse):
@@ -116,3 +181,15 @@ class CompanyOverview(BaseQuote):
     shares_outstanding: str = Field(default=None, alias='SharesOutstanding')
     dividend_date: str = Field(default=None, alias='DividendDate')
     ex_dividend_date: str = Field(default=None, alias='ExDividendDate')
+
+    def get_ex_dividend_date(self):
+        """
+        Alpha vantage api will return 'None' when there isn't an ex dividend date. This will return None or an ex
+        dividend date.
+        Returns:
+
+        """
+        if self.ex_dividend_date is None or len(self.ex_dividend_date) == 0 or "None" == self.ex_dividend_date:
+            return None
+
+        return self.ex_dividend_date
