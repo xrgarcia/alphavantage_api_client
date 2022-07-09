@@ -9,6 +9,7 @@ from alphavantage_api_client.models import GlobalQuote, Quote, AccountingReport,
     CsvNotSupported
 import copy
 import logging
+import hashlib
 
 
 class ApiKeyNotFound(Exception):
@@ -22,6 +23,8 @@ class AlphavantageClient:
         self.__total_calls__ = 0
         self.__retry__ = False
         self.__first_successful_attempt__ = 0
+        self.__use_cache__ = False
+        self.__cache__ = {}
         # try to get api key from USER_PROFILE/.alphavantage
         alphavantage_config_file_path = f'{os.path.expanduser("~")}{os.path.sep}.alphavantage'
         msg = {"method": "__init__", "action": f"{alphavantage_config_file_path} config file found"}
@@ -89,6 +92,11 @@ class AlphavantageClient:
 
     def should_retry_once(self, retry: bool = True):
         self.__retry__ = retry
+
+        return self
+
+    def use_cache(self, use_cache: bool = True):
+        self.__use_cache__ = use_cache
 
         return self
 
@@ -343,18 +351,30 @@ class AlphavantageClient:
             :rtype: dict
 
         """
+        # validate api key and insert into the request if needed
         checks = ValidationRuleChecks().from_customer_request(event)
         self.__validate_api_key__(checks, event)
+
         # create a version of the event without api key
         loggable_event = copy.deepcopy(event)
         loggable_event.pop("apikey")
 
+        # check cache if allowed
+        if self.__use_cache__:
+            results = self.__get_item_from_cache__(loggable_event)
+            logging.info(f"Found item in cache: {results}")
+            if results is not None:
+                return results
+
         # fetch data from API
         self.__fetch_data__(checks, event, loggable_event)
         requested_data = {}
-        self.__validate_request__(requested_data, checks, event, should_retry)
 
-        if checks.expect_limit_not_reached().passed() and should_retry: # retry once if allowed
+        # validate response
+        self.__hydrate_request__(requested_data, checks, event, should_retry)
+
+        # retry once if allowed and needed
+        if checks.expect_limit_not_reached().passed() and should_retry:
             self.__sleep__()
             result = self.get_data_from_alpha_vantage(event, False)
             self.__first_successful_attempt__ = time.perf_counter()
@@ -364,12 +384,27 @@ class AlphavantageClient:
         if "symbol" in event:
             requested_data['symbol'] = event['symbol']
 
+        # put into cache if allowed
+        if self.__use_cache__:
+            self.__put_item_into_cache(loggable_event, requested_data)
+
         logging.info(json.dumps({"method": "get_data_from_alpha_vantage"
                                     , "action": "return_value", "data": requested_data, "event": loggable_event}))
 
         return requested_data
 
-    def __validate_request__(self, requested_data: dict, checks: ValidationRuleChecks, event: dict, should_retry: bool):
+    def __put_item_into_cache(self, event, results):
+        hash_str = json.dumps(event, sort_keys=True)
+        self.__cache__[hash_str] = results
+
+    def __get_item_from_cache__(self, event):
+        hash_str = json.dumps(event, sort_keys=True)
+        if hash_str in self.__cache__:
+            return self.__cache__[hash_str]
+
+        return None
+
+    def __hydrate_request__(self, requested_data: dict, checks: ValidationRuleChecks, event: dict, should_retry: bool):
         # verify request worked correctly and build response
         # gotta check if consumer request json or csv, so we can parse the output correctly
         requested_data['success'] = checks.expect_successful_response().passed()  # successful csv response
@@ -411,3 +446,8 @@ class AlphavantageClient:
         diff = 60 - (now - then)
         logging.info(f"sleeping for {diff} seconds")
         time.sleep(diff)
+
+    def clear_cache(self):
+        self.__cache__.clear()
+
+        return self

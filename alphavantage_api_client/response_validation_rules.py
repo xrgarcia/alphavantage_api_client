@@ -43,7 +43,10 @@ class BaseValidationRuleChecks:
 
     def is_meaningful_response(self):
         return len(self.__http_get_response__.text) > 0 \
-               and "Error Message" not in self.__http_get_response__.text and self.__http_get_response__.text != "{}"
+               and "Error Message" not in self.__http_get_response__.text \
+               and self.__http_get_response__.text != "{}"\
+               and "Note" not in self.__http_get_response__.text
+
 
     def expect_successful_response(self):
         self.check_response_present()
