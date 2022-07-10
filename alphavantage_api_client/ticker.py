@@ -131,7 +131,7 @@ class Ticker:
             Ticker
 
         """
-        self.fetch_balance_sheet().fetch_income_statement().fetch_earnings()
+        self.fetch_balance_sheet().fetch_income_statement().fetch_earnings().fetch_cash_flow()
 
         return self
 
@@ -146,9 +146,11 @@ class Ticker:
         earnings = self.get_earnings()
         balance_sheet = self.get_balance_sheet()
         income_statement = self.get_income_statement()
+        cash_flow = self.get_cash_flow()
         self.correlate_accounting_report(earnings, "earnings_")
         self.correlate_accounting_report(balance_sheet, "balance_")
         self.correlate_accounting_report(income_statement, "income_")
+        self.correlate_accounting_report(cash_flow, "cash_")
         for fiscal_ending_date in self.__correlated_quarterly_reports__:
             if fiscal_ending_date not in self.__correlated_reports__:
                 self.__correlated_reports__[fiscal_ending_date] = \
