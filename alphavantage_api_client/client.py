@@ -200,6 +200,18 @@ class AlphavantageClient:
 
         return AccountingReport.parse_obj(json_response)
 
+    def get_balance_sheet(self, event: dict) -> AccountingReport:
+        defaults = {
+            "function": "BALANCE_SHEET",
+            "datatype": "json"
+        }
+        if event.get("datatype") == "csv":
+            raise CsvNotSupported(defaults.get("function"), event)
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return AccountingReport.parse_obj(json_response)
+
     def get_cash_flow(self, event: dict) -> AccountingReport:
         """
         This API returns the annual and quarterly cash flow for the company of interest, with normalized fields

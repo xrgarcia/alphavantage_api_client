@@ -105,7 +105,7 @@ def test_can_not_global_quote_wrong_symbol_csv():
         "symbol": "tsla2233",
         "datatype": "csv"
     }
-    client = AlphavantageClient()
+    client = AlphavantageClient().should_retry_once()
     global_quote = client.get_global_quote(event)
     assert not global_quote.success, f"success: {global_quote.success}, msg: {global_quote.error_message}"
     assert global_quote.symbol == event.get("symbol"), "Response symbol doesn't matched requested symbol"
@@ -115,7 +115,7 @@ def test_can_not_global_quote_wrong_symbol_csv():
 
 
 @pytest.mark.integration
-def test_canReachLimitJson():
+def test_can_reach_limit_json():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla"
@@ -136,7 +136,7 @@ def test_canReachLimitJson():
 
 
 @pytest.mark.integration
-def test_canReachLimitCsv():
+def test_can_reach_limit_csv():
     client = AlphavantageClient()
     event = {
         "symbol": "tsla",
