@@ -103,11 +103,11 @@ class AlphavantageClient:
     def get_internal_metrics(self) -> dict:
         total_calls = self.__total_calls__
         retry = self.__retry__
-        first_successful_atempt = self.__first_successful_attempt__
+        first_successful_attempt = self.__first_successful_attempt__
         metrics = {
             "total_calls": total_calls,
             "retry": retry,
-            "first_successful_atempt": first_successful_atempt
+            "first_successful_attempt": first_successful_attempt
         }
         return metrics
 
