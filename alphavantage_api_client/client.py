@@ -307,7 +307,7 @@ class AlphavantageClient:
 
         return Quote.parse_obj(json_response)
 
-    def get_real_gdp(self, event: dict = {}) -> RealGDP:
+    def get_real_gdp(self, event: dict) -> RealGDP:
         """
 
         This API returns the annual and quarterly Real GDP of the United States.
