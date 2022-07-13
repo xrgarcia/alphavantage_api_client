@@ -1,3 +1,5 @@
+import time
+
 import requests
 import os
 import configparser
@@ -7,6 +9,9 @@ from alphavantage_api_client.models import GlobalQuote, Quote, AccountingReport,
     CsvNotSupported
 import copy
 import logging
+import hashlib
+from typing import Optional
+
 
 class ApiKeyNotFound(Exception):
 
@@ -16,6 +21,12 @@ class ApiKeyNotFound(Exception):
 
 class AlphavantageClient:
     def __init__(self):
+        self.__total_calls__ = 0
+        self.__max_cache_size__ = 0
+        self.__retry__ = False
+        self.__first_successful_attempt__ = 0
+        self.__use_cache__ = False
+        self.__cache__ = {}
         # try to get api key from USER_PROFILE/.alphavantage
         alphavantage_config_file_path = f'{os.path.expanduser("~")}{os.path.sep}.alphavantage'
         msg = {"method": "__init__", "action": f"{alphavantage_config_file_path} config file found"}
@@ -76,10 +87,44 @@ class AlphavantageClient:
         Returns:
             :rtype: dict
         """
-        json_request = event.copy()
+        if event is not None:
+            json_request = event.copy()
+        else:
+            json_request = {}
         self.__inject_values__(defaults, json_request)
 
         return json_request
+
+    def should_retry_once(self, retry: bool = True):
+        self.__retry__ = retry
+
+        return self
+
+    def use_simple_cache(self, use_cache: bool = True, max_cache_size: int = 100):
+        """
+        First in First Out Cache
+        Args:
+            use_cache:
+            max_cache_size: Max size of the cache.
+
+        Returns:
+
+        """
+        self.__use_cache__ = use_cache
+        self.__max_cache_size__ = max_cache_size
+
+        return self
+
+    def get_internal_metrics(self) -> dict:
+        total_calls = self.__total_calls__
+        retry = self.__retry__
+        first_successful_attempt = self.__first_successful_attempt__
+        metrics = {
+            "total_calls": total_calls,
+            "retry": retry,
+            "first_successful_attempt": first_successful_attempt
+        }
+        return metrics
 
     def with_api_key(self, api_key: str):
         """Specify the API Key when you are storing it somewhere other than in ini file or environment variable
@@ -114,7 +159,7 @@ class AlphavantageClient:
             "function": "GLOBAL_QUOTE"
         }
         json_request = self.__create_api_request_from__(defaults, event)
-        json_response = self.get_data_from_alpha_vantage(json_request)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return GlobalQuote.parse_obj(json_response)
 
@@ -140,7 +185,7 @@ class AlphavantageClient:
                     "interval": "60min", "slice": "year1month1",
                     "outputsize": "compact"}
         json_request = self.__create_api_request_from__(defaults, event)
-        json_response = self.get_data_from_alpha_vantage(json_request)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return Quote.parse_obj(json_response)
 
@@ -166,7 +211,19 @@ class AlphavantageClient:
         if event.get("datatype") == "csv":
             raise CsvNotSupported(defaults.get("function"), event)
         json_request = self.__create_api_request_from__(defaults, event)
-        json_response = self.get_data_from_alpha_vantage(json_request)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return AccountingReport.parse_obj(json_response)
+
+    def get_balance_sheet(self, event: dict) -> AccountingReport:
+        defaults = {
+            "function": "BALANCE_SHEET",
+            "datatype": "json"
+        }
+        if event.get("datatype") == "csv":
+            raise CsvNotSupported(defaults.get("function"), event)
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return AccountingReport.parse_obj(json_response)
 
@@ -190,7 +247,7 @@ class AlphavantageClient:
         if event.get("datatype") == "csv":
             raise CsvNotSupported(defaults.get("function"), event)
         json_request = self.__create_api_request_from__(defaults, event)
-        json_response = self.get_data_from_alpha_vantage(json_request)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return AccountingReport.parse_obj(json_response)
 
@@ -214,7 +271,7 @@ class AlphavantageClient:
         if event.get("datatype") == "csv":
             raise CsvNotSupported(defaults.get("function"), event)
         json_request = self.__create_api_request_from__(defaults, event)
-        json_response = self.get_data_from_alpha_vantage(json_request)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return AccountingReport.parse_obj(json_response)
 
@@ -237,7 +294,7 @@ class AlphavantageClient:
         if event.get("datatype") == "csv":
             raise CsvNotSupported(defaults.get("function"), event)
         json_request = self.__create_api_request_from__(defaults, event)
-        json_response = self.get_data_from_alpha_vantage(json_request)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return CompanyOverview.parse_obj(json_response)
 
@@ -261,11 +318,11 @@ class AlphavantageClient:
             "outputsize": "compact"
         }
         json_request = self.__create_api_request_from__(defaults, event)
-        json_response = self.get_data_from_alpha_vantage(json_request)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return Quote.parse_obj(json_response)
 
-    def get_real_gdp(self, event: dict={}) -> RealGDP:
+    def get_real_gdp(self, event: dict = None) -> RealGDP:
         """
 
         This API returns the annual and quarterly Real GDP of the United States.
@@ -283,7 +340,7 @@ class AlphavantageClient:
             "datatype": "json"
         }
         json_request = self.__create_api_request_from__(defaults, event)
-        json_response = self.get_data_from_alpha_vantage(json_request)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return RealGDP.parse_obj(json_response)
 
@@ -304,12 +361,12 @@ class AlphavantageClient:
             "datatype": "json"
         }
         json_request = self.__create_api_request_from__(defaults, event)
-        json_response = self.get_data_from_alpha_vantage(json_request)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
         json_response["indicator"] = event.get("function")
 
         return Quote.parse_obj(json_response)
 
-    def get_data_from_alpha_vantage(self, event: dict) -> dict:
+    def get_data_from_alpha_vantage(self, event: dict, should_retry: bool = False) -> dict:
         """
         This is the underlying function that talks to alphavantage api.  Feel free to pass in any parameters supported
         by the api.  You will receive a dictionary with the response from the web api. In addition, you will obtain
@@ -321,26 +378,64 @@ class AlphavantageClient:
             :rtype: dict
 
         """
+        # validate api key and insert into the request if needed
         checks = ValidationRuleChecks().from_customer_request(event)
-        # get api key if not provided
-        if checks.expect_api_key_in_event().failed():
-            event["apikey"] = self.__api_key__  # assume they passed to builder method.
-        elif self.__api_key__ is None or len(self.__api_key__) == 0 or "apikey" not in event \
-                or not event.get("apikey"):  # consumer didn't tell me where to get api key
-            raise ApiKeyNotFound(
-                "You must call client.with_api_key([api_key]), create config file in your profile (i.e. ~/.alphavantage) or event[api_key] = [your api key] before retrieving data from alphavantage")
+        self.__validate_api_key__(checks, event)
 
         # create a version of the event without api key
         loggable_event = copy.deepcopy(event)
         loggable_event.pop("apikey")
 
+        # check cache if allowed
+        if self.__use_cache__:
+            results = self.__get_item_from_cache__(loggable_event)
+            logging.info(f"Found item in cache: {results}")
+            if results is not None:
+                return results
+
         # fetch data from API
-        url = self.__build_url_from_args__(event)
-        r = requests.get(url)
-        checks.with_response(r)
+        self.__fetch_data__(checks, event, loggable_event)
         requested_data = {}
-        logging.info(json.dumps({"method": "get_data_from_alpha_vantage", "action": "response_from_alphavantage"
-                                    , "status_code": r.status_code, "data": r.text, "event": loggable_event}))
+
+        # hydrate the response
+        self.__hydrate_request__(requested_data, checks, event, should_retry)
+
+        # retry once if allowed and needed
+        if checks.expect_limit_not_reached().passed() and should_retry:
+            self.__sleep__()
+            result = self.get_data_from_alpha_vantage(event, False)
+            self.__first_successful_attempt__ = time.perf_counter()
+            return result
+
+        # not all calls will have a symbol in the call to alphavantage.... if so we can to capture it.
+        if "symbol" in event:
+            requested_data['symbol'] = event['symbol']
+
+        # put into cache if allowed
+        if self.__use_cache__:
+            self.__put_item_into_cache(loggable_event, requested_data)
+
+        logging.info(json.dumps({"method": "get_data_from_alpha_vantage"
+                                    , "action": "return_value", "data": requested_data, "event": loggable_event}))
+
+        return requested_data
+
+    def __put_item_into_cache(self, event, results):
+
+        if len(self.__cache__) >= self.__max_cache_size__:
+            self.__cache__.clear()
+
+        hash_str = json.dumps(event, sort_keys=True)
+        self.__cache__[hash_str] = results
+
+    def __get_item_from_cache__(self, event):
+        hash_str = json.dumps(event, sort_keys=True)
+        if hash_str in self.__cache__:
+            return self.__cache__[hash_str]
+
+        return None
+
+    def __hydrate_request__(self, requested_data: dict, checks: ValidationRuleChecks, event: dict, should_retry: bool):
         # verify request worked correctly and build response
         # gotta check if consumer request json or csv, so we can parse the output correctly
         requested_data['success'] = checks.expect_successful_response().passed()  # successful csv response
@@ -357,10 +452,33 @@ class AlphavantageClient:
         if checks.expect_csv_datatype().expect_successful_response().passed():  # successful csv response
             requested_data['csv'] = checks.get_obj()
 
-        # not all calls will have symbol in the call to alphavantage.... if so we can to capture it.
-        if "symbol" in event:
-            requested_data['symbol'] = event['symbol']
-        logging.info(json.dumps({"method": "get_data_from_alpha_vantage"
-                                    , "action": "return_value", "data": requested_data, "event": loggable_event}))
+    def __fetch_data__(self, checks: ValidationRuleChecks, event: dict, loggable_event: dict):
+        url = self.__build_url_from_args__(event)
+        r = requests.get(url)
+        if self.__first_successful_attempt__ == 0:
+            self.__first_successful_attempt__ = time.perf_counter()
+        self.__total_calls__ += 1
+        checks.with_response(r)
+        logging.info(json.dumps({"method": "get_data_from_alpha_vantage", "action": "response_from_alphavantage"
+                                    , "status_code": r.status_code, "data": r.text, "event": loggable_event}))
 
-        return requested_data
+    def __validate_api_key__(self, checks: ValidationRuleChecks, event: dict):
+        # get api key if not provided
+        if checks.expect_api_key_in_event().failed():
+            event["apikey"] = self.__api_key__  # assume they passed to builder method.
+        elif self.__api_key__ is None or len(self.__api_key__) == 0 or "apikey" not in event \
+                or not event.get("apikey"):  # consumer didn't tell me where to get api key
+            raise ApiKeyNotFound(
+                "You must call client.with_api_key([api_key]), create config file in your profile (i.e. ~/.alphavantage) or event[api_key] = [your api key] before retrieving data from alphavantage")
+
+    def __sleep__(self):
+        then = self.__first_successful_attempt__
+        now = time.perf_counter()
+        diff = 60 - (now - then)
+        logging.info(f"sleeping for {diff} seconds")
+        time.sleep(diff)
+
+    def clear_cache(self):
+        self.__cache__.clear()
+
+        return self
