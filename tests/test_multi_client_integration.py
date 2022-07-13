@@ -28,7 +28,7 @@ def test_can_query_from_cache():
     event = {
         "symbol": "tsla"
     }
-    client = AlphavantageClient().use_cache()
+    client = AlphavantageClient().use_simple_cache()
 
     for i in range(200):
         global_quote = client.get_global_quote(event)

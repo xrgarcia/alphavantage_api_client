@@ -4,7 +4,7 @@ from alphavantage_api_client import AlphavantageClient, CsvNotSupported
 import logging
 import json
 
-client = AlphavantageClient().should_retry_once().use_cache()
+client = AlphavantageClient().should_retry_once().use_simple_cache()
 
 
 @pytest.mark.integration

@@ -12,6 +12,7 @@ import logging
 import hashlib
 from typing import Optional
 
+
 class ApiKeyNotFound(Exception):
 
     def __init__(self, message: str):
@@ -21,6 +22,7 @@ class ApiKeyNotFound(Exception):
 class AlphavantageClient:
     def __init__(self):
         self.__total_calls__ = 0
+        self.__max_cache_size__ = 0
         self.__retry__ = False
         self.__first_successful_attempt__ = 0
         self.__use_cache__ = False
@@ -98,8 +100,18 @@ class AlphavantageClient:
 
         return self
 
-    def use_cache(self, use_cache: bool = True):
+    def use_simple_cache(self, use_cache: bool = True, max_cache_size: int = 100):
+        """
+        First in First Out Cache
+        Args:
+            use_cache:
+            max_cache_size: Max size of the cache.
+
+        Returns:
+
+        """
         self.__use_cache__ = use_cache
+        self.__max_cache_size__ = max_cache_size
 
         return self
 
@@ -385,7 +397,7 @@ class AlphavantageClient:
         self.__fetch_data__(checks, event, loggable_event)
         requested_data = {}
 
-        # validate response
+        # hydrate the response
         self.__hydrate_request__(requested_data, checks, event, should_retry)
 
         # retry once if allowed and needed
@@ -409,6 +421,10 @@ class AlphavantageClient:
         return requested_data
 
     def __put_item_into_cache(self, event, results):
+
+        if len(self.__cache__) >= self.__max_cache_size__:
+            self.__cache__.clear()
+
         hash_str = json.dumps(event, sort_keys=True)
         self.__cache__[hash_str] = results
 
