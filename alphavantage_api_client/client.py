@@ -10,7 +10,7 @@ from alphavantage_api_client.models import GlobalQuote, Quote, AccountingReport,
 import copy
 import logging
 import hashlib
-
+from typing import Optional
 
 class ApiKeyNotFound(Exception):
 
@@ -85,7 +85,10 @@ class AlphavantageClient:
         Returns:
             :rtype: dict
         """
-        json_request = event.copy()
+        if event is not None:
+            json_request = event.copy()
+        else:
+            json_request = {}
         self.__inject_values__(defaults, json_request)
 
         return json_request
@@ -307,7 +310,7 @@ class AlphavantageClient:
 
         return Quote.parse_obj(json_response)
 
-    def get_real_gdp(self, event: dict = {}) -> RealGDP:
+    def get_real_gdp(self, event: dict = None) -> RealGDP:
         """
 
         This API returns the annual and quarterly Real GDP of the United States.
