@@ -1,6 +1,8 @@
 from alphavantage_api_client import Ticker
+import pytest
 
 
+@pytest.mark.integration
 def test_retry_obtain_global_quote():
     print("")
     symbols = ["TSLA", "MSFT", "AMZN", "TDOC", "PATH", "ZM", "C", "VZ"]
@@ -16,6 +18,7 @@ def test_retry_obtain_global_quote():
     print(metrics)
 
 
+@pytest.mark.integration
 def test_get_most_recent_intraday():
     print("")
     symbols = ["TSLA", "MSFT", "AMZN", "TDOC", "PATH", "ZM", "C", "VZ"]
@@ -29,6 +32,7 @@ def test_get_most_recent_intraday():
     print(metrics)
 
 
+@pytest.mark.integration
 def test_get_most_recent_annual_reports():
     print("")
     symbols = ["TSLA", "MSFT", "AMZN", "TDOC", "PATH", "ZM", "C", "VZ"]
