@@ -1,45 +1,45 @@
-# alpha vantage api client
+# Alpha Vantage API Client
 
-**Simple python wrapper around alpha vantage api. This client implements production readiness
+## API Overview
+
+Simple python wrapper around alpha vantage api. This client implements production readiness
 by storing your api key safely and a consistent data model from the api. You can log your response into splunk or cloud
 watch to create SRE (sight reliability engineering)
-dashboards to help you improve your stock market searches**
+dashboards to help you improve your stock market searches
 
-You can find alpha vantage api here https://www.alphavantage.co/
-
-See the alpha vantage api documentation https://www.alphavantage.co/documentation/
-
-Get your free api key here https://www.alphavantage.co/support/#api-key
+- You can find alpha vantage api here: https://www.alphavantage.co/
+- See the alpha vantage api documentation: https://www.alphavantage.co/documentation/
+- Get your free api key here: https://www.alphavantage.co/support/#api-key
 
 **NOTE: Free API keys have a limit of 5 calls per min and max of 500 calls per day.**
 
-## Notable Class Information:
+## Notable Class Information
 
 #### Base Fields
 
 1. success (true/false) flag into your response. You can log response into splunk or cloudwatch and know when something
-   fails
-2. limit_reached (true/false) flag into your response. You can know the difference between an error and reaching limit
-   so you can pause processing until you api key is allowed to make more requests
+   fails.
+2. limit_reached (true/false) flag into your response. You can know the difference between an error and reaching limit.
+   so you can pause processing until you api key is allowed to make more requests.
 3. error_message (str) is the response message from the api or this client with details on what went wrong and how to
-   fix it
+   fix it.
 
 #### GlobalQuote, Quote
 
-1. data (dictionary) contains the information requested
-2. meta_data (dictionary) data describing the data requested
+1. data (dictionary) contains the information requested.
+2. meta_data (dictionary) data describing the data requested.
 
 #### AccountingReport
 
-1. annualReports (list) contains the annual earnings or income statement data requested
-2. quarterlyReports (list) contains the quarterly earnings or income statement data requested
+1. annualReports (list) contains the annual earnings or income statement data requested.
+2. quarterlyReports (list) contains the quarterly earnings or income statement data requested.
 
 #### CompanyOverview
 
-All data from the company overview api 
+All data from the company overview api
 (example: https://www.alphavantage.co/query?function=OVERVIEW&symbol=IBM&apikey=demo)
 will yield a strongly typed object to include the based fields mentioned above.
-***Please Note*** some fields in this class have been renamed for clarity and to be more pythonic.
+**_Please Note_** some fields in this class have been renamed for clarity and to be more pythonic.
 
 #### RealGDP
 
@@ -48,7 +48,7 @@ will yield a strongly typed object to include the based fields mentioned above.
 3. unit (str)
 4. data (list) GDP data requested
 
-## install from pip
+## Install from pip
 
 ```
 pip install alphavantage_api_client
@@ -279,10 +279,12 @@ print(f"json data{quote.json()}")
 ```
 
 ### Any Other Data Available
+
 See https://www.alphavantage.co/documentation/
-The event{} dictionary will contain the url parameters exactly as specified in the documentation.  The response will include
-the based fields and the exact response from the api. This is bypassing the normalization process, but might be useful
+The event{} dictionary will contain the url parameters exactly as specified in the documentation. The response will include
+the based fields and the exact response from the API. This is bypassing the normalization process, but might be useful
 for you.
+
 ```
 from alphavantage_api_client import AlphavantageClient
 import json
@@ -301,20 +303,24 @@ print(f"json data{json.dumps(results)}")
 ```
 
 ## Debugging
-We use the built in ```import logging``` library in python. Obtaining more information from the client behavior
+
+We use the built in `import logging` library in python. Obtaining more information from the client behavior
 is as simple as adjusting your log levels.
 
-1. ```logging.INFO``` - This will get you json log statements (in case you put these into splunk or cloudwatch)
-that show which method is doing the work, the action, and the value or data is produced (where applicable).
+1. `logging.INFO` - This will get you json log statements (in case you put these into splunk or cloudwatch)
+   that show which method is doing the work, the action, and the value or data is produced (where applicable).
 
-   #### Example log showing where it found your api key
+   #### Example log showing where it found your API key
+
    ```
    {
      "method": "__init__",
      "action": "/home/[your user name]/.alphavantage config file found"
    }
    ```
+
    #### Example log during client.global_quote(...) call. The data property is the raw response from alpha vantage api:
+
    ```
    {
      "method": "get_data_from_alpha_vantage",
@@ -323,7 +329,9 @@ that show which method is doing the work, the action, and the value or data is p
      "data": "{\n    \"Global Quote\": {\n        \"01. symbol\": \"TSLA\",\n        \"02. open\": \"712.4050\",\n        \"03. high\": \"738.2000\",\n        \"04. low\": \"708.2600\",\n        \"05. price\": \"737.1200\",\n        \"06. volume\": \"31923565\",\n        \"07. latest trading day\": \"2022-06-24\",\n        \"08. previous close\": \"705.2100\",\n        \"09. change\": \"31.9100\",\n        \"10. change percent\": \"4.5249%\"\n    }\n}"
    }
    ```
+
    #### Example log after converting response text into dictionary before returning to client:
+
    ```
    {
      "method": "get_data_from_alpha_vantage",
@@ -349,7 +357,7 @@ that show which method is doing the work, the action, and the value or data is p
    }
    ```
 
-2. ```logging.DEBUG``` - This will get you all of the log statements from #1 and from the dependant libraries.
+2. `logging.DEBUG` - This will get you all of the log statements from #1 and from the dependant libraries.
    #### Example:
    ```
    INFO:root:{"method": "__init__", "action": "/home/[your username]/.alphavantage config file found"}
