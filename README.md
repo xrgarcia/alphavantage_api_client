@@ -4,8 +4,8 @@
 
 Simple python wrapper around alpha vantage api. This client implements production readiness
 by storing your api key safely and a consistent data model from the api. You can log your response into splunk or cloud
-watch to create SRE (sight reliability engineering)
-dashboards to help you improve your stock market searches
+watch to create SRE (site reliability engineering)
+dashboards to help you improve your stock market searches.
 
 - You can find alpha vantage api here: https://www.alphavantage.co/
 - See the alpha vantage api documentation: https://www.alphavantage.co/documentation/
@@ -123,7 +123,7 @@ assert len(global_quote.data) > 0, "Data field is zero or not present"
 print(f"Response data {global_quote.json()}")
 ```
 
-## Sample Usage Specifying Api Key in environment variable
+## Sample Usage Specifying API Key in environment variable
 
 #### On mac/linux based machines run the following command BUT use your own API KEY
 
@@ -216,7 +216,7 @@ assert len(company_overview.analyst_target_price), "analyst_target_price field i
 print(f"json data{company_overview.json()}")
 ```
 
-### Get Economic indicators
+### Get Economic Indicators
 
 ```
 from alphavantage_api_client import AlphavantageClient
