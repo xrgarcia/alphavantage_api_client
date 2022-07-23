@@ -163,6 +163,26 @@ class AlphavantageClient:
 
         return GlobalQuote.parse_obj(json_response)
 
+    def get_daily_quote(self, event: dict) -> Quote:
+        """
+        This API returns raw (as-traded) daily time series (date, daily open, daily high, daily low, daily close, daily
+        volume) of the global equity specified, covering 20+ years of historical data. If you are also interested in
+        split/dividend-adjusted historical data, please use the Daily Adjusted API, which covers adjusted close values
+        and historical split and dividend events.
+        Args:
+            event: dict, required
+
+        Returns: Quote
+
+        """
+        # default params
+        defaults = {"datatype": "json", "function": "TIME_SERIES_DAILY",
+                    "outputsize": "compact"}
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
     def get_intraday_quote(self, event: dict) -> Quote:
         """ Intraday time series data covering extened trading hours.
 

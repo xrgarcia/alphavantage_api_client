@@ -11,6 +11,7 @@ class Ticker:
         self.__symbol__: str = None
         self.__global_quote__: GlobalQuote = None
         self.__intraday_quote__: Quote = None
+        self.__daily_quote__: Quote = None
         self.__earnings__: AccountingReport = None
         self.__cash_flow__: AccountingReport = None
         self.__balance_sheet__: AccountingReport = None
@@ -53,12 +54,15 @@ class Ticker:
 
         return self
 
-    def fetch_global_quote(self):
+    def fetch_global_quote(self, params=None):
         if self.__symbol__ is None or len(self.__symbol__) == 0:
             raise ValueError("You must define the symbol by calling from_symbol(...)")
         event = {
             "symbol": self.__symbol__
         }
+        if params is not None:
+            self.__client__.__inject_values__(params, event)
+
         self.__global_quote__ = self.__client__.get_global_quote(event)
 
         return self
@@ -104,12 +108,28 @@ class Ticker:
 
         return self
 
-    def fetch_intraday_quote(self):
+    def fetch_daily_quote(self, params=None):
         if self.__symbol__ is None or len(self.__symbol__) == 0:
             raise ValueError("You must define the symbol by calling from_symbol(...)")
         event = {
             "symbol": self.__symbol__
         }
+        if params is not None:
+            self.__client__.__inject_values__(params, event)
+
+        daily_quote = self.__client__.get_intraday_quote(event)
+        self.__daily_quote__ = daily_quote
+        return self
+
+    def fetch_intraday_quote(self, params=None):
+        if self.__symbol__ is None or len(self.__symbol__) == 0:
+            raise ValueError("You must define the symbol by calling from_symbol(...)")
+        event = {
+            "symbol": self.__symbol__
+        }
+        if params is not None:
+            self.__client__.__inject_values__(params, event)
+
         intraday_quote = self.__client__.get_intraday_quote(event)
         self.__intraday_quote__ = intraday_quote
         return self
@@ -219,6 +239,11 @@ class Ticker:
         if self.__intraday_quote__ is None or not self.__intraday_quote__:
             raise ValueError("intraday_quote is not defined. You call fetch_intraday_quote(...) to populate it")
         return self.__intraday_quote__
+
+    def get_daily_quote(self) -> Quote:
+        if self.__daily_quote__ is None or not self.__daily_quote__:
+            raise ValueError("daily_quote is not defined. You call fetch_daily_quote(...) to populate it")
+        return self.__daily_quote__
 
     def get_company_overview(self) -> Quote:
         if self.__company_overview__ is None or not self.__company_overview__:

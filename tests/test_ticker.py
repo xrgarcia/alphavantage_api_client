@@ -46,3 +46,33 @@ def test_get_most_recent_annual_reports():
     metrics = ticker.get_client().get_internal_metrics()
     print("")
     print(metrics)
+
+
+@pytest.mark.integration
+def test_get_intraday_with_params():
+    print("")
+    params = {
+        "adjusted": False,
+        "interval": "60min"
+    }
+    symbols = ["TSLA", "MSFT", "AMZN", "TDOC", "PATH", "ZM", "C", "VZ"]
+    ticker = Ticker().create_client().should_retry_once()
+    for symbol in symbols:
+        intraday_quote = ticker.from_symbol(symbol).fetch_intraday_quote(params).get_intraday_quote()
+        assert params["interval"] == intraday_quote.meta_data["4. Interval"], \
+            f"The interval doesn't match, {params['interval']} != {intraday_quote.meta_data['4. Interval']}"
+
+@pytest.mark.integration
+def test_get_daily_quote_with_params():
+    print("")
+    params = {
+        "adjusted": False,
+        "interval": "60min"
+    }
+    symbols = ["TSLA", "MSFT", "AMZN", "TDOC", "PATH", "ZM", "C", "VZ"]
+    ticker = Ticker().create_client().should_retry_once()
+    for symbol in symbols:
+        daily_quote = ticker.from_symbol(symbol).fetch_daily_quote(params).get_daily_quote()
+        assert params["interval"] == daily_quote.meta_data["4. Interval"], \
+            f"The interval doesn't match, {params['interval']} != {daily_quote.meta_data['4. Interval']}"
+

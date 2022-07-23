@@ -94,7 +94,7 @@ def test_can_not_global_quote_wrong_symbol_json():
     global_quote = client.get_global_quote(event)
     assert not global_quote.success, f"success was found to be {global_quote.success}: {global_quote.error_message}"
     assert global_quote.symbol == event.get("symbol"), "Response symbol doesn't matched requested symbol"
-    #assert not global_quote.limit_reached, f"{global_quote.error_message}"
+    # assert not global_quote.limit_reached, f"{global_quote.error_message}"
     assert not len(global_quote.data), "Response should have data but contains zero"
     logging.warning(f" Can NOT quote stock symbol in JSON {event.get('symbol', None)}")
 
@@ -109,7 +109,7 @@ def test_can_not_global_quote_wrong_symbol_csv():
     global_quote = client.get_global_quote(event)
     assert not global_quote.success, f"success: {global_quote.success}, msg: {global_quote.error_message}"
     assert global_quote.symbol == event.get("symbol"), "Response symbol doesn't matched requested symbol"
-    #assert not global_quote.limit_reached, f"{global_quote.error_message}"
+    # assert not global_quote.limit_reached, f"{global_quote.error_message}"
     assert global_quote.csv is None, "Response should have data but contains zero"
     logging.warning(f" Can NOT quote stock symbol in csv {event.get('symbol', None)} : {global_quote.error_message}")
 
@@ -169,6 +169,20 @@ def test_can_quote_intraday():
     assert not intra_day_quote.limit_reached, f"limit_reached should not be true {intra_day_quote.error_message}"
     assert intra_day_quote.success, f"success is false {intra_day_quote.error_message}"
     assert len(intra_day_quote.data), f"Did not return data for this symbol {intra_day_quote.symbol}"
+    logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
+
+
+@pytest.mark.integration
+def test_can_quote_daily():
+    event = {
+        "symbol": "VZ"
+    }
+    client = AlphavantageClient().should_retry_once()
+    daily_quote = client.get_daily_quote(event)
+    print(daily_quote.json())
+    assert not daily_quote.limit_reached, f"limit_reached should not be true {daily_quote.error_message}"
+    assert daily_quote.success, f"success is false {daily_quote.error_message}"
+    assert len(daily_quote.data), f"Did not return data for this symbol {daily_quote.symbol}"
     logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
 
 
@@ -308,14 +322,13 @@ def test_can_not_query_csv_company_overview():
 
 @pytest.mark.integration
 def test_can_not_query_income_statement():
-    client = AlphavantageClient()
-    event = {
-        "symbol": "tsla2"
-    }
 
+    event = {
+        "symbol": "tsla22354q2354"
+    }
+    client = AlphavantageClient()
     accounting_report = client.get_income_statement(event)
     assert not accounting_report.success, f"success was found to be True: {accounting_report.error_message}"
-    assert not accounting_report.limit_reached, f'{accounting_report.error_message}'
     assert accounting_report.symbol == event.get("symbol", None), f"Symbols don't match " \
                                                                   f"{accounting_report.symbol} : {event.get('symbol')}"
     logging.warning(f" Can not query  income statement {accounting_report.error_message}")
