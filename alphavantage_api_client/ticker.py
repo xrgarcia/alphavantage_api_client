@@ -245,7 +245,7 @@ class Ticker:
             raise ValueError("daily_quote is not defined. You call fetch_daily_quote(...) to populate it")
         return self.__daily_quote__
 
-    def get_company_overview(self) -> Quote:
+    def get_company_overview(self) -> CompanyOverview:
         if self.__company_overview__ is None or not self.__company_overview__:
             raise ValueError("company_overview is not defined. You call fetch_company_overview(...) to populate it")
         return self.__company_overview__

@@ -147,7 +147,7 @@ class CompanyOverview(BaseQuote):
     Industry: str = Field(default=None, alias='Industry')
     address: str = Field(default=None, alias='Address')
     fiscal_year_end: str = Field(default=None, alias='FiscalYearEnd')
-    latest_Quarter: str = Field(default=None, alias='LatestQuarter')
+    latest_quarter: str = Field(default=None, alias='LatestQuarter')
     market_capitalization: str = Field(default=None, alias='MarketCapitalization')
     ebitda: str = Field(default=None, alias='EBITDA')
     pe_ratio: str = Field(default=None, alias='PERatio')
