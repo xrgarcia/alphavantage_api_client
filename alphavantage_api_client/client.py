@@ -497,7 +497,7 @@ class AlphavantageClient:
         diff = 60 - (now - then)
         logging.info(f"sleeping for {diff} seconds")
         if diff < 0:
-            diff = 1
+            diff = 60
         time.sleep(diff)
 
     def clear_cache(self):
