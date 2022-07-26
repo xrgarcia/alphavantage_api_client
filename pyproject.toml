@@ -6,7 +6,7 @@ authors = ["Ray Garcia <ray@slashbin.us>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "3.10.4"
+python = "^3.10"
 requests = "^2.27.1"
 pydantic = "^1.9.1"
 
