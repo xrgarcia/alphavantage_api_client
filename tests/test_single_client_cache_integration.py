@@ -99,7 +99,7 @@ def test_canReachLimitJson():
     results = None
     # force limit reached
     # my api key is free, so 5 calls per min and total of 500 per day
-    client.clear_cache().should_retry_once(False) # turn retry off so we can hit limit
+    client.clear_cache().should_retry_once(False)  # turn retry off so we can hit limit
     for index, symbol in enumerate(symbols):
         event = {
             "symbol": symbol
@@ -108,7 +108,7 @@ def test_canReachLimitJson():
         if results.limit_reached:
             limit_reached = True
             break
-    client.should_retry_once() # turn retry back on
+    client.should_retry_once()  # turn retry back on
     assert limit_reached, "Failed to reach limit"
     assert results.symbol == event['symbol'], f" Expected symbol doesn't match given: {event.get('symbol', None)}"
     logging.warning(f" Can Reach Limit while quoting for symbols {symbols}")
@@ -132,7 +132,7 @@ def test_canReachLimitCsv():
             limit_reached = True
             break
 
-    client.should_retry_once() # turn retry back on
+    client.should_retry_once()  # turn retry back on
     assert limit_reached, "Failed to reach limit"
     assert results.symbol == event['symbol'], f" Expected symbol doesn't match given: {event.get('symbol', None)}"
 
@@ -149,6 +149,18 @@ def test_can_quote_intraday():
     assert not intra_day_quote.limit_reached, f"limit_reached should not be true {intra_day_quote.error_message}"
     assert intra_day_quote.success, f"success is false {intra_day_quote.error_message}"
     assert len(intra_day_quote.data), f"Did not return data for this symbol {intra_day_quote.symbol}"
+    logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
+
+
+@pytest.mark.integration
+def test_can_quote_daily():
+    event = {
+        "symbol": "VZ"
+    }
+    daily_quote = client.get_daily_quote(event)
+    assert not daily_quote.limit_reached, f"limit_reached should not be true {daily_quote.error_message}"
+    assert daily_quote.success, f"success is false {daily_quote.error_message}"
+    assert len(daily_quote.data), f"Did not return data for this symbol {daily_quote.symbol}"
     logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
 
 
