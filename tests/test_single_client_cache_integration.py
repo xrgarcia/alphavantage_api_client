@@ -442,3 +442,14 @@ def test_get_data_from_alpha_vantage():
     assert len(results) > 0, "There should be data in the results"
 
     logging.warning("Successfully queried data using get_data_from_alpha_vantage")
+
+@pytest.mark.integration
+def test_get_fx_currency_data():
+    event = {
+        "function" : "CURRENCY_EXCHANGE_RATE",
+        "from_currency" : "JPY",
+        "to_currency" : "USD"
+    }
+    results = client.get_data_from_alpha_vantage(event)
+    print(results)
+    assert results["success"], f"FX Exchange call failed{results}"
