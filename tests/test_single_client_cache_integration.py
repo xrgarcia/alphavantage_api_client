@@ -92,7 +92,7 @@ def test_can_not_global_quote_wrong_symbol_csv():
     logging.warning(f" Can NOT quote stock symbol in csv {event.get('symbol', None)} : {global_quote.error_message}")
 
 
-@pytest.mark.integration
+@pytest.mark.limit
 def test_canReachLimitJson():
     symbols = ["VZ", "PATH", "ZM", "TSLA", "AAPL", "GOOG", "C", "VICI", "TDOC", "ALLY", "AMZN", "MSFT", "NLY"]
     limit_reached = False
@@ -114,7 +114,7 @@ def test_canReachLimitJson():
     logging.warning(f" Can Reach Limit while quoting for symbols {symbols}")
 
 
-@pytest.mark.integration
+@pytest.mark.limit
 def test_canReachLimitCsv():
     symbols = ["VZ", "PATH", "ZM", "TSLA", "AAPL", "GOOG", "C", "VICI", "TDOC", "ALLY", "AMZN", "MSFT", "NLY"]
     limit_reached = False

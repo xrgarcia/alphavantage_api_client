@@ -114,7 +114,7 @@ def test_can_not_global_quote_wrong_symbol_csv():
     logging.warning(f" Can NOT quote stock symbol in csv {event.get('symbol', None)} : {global_quote.error_message}")
 
 
-@pytest.mark.integration
+@pytest.mark.limit
 def test_can_reach_limit_json():
     client = AlphavantageClient()
     event = {
@@ -135,7 +135,7 @@ def test_can_reach_limit_json():
     logging.warning(f" Can Reach Limit while quoting for symbol {event.get('symbol', None)} in JSON")
 
 
-@pytest.mark.integration
+@pytest.mark.limit
 def test_can_reach_limit_csv():
     client = AlphavantageClient()
     event = {
@@ -484,3 +484,16 @@ def test_get_data_from_alpha_vantage():
     assert len(results) > 0, "There should be data in the results"
 
     logging.warning("Successfully queried data using get_data_from_alpha_vantage")
+
+
+@pytest.mark.integration
+def test_get_fx_currency_data():
+    event = {
+        "function" : "CURRENCY_EXCHANGE_RATE",
+        "from_currency" : "JPY",
+        "to_currency" : "USD"
+    }
+    client = AlphavantageClient().should_retry_once()
+    results = client.get_data_from_alpha_vantage(event)
+    print(results)
+    assert results["success"], f"FX Exchange call failed{results}"
