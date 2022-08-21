@@ -1,4 +1,4 @@
-from python:3.10-slim-buster
+from python:3.9-slim-buster
 
 WORKDIR /src
 
