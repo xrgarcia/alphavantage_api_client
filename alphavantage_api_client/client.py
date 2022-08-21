@@ -433,14 +433,14 @@ class AlphavantageClient:
 
         # put into cache if allowed
         if self.__use_cache__:
-            self.__put_item_into_cache(loggable_event, requested_data)
+            self.__put_item_into_cache__(loggable_event, requested_data)
 
         logging.info(json.dumps({"method": "get_data_from_alpha_vantage"
                                     , "action": "return_value", "data": requested_data, "event": loggable_event}))
 
         return requested_data
 
-    def __put_item_into_cache(self, event, results):
+    def __put_item_into_cache__(self, event, results):
 
         if len(self.__cache__) >= self.__max_cache_size__:
             self.__cache__.clear()
