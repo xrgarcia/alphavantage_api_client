@@ -10,6 +10,7 @@ def test_fiscal_date_ending_field_in_all_accounting_reports():
     earnings = vz.get_earnings()
     income_statement = vz.get_income_statement()
     balance_sheet = vz.get_balance_sheet()
+    cash_flow = vz.get_cash_flow()
 
     for index, account_report in enumerate(earnings.annualReports):
         assert "fiscalDateEnding" in account_report, f"Did not find fiscalDateEnding in {account_report}"
@@ -26,7 +27,13 @@ def test_fiscal_date_ending_field_in_all_accounting_reports():
     for index, account_report in enumerate(balance_sheet.quarterlyReports):
         assert "fiscalDateEnding" in account_report, f"Did not find fiscalDateEnding in {account_report}"
 
-    for index, account_report in enumerate(balance_sheet.quarterlyReports):
+    for index, account_report in enumerate(balance_sheet.annualReports):
+        assert "fiscalDateEnding" in account_report, f"Did not find fiscalDateEnding in {account_report}"
+
+    for index, account_report in enumerate(cash_flow.quarterlyReports):
+        assert "fiscalDateEnding" in account_report, f"Did not find fiscalDateEnding in {account_report}"
+
+    for index, account_report in enumerate(cash_flow.annualReports):
         assert "fiscalDateEnding" in account_report, f"Did not find fiscalDateEnding in {account_report}"
 
     logging.warning("Found fiscalDateEnding in all accounting reports")

@@ -147,16 +147,21 @@ class JsonValidationRuleChecks(BaseValidationRuleChecks):
         return self
 
     def is_empty_global_quote(self, response_json):
-        return len(response_json) == 1 and len(response_json.get("Global Quote", {})) == 0
+        is_property_count_one = len(response_json) == 1
+        has_global_quote_property = "Global Quote" in response_json
+        is_global_quote_empty = len(response_json.get("Global Quote", {})) == 0
+        return is_property_count_one and has_global_quote_property and is_global_quote_empty
 
     def expect_successful_response(self):
         self.check_response_present()
         rule_name = "expect_meaningful_json_response"
-        if self.is_meaningful_response() and self.__http_get_response__.text != "{}" \
-                and "Error Message" not in self.__http_get_response__.json() \
-                and "Information" not in self.__http_get_response__.json() \
-                and "Note" not in self.__http_get_response__.json() \
-                and not self.is_empty_global_quote(self.__http_get_response__.json()):
+        is_meaningful = self.is_meaningful_response() and self.__http_get_response__.text != "{}"
+        is_not_error_msg = "Error Message" not in self.__http_get_response__.json()
+        is_not_info_msg = "Information" not in self.__http_get_response__.json()
+        is_not_note_msg = "Note" not in self.__http_get_response__.json()
+        is_not_empty_global_quote = not self.is_empty_global_quote(self.__http_get_response__.json())
+
+        if is_meaningful and is_not_error_msg and is_not_info_msg and is_not_note_msg and is_not_empty_global_quote:
             self.__rules__[rule_name] = True
         else:
             self.__rules__[rule_name] = False
