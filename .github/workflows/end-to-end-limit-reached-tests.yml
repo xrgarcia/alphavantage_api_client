@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment:
-      name: "Daily End to End Tests"
+      name: "Daily Integration Limit Reached Tests"
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python 3.10
