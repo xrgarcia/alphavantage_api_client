@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 env:
-  ALPHAVANTAGE_API_KEY: "null"
+  ALPHAVANTAGE_API_KEY: "${{ secrets.FREE_ALPHAVANTAGE_API_KEY }}"
   
 jobs:
   build:
