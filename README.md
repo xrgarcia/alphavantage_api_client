@@ -2,7 +2,7 @@
 
 ## API Overview
 
-Simple python wrapper around alpha vantage api and a consistent data model from the api. You can turn on debugging to log your response easy access of your responses.
+Simple python wrapper around alpha vantage api and a consistent data model from the api. You can turn on debugging to log your responses so they are easily accessible.
 
 - You can find alpha vantage api here: https://www.alphavantage.co/
 - See the alpha vantage api documentation: https://www.alphavantage.co/documentation/
