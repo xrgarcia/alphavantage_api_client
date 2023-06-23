@@ -153,8 +153,8 @@ print(f"Response data {global_quote.json()}")
 
 ### Retry and Cache
 
-The free tier only allows so many calls per min.  You can configure the client to use a simple cache and retry your call
-one time upon failure. This way you can get the most out of your free tier :-)
+A free account only allows so many calls per min.  You can configure the client to use a simple cache and retry your call
+if it detects your limit has been reached. This way you can get the most out of your free tier :-)
 ```
 from alphavantage_api_client import AlphavantageClient
 
