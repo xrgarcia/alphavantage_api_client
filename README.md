@@ -8,7 +8,7 @@ Simple python wrapper around alpha vantage api. This library normalizes response
 - See the alpha vantage api documentation: https://www.alphavantage.co/documentation/
 - Get your free api key here: https://www.alphavantage.co/support/#api-key
 
-**NOTE: Free API keys have a limit of 5 calls per min and max of 500 calls per day.**
+**NOTE: Free API keys have a limit of 5 calls per min and max of 500 calls per day.  The client will detect if you reached your limit and give you the option to retry.**
 
 ## Notable Class Information
 
