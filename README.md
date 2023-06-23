@@ -8,7 +8,8 @@ Simple python wrapper around alpha vantage api. This library normalizes response
 - See the alpha vantage api documentation: https://www.alphavantage.co/documentation/
 - Get your free api key here: https://www.alphavantage.co/support/#api-key
 
-**NOTE: Free API keys have a limit of 5 calls per min and max of 500 calls per day.  The client will detect if you reached your limit and give you the option to retry.**
+**NOTE: Free API keys have a limit of 5 calls per min and max of 500 calls per day.  The client provides a simple cache
+and retry once option to get the most out of your free account.**
 
 ## Notable Class Information
 
@@ -150,6 +151,20 @@ print(f"Response data {global_quote.json()}")
 
 ## Available Data
 
+### Retry and Cache
+
+The free tier only allows so many calls per min.  You can configure the client to use a simple cache and retry your call
+one time upon failure. This way you can get the most out of your free tier :-)
+```
+from alphavantage_api_client import AlphavantageClient
+
+client = AlphavantageClient().should_retry_once().use_simple_cache()
+event = {
+        "symbol": "tsla"
+}
+global_quote = client.get_global_quote(event)
+
+```
 ### Stock Price for Today
 
 ```
