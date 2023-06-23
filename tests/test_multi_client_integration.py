@@ -158,7 +158,7 @@ def test_can_reach_limit_csv():
     logging.warning(f" Can Reach Limit while quoting for symbol {event.get('symbol', None)} in JSON")
 
 
-@pytest.mark.integration
+@pytest.mark.integration_paid
 def test_can_quote_intraday():
     event = {
         "symbol": "TSLA",
@@ -183,10 +183,10 @@ def test_can_quote_daily():
     assert not daily_quote.limit_reached, f"limit_reached should not be true {daily_quote.error_message}"
     assert daily_quote.success, f"success is false {daily_quote.error_message}"
     assert len(daily_quote.data), f"Did not return data for this symbol {daily_quote.symbol}"
-    logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
+    logging.warning(f" Successfully quoted symbol {event['symbol']} in JSON")
 
 
-@pytest.mark.integration
+@pytest.mark.integrationn_paid
 def test_can_quote_crypto():
     event = {
         "function": "CRYPTO_INTRADAY",
@@ -202,7 +202,7 @@ def test_can_quote_crypto():
     logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
 
 
-@pytest.mark.integration
+@pytest.mark.integration_paid
 def test_can_quote_crypto_csv():
     event = {
         "function": "CRYPTO_INTRADAY",
@@ -486,7 +486,7 @@ def test_get_data_from_alpha_vantage():
     logging.warning("Successfully queried data using get_data_from_alpha_vantage")
 
 
-@pytest.mark.integration
+@pytest.mark.integration_paid
 def test_get_fx_currency_data():
     event = {
         "function" : "CURRENCY_EXCHANGE_RATE",
