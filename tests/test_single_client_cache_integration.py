@@ -8,6 +8,17 @@ client = AlphavantageClient().should_retry_once().use_simple_cache()
 
 
 @pytest.mark.integration
+def test_can_get_news_and_sentiment():
+    client = AlphavantageClient()
+    event = {
+        "function" : "NEWS_SENTIMENT",
+        "tickers": "TSLA"
+    }
+    result = client.get_data_from_alpha_vantage(event)
+    print(json.dumps(result))
+    assert result['success'], 'could not get news and sentiment'
+
+@pytest.mark.integration
 def test_can_query_from_cache():
     event = {
         "symbol": "tsla"

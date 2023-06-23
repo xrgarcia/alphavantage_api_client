@@ -58,6 +58,8 @@ class MockAlphavantageClient(AlphavantageClient):
             text_file = open(f"{self.base_path}/mock_stock_price_full.json", "r")
         elif event.get("function") == "TIME_SERIES_INTRADAY" and event.get("interval") == "5min":
             text_file = open(f"{self.base_path}/mock_intraday_series_quote.json", "r")
+        elif event.get("function") == "NEWS_SENTIMENT":
+            text_file = open(f"{self.base_path}/mock_news_an_sentiment.json", "r")
         else:
             raise ValueError(f"We don't have a mock data file for your request {json.dumps(event)}")
 

@@ -1,6 +1,7 @@
 import pytest
 from .mock_client import MockAlphavantageClient
 import logging
+import json
 
 # Reference for logging in pytest: https://docs.pytest.org/en/7.1.x/how-to/logging.html
 # Reference for logging: https://docs.python.org/3/howto/logging.html
@@ -39,6 +40,17 @@ def test_get_global_quote():
     assert len(global_quote.data) > 0, "Data field is zero or not present"
     logging.warning(f"Successfully tested test_quote_stock_price for {event['symbol']}")
 
+
+@pytest.mark.unit
+def test_news_an_sentiment():
+    client = MockAlphavantageClient()
+    event = {
+        "function" : "NEWS_SENTIMENT",
+        "ticker": "TSLA"
+    }
+    result = client.get_data_from_alpha_vantage(event)
+    assert result['success'], 'We should have gotten news and sentiment correctly'
+    print(json.dumps(result))
 
 @pytest.mark.unit
 def test_get_cash_flow():
