@@ -163,6 +163,7 @@ event = {
         "symbol": "tsla"
 }
 global_quote = client.get_global_quote(event)
+client.clear_cache() # clear cache
 
 ```
 ### Stock Price for Today
