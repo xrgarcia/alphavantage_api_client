@@ -8,6 +8,17 @@ client = AlphavantageClient().should_retry_once().use_simple_cache()
 
 
 @pytest.mark.integration
+def test_can_get_news_and_sentiment():
+    client = AlphavantageClient()
+    event = {
+        "function" : "NEWS_SENTIMENT",
+        "tickers": "TSLA"
+    }
+    result = client.get_data_from_alpha_vantage(event)
+    print(json.dumps(result))
+    assert result['success'], 'could not get news and sentiment'
+
+@pytest.mark.integration
 def test_can_query_from_cache():
     event = {
         "symbol": "tsla"
@@ -149,7 +160,7 @@ def test_can_quote_intraday():
     assert not intra_day_quote.limit_reached, f"limit_reached should not be true {intra_day_quote.error_message}"
     assert intra_day_quote.success, f"success is false {intra_day_quote.error_message}"
     assert len(intra_day_quote.data), f"Did not return data for this symbol {intra_day_quote.symbol}"
-    logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
+    logging.warning(f" Successfully quoted symbol {event['symbol']} in JSON")
 
 
 @pytest.mark.integration
@@ -161,10 +172,10 @@ def test_can_quote_daily():
     assert not daily_quote.limit_reached, f"limit_reached should not be true {daily_quote.error_message}"
     assert daily_quote.success, f"success is false {daily_quote.error_message}"
     assert len(daily_quote.data), f"Did not return data for this symbol {daily_quote.symbol}"
-    logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
+    logging.warning(f" Successfully quoted symbol {event['symbol']} in JSON")
 
 
-@pytest.mark.integration
+@pytest.mark.integration_paid
 def test_can_quote_crypto():
     event = {
         "function": "CRYPTO_INTRADAY",
@@ -179,7 +190,7 @@ def test_can_quote_crypto():
     logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
 
 
-@pytest.mark.integration
+@pytest.mark.integration_paid
 def test_can_quote_crypto_csv():
     event = {
         "function": "CRYPTO_INTRADAY",
@@ -443,7 +454,7 @@ def test_get_data_from_alpha_vantage():
 
     logging.warning("Successfully queried data using get_data_from_alpha_vantage")
 
-@pytest.mark.integration
+@pytest.mark.integration_paid
 def test_get_fx_currency_data():
     event = {
         "function" : "CURRENCY_EXCHANGE_RATE",
