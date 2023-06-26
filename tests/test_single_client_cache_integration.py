@@ -9,7 +9,6 @@ client = AlphavantageClient().should_retry_once().use_simple_cache()
 
 @pytest.mark.integration
 def test_can_get_news_and_sentiment():
-    client = AlphavantageClient()
     event = {
         "function" : "NEWS_SENTIMENT",
         "tickers": "TSLA"
@@ -163,7 +162,7 @@ def test_can_quote_intraday():
     logging.warning(f" Successfully quoted symbol {event['symbol']} in JSON")
 
 
-@pytest.mark.integration
+@pytest.mark.integration_paid
 def test_can_quote_daily():
     event = {
         "symbol": "VZ"

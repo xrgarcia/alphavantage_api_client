@@ -158,7 +158,7 @@ def test_can_reach_limit_csv():
     logging.warning(f" Can Reach Limit while quoting for symbol {event.get('symbol', None)} in JSON")
 
 
-@pytest.mark.integration_paid
+@pytest.mark.integration
 def test_can_quote_intraday():
     event = {
         "symbol": "TSLA",
@@ -172,7 +172,7 @@ def test_can_quote_intraday():
     logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
 
 
-@pytest.mark.integration
+@pytest.mark.integration_paid
 def test_can_quote_daily():
     event = {
         "symbol": "VZ"
