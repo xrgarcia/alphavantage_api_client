@@ -188,8 +188,6 @@ if __name__ == "__main__":
 
 ## Debugging / Logging
 
-### Debugging
-
 We use the built in `import logging` library in python. Obtaining more information from the client behavior
 is as simple as adjusting your log levels.
 
