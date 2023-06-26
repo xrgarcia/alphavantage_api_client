@@ -11,8 +11,8 @@ Create a simple python wrapper around [alpha vantage api](https://www.alphavanta
 
 ## Overview
 * [How to Install](https://github.com/xrgarcia/alphavantage_api_client#how-to-install)
-* [Obtain Stock Price](https://github.com/xrgarcia/alphavantage_api_client#how-to-install)
-* [Obtain Accouting / Financial Statements](https://github.com/xrgarcia/alphavantage_api_client#how-to-install)
+* [Obtain Stock Price](https://github.com/xrgarcia/alphavantage_api_client#obtain-stock-price)
+* [Obtain Accouting / Financial Statements](https://github.com/xrgarcia/alphavantage_api_client#obtain-accounting-reports--financial-statements)
 * [Debugging / Logging](https://github.com/xrgarcia/alphavantage_api_client#debugging--logging)
 * [Retry / Cache](https://github.com/xrgarcia/alphavantage_api_client#retry-and-cache) (optimize your free account!)
 * [Our Wiki](https://github.com/xrgarcia/alphavantage_api_client/wiki)
