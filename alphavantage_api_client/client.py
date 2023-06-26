@@ -10,7 +10,7 @@ from alphavantage_api_client.models import GlobalQuote, Quote, AccountingReport,
 import copy
 import logging
 import hashlib
-from typing import Optional
+from typing import Optional, Union
 
 
 class ApiKeyNotFound(Exception):
@@ -142,23 +142,28 @@ class AlphavantageClient:
 
         return self
 
-    def get_global_quote(self, event: dict) -> GlobalQuote:
+    def get_global_quote(self, event: Union[str, dict]) -> GlobalQuote:
         """ Lightweight access to obtain stock quote data
 
         A lightweight alternative to the time series APIs, this service returns the price and volume information
         for a token of your choice.
         Args:
-            event (dict): A ``dict`` containing the paramters supported by the api.
+            event (dict): A ``dict`` containing the parameters supported by the api.
             Minimum required value is ``symbol (str)``
 
         Returns:
             :rtype: GlobalQuote
 
         """
+        event_dict = event
+        if isinstance(event, str):
+            event_dict = {
+                "symbol": event
+            }
         defaults = {
             "function": "GLOBAL_QUOTE"
         }
-        json_request = self.__create_api_request_from__(defaults, event)
+        json_request = self.__create_api_request_from__(defaults, event_dict)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return GlobalQuote.parse_obj(json_response)
@@ -204,7 +209,12 @@ class AlphavantageClient:
         defaults = {"symbol": None, "datatype": "json", "function": "TIME_SERIES_INTRADAY",
                     "interval": "60min", "slice": "year1month1",
                     "outputsize": "compact"}
-        json_request = self.__create_api_request_from__(defaults, event)
+        event_dict = event
+        if isinstance(event, str):
+            event_dict = {
+                "symbol": event
+            }
+        json_request = self.__create_api_request_from__(defaults, event_dict)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return Quote.parse_obj(json_response)
@@ -228,9 +238,14 @@ class AlphavantageClient:
             "function": "INCOME_STATEMENT",
             "datatype": "json"
         }
-        if event.get("datatype") == "csv":
-            raise CsvNotSupported(defaults.get("function"), event)
-        json_request = self.__create_api_request_from__(defaults, event)
+        event_dict = event
+        if isinstance(event, str):
+            event_dict = {
+                "symbol": event
+            }
+        if event_dict.get("datatype") == "csv":
+            raise CsvNotSupported(defaults.get("function"), event_dict)
+        json_request = self.__create_api_request_from__(defaults, event_dict)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return AccountingReport.parse_obj(json_response)
@@ -240,9 +255,15 @@ class AlphavantageClient:
             "function": "BALANCE_SHEET",
             "datatype": "json"
         }
-        if event.get("datatype") == "csv":
-            raise CsvNotSupported(defaults.get("function"), event)
-        json_request = self.__create_api_request_from__(defaults, event)
+        event_dict = event
+        if isinstance(event, str):
+            event_dict = {
+                "symbol": event
+            }
+        if event_dict.get("datatype") == "csv":
+            raise CsvNotSupported(defaults.get("function"), event_dict)
+
+        json_request = self.__create_api_request_from__(defaults, event_dict)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return AccountingReport.parse_obj(json_response)
@@ -264,14 +285,19 @@ class AlphavantageClient:
             "function": "CASH_FLOW",
             "datatype": "json"
         }
-        if event.get("datatype") == "csv":
-            raise CsvNotSupported(defaults.get("function"), event)
-        json_request = self.__create_api_request_from__(defaults, event)
+        event_dict = event
+        if isinstance(event, str):
+            event_dict = {
+                "symbol": event
+            }
+        if event_dict.get("datatype") == "csv":
+            raise CsvNotSupported(defaults.get("function"), event_dict)
+        json_request = self.__create_api_request_from__(defaults, event_dict)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return AccountingReport.parse_obj(json_response)
 
-    def get_earnings(self, event: dict) -> AccountingReport:
+    def get_earnings(self, event: Union[str, dict]) -> AccountingReport:
         """
         This API returns the annual and quarterly earnings (EPS) for the company of interest. Quarterly data also
         includes analyst estimates and surprise metrics.
@@ -288,9 +314,15 @@ class AlphavantageClient:
             "function": "EARNINGS",
             "datatype": "json"
         }
-        if event.get("datatype") == "csv":
-            raise CsvNotSupported(defaults.get("function"), event)
-        json_request = self.__create_api_request_from__(defaults, event)
+        event_dict = event
+        if isinstance(event, str):
+            event_dict = {
+                "symbol": event
+            }
+
+        if event_dict.get("datatype") == "csv":
+            raise CsvNotSupported(defaults.get("function"), event_dict)
+        json_request = self.__create_api_request_from__(defaults, event_dict)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return AccountingReport.parse_obj(json_response)
@@ -311,9 +343,14 @@ class AlphavantageClient:
         defaults = {
             "function": "OVERVIEW"
         }
-        if event.get("datatype") == "csv":
-            raise CsvNotSupported(defaults.get("function"), event)
-        json_request = self.__create_api_request_from__(defaults, event)
+        event_dict = event
+        if isinstance(event, str):
+            event_dict = {
+                "symbol": event
+            }
+        if event_dict.get("datatype") == "csv":
+            raise CsvNotSupported(defaults.get("function"), event_dict)
+        json_request = self.__create_api_request_from__(defaults, event_dict)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return CompanyOverview.parse_obj(json_response)

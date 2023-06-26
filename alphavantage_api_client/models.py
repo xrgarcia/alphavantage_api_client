@@ -46,6 +46,17 @@ class Quote(BaseQuote):
 
         return None
 
+    def get_oldest_value(self) -> Optional[dict]:
+        if len(self.data) > 0:
+            quote_dates = list(self.data.keys())
+            last_quote_date = quote_dates[len(quote_dates)-1]
+            quote = self.data[last_quote_date]
+            quote["query_date"] = last_quote_date
+
+            return quote
+
+        return None
+
 
 class GlobalQuote(BaseQuote):
     data: dict = Field({}, alias='Global Quote')
