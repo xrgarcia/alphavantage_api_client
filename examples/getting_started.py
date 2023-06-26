@@ -15,6 +15,8 @@ def sample_global_quote():
 def sample_balance_sheet():
     client = AlphavantageClient()
     balance_sheet = client.get_balance_sheet("TSLA")
+    if not balance_sheet.success:
+        raise ValueError(f"{balance_sheet.error_message}")
     print(balance_sheet.get_most_recent_quarterly_report()) # get the newest quarterly statement
     print(balance_sheet.get_most_recent_annual_report()) # get the most recent annual report
     print(balance_sheet.quarterlyReports) # get [] quarterly reports
@@ -23,6 +25,8 @@ def sample_balance_sheet():
 def sample_earnings_statement():
     client = AlphavantageClient()
     earnings = client.get_earnings("TSLA")
+    if not earnings.success:
+        raise ValueError(f"{earnings.error_message}")
     print(earnings.get_most_recent_quarterly_report()) # get the newest quarterly statement
     print(earnings.get_most_recent_annual_report()) # get the most recent annual report
     print(earnings.quarterlyReports) # get [] quarterly reports
@@ -31,6 +35,8 @@ def sample_earnings_statement():
 def sample_income_statement():
     client = AlphavantageClient()
     income_statement = client.get_income_statement("TSLA")
+    if not income_statement.success:
+        raise ValueError(f"{income_statement.error_message}")
     print(income_statement.get_most_recent_quarterly_report()) # get the newest quarterly statement
     print(income_statement.get_most_recent_annual_report()) # get the most recent annual report
     print(income_statement.quarterlyReports) # get [] quarterly reports
@@ -42,16 +48,13 @@ def sample_accounting_reports():
     cash_flow = client.get_cash_flow("TSLA")
     balance_sheet = client.get_balance_sheet("TSLA")
     income_statement = client.get_income_statement("TSLA")
-
-    print(earnings.json())
-    print(cash_flow.json())
-    print(balance_sheet.json())
-    print(income_statement.json())
-
     reports = [earnings,cash_flow, balance_sheet, income_statement]
 
     # show that each report is in the same type and how to access the annual and quarterly reports
     for accounting_report in reports:
+        if not accounting_report.success:
+            raise ValueError(f"{accounting_report.error_message}")
+        print(accounting_report.json())
         print(accounting_report.quarterlyReports) # array of  all quarterly report
         print(accounting_report.annualReports) # array of all annual reports
         print(accounting_report.get_most_recent_annual_report()) # get the most recent annual report
@@ -60,6 +63,8 @@ def sample_accounting_reports():
 def sample_intraday_quote():
     client = AlphavantageClient()
     quote = client.get_intraday_quote("TSLA")
+    if not quote.success:
+        raise ValueError(f"{quote.error_message}")
     print(quote.json())
     print(f"success: {quote.success}") # injected by this library to show success
     print(quote.data) # all data from alpha vantage
@@ -69,6 +74,8 @@ def sample_intraday_quote():
 def sample_company_overview():
     client = AlphavantageClient()
     company_overview = client.get_company_overview("TSLA")
+    if not company_overview.success:
+        raise ValueError(f"{company_overview.error_message}")
     print(f"description: {company_overview.description}")
     print(f"name: {company_overview.name}")
     print(f" pe_ratio: {company_overview.pe_ratio}")
@@ -81,6 +88,8 @@ def sample_company_overview():
 def sample_cash_flow():
     client = AlphavantageClient()
     cash_flow = client.get_cash_flow("TSLA")
+    if not cash_flow.success:
+        raise ValueError(f"{cash_flow.error_message}")
     print(cash_flow.get_most_recent_quarterly_report()) # get the newest quarterly statement
     print(cash_flow.get_most_recent_annual_report()) # get the most recent annual report
     print(cash_flow.quarterlyReports) # get [] quarterly reports
@@ -95,6 +104,11 @@ def sample_retry_when_limit_reached():
             "symbol": symbol
         }
         global_quote = client.get_global_quote(event)
+        if not global_quote.success:
+            raise ValueError(f"{global_quote.error_message}")
+
+        if global_quote.limit_reached:
+            raise ValueError(f"{global_quote.error_message}")
         print(f"symbol: {global_quote.symbol}, Price: {global_quote.get_price()}, success {global_quote.success}")
 
     client.clear_cache() # when you are done making calls, clear cache

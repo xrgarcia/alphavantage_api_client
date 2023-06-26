@@ -10,11 +10,11 @@ Create a simple python wrapper around [alpha vantage api](https://www.alphavanta
 
 
 ## Overview
-* [How to Install](https://github.com/xrgarcia/alphavantage_api_client/wiki/Getting-Started#how-to-install)
-* [Obtain Stock Price](https://github.com/xrgarcia/alphavantage_api_client/wiki/Getting-Started#how-to-install)
-* [Obtain Accouting / Financial Statements](https://github.com/xrgarcia/alphavantage_api_client/wiki/Getting-Started#how-to-install)
-* [Debugging / Logging](https://github.com/xrgarcia/alphavantage_api_client/wiki/Getting-Started#debugging--logging)
-* [Retry / Cache](https://github.com/xrgarcia/alphavantage_api_client/wiki/Getting-Started#retry-and-cache) (optimize your free account!)
+* [How to Install](https://github.com/xrgarcia/alphavantage_api_client#how-to-install)
+* [Obtain Stock Price](https://github.com/xrgarcia/alphavantage_api_client#how-to-install)
+* [Obtain Accouting / Financial Statements](https://github.com/xrgarcia/alphavantage_api_client#how-to-install)
+* [Debugging / Logging](https://github.com/xrgarcia/alphavantage_api_client#debugging--logging)
+* [Retry / Cache](https://github.com/xrgarcia/alphavantage_api_client#retry-and-cache) (optimize your free account!)
 * [Our Wiki](https://github.com/xrgarcia/alphavantage_api_client/wiki)
 
 ## How to Install
@@ -162,23 +162,17 @@ from alphavantage_api_client import AlphavantageClient, GlobalQuote, AccountingR
 
 def sample_accounting_reports():
     client = AlphavantageClient()
-    event = {
-        "symbol": "TSLA"
-    }
-    earnings = client.get_earnings(event)
-    cash_flow = client.get_cash_flow(event)
-    balance_sheet = client.get_balance_sheet(event)
-    income_statement = client.get_income_statement(event)
-
-    print(earnings.json())
-    print(cash_flow.json())
-    print(balance_sheet.json())
-    print(income_statement.json())
-
+    earnings = client.get_earnings("TSLA")
+    cash_flow = client.get_cash_flow("TSLA")
+    balance_sheet = client.get_balance_sheet("TSLA")
+    income_statement = client.get_income_statement("TSLA")
     reports = [earnings,cash_flow, balance_sheet, income_statement]
 
     # show that each report is in the same type and how to access the annual and quarterly reports
     for accounting_report in reports:
+        if not accounting_report.success:
+            raise ValueError(f"{accounting_report.error_message}")
+        print(accounting_report.json())
         print(accounting_report.quarterlyReports) # array of  all quarterly report
         print(accounting_report.annualReports) # array of all annual reports
         print(accounting_report.get_most_recent_annual_report()) # get the most recent annual report
@@ -273,6 +267,11 @@ def sample_retry_when_limit_reached():
             "symbol": symbol
         }
         global_quote = client.get_global_quote(event)
+        if not global_quote.success:
+            raise ValueError(f"{global_quote.error_message}")
+
+        if global_quote.limit_reached:
+            raise ValueError(f"{global_quote.error_message}")
         print(f"symbol: {global_quote.symbol}, Price: {global_quote.get_price()}, success {global_quote.success}")
 
     client.clear_cache() # when you are done making calls, clear cache
