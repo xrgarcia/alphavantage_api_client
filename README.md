@@ -1,79 +1,33 @@
 # Alpha Vantage API Client
 
-## API Overview
+## Our Mission
 
-Simple python wrapper around alpha vantage api. This library normalizes responses so you have consistency across end points. This library also provides direct access to each end point if that is needed. You can turn on debugging to log your responses so they are easily accessible.
+Create a simple python wrapper around [alpha vantage api](https://www.alphavantage.co/documentation/). Normalize responses so you have consistency across end points. Provide direct access to each end point so customers who already use the API can have the flexibility. Make it easy to debug, so users can track down issues quickly. 
 
-- You can find alpha vantage api here: https://www.alphavantage.co/
+- You can find alpha vantage here: https://www.alphavantage.co/
 - See the alpha vantage api documentation: https://www.alphavantage.co/documentation/
 - Get your free api key here: https://www.alphavantage.co/support/#api-key
 
-**NOTE: Free API keys have a limit of 5 calls per min and max of 500 calls per day.  The client provides a simple cache
-and retry once option to get the most out of your free account.**
 
-## Notable Class Information
+## Overview
+* [How to Install](https://github.com/xrgarcia/alphavantage_api_client#how-to-install)
+* [Obtain Stock Price](https://github.com/xrgarcia/alphavantage_api_client#how-to-install)
+* [Obtain Accouting / Financial Statements](https://github.com/xrgarcia/alphavantage_api_client#how-to-install)
+* [Debugging / Logging](https://github.com/xrgarcia/alphavantage_api_client#debugging--logging)
+* [Retry / Cache](https://github.com/xrgarcia/alphavantage_api_client#retry-and-cache) (optimize your free account!)
+* [Our Wiki](https://github.com/xrgarcia/alphavantage_api_client/wiki)
 
-#### Base Fields
-
-1. success (true/false) flag into your response. You can log response into splunk or cloudwatch and know when something
-   fails.
-2. limit_reached (true/false) flag into your response. You can know the difference between an error and reaching limit.
-   so you can pause processing until you api key is allowed to make more requests.
-3. error_message (str) is the response message from the api or this client with details on what went wrong and how to
-   fix it.
-
-#### GlobalQuote, Quote
-
-1. data (dictionary) contains the information requested.
-2. meta_data (dictionary) data describing the data requested.
-
-#### AccountingReport
-
-1. annualReports (list) contains the annual earnings or income statement data requested.
-2. quarterlyReports (list) contains the quarterly earnings or income statement data requested.
-
-#### CompanyOverview
-
-All data from the company overview api
-(example: https://www.alphavantage.co/query?function=OVERVIEW&symbol=IBM&apikey=demo)
-will yield a strongly typed object to include the based fields mentioned above.
-**_Please Note_** some fields in this class have been renamed for clarity and to be more pythonic.
-
-#### RealGDP
-
-1. name (str)
-2. interval (str)
-3. unit (str)
-4. data (list) GDP data requested
-
-## Install from pip
+## How to Install
 
 ```
 pip install alphavantage_api_client
 ```
 
-## Sample Usage Specifying Api Key in Client Builder
 
-```
-from alphavantage_api_client import AlphavantageClient
 
-client = AlphavantageClient().with_api_key("[your api key here]")
-event = {
-   "symbol": "ibm",
-   "interval": "5min"
-}
-global_quote = client.get_global_quote(event)
-assert global_quote.success, "Success field is missing or False"
-assert not global_quote.limit_reached, "Limit reached is true but not hitting API"
-assert global_quote.symbol == event["symbol"], "Symbol from results don't match event"
-assert "meta_data" not in global_quote, "Metadata should not be present since it's not in the api"
-assert len(global_quote.data) > 0, "Data field is zero or not present"
-
-print(f"Response data {global_quote.json()}")
-```
-
-## Sample Usage Specifying Api Key in request event
-
+# Specifying API Key
+There are a few ways you include your API Key:
+### 1. Within each request
 ```
 from alphavantage_api_client import AlphavantageClient
 
@@ -92,9 +46,51 @@ assert len(global_quote.data) > 0, "Data field is zero or not present"
 
 print(f"Response data {global_quote.json()}")
 ```
+### 2. Within the Client
+```
+from alphavantage_api_client import AlphavantageClient
 
-## Sample Usage Specifying Api Key in ini file
+client = AlphavantageClient().with_api_key("[your api key here]")
+event = {
+   "symbol": "ibm",
+   "interval": "5min"
+}
+global_quote = client.get_global_quote(event)
+assert global_quote.success, "Success field is missing or False"
+assert not global_quote.limit_reached, "Limit reached is true but not hitting API"
+assert global_quote.symbol == event["symbol"], "Symbol from results don't match event"
+assert "meta_data" not in global_quote, "Metadata should not be present since it's not in the api"
+assert len(global_quote.data) > 0, "Data field is zero or not present"
 
+print(f"Response data {global_quote.json()}")
+```
+### 3. Within a system environment variable
+#### On mac/linux based machines run the following command BUT use your own API KEY
+
+```
+export ALPHAVANTAGE_API_KEY=[your key here]
+```
+
+#### Now try the below
+
+```
+from alphavantage_api_client import AlphavantageClient
+
+client = AlphavantageClient()
+event = {
+   "symbol": "ibm",
+   "interval": "5min"
+}
+global_quote = client.get_global_quote(event)
+assert global_quote.success, "Success field is missing or False"
+assert not global_quote.limit_reached, "Limit reached is true but not hitting API"
+assert global_quote.symbol == event["symbol"], "Symbol from results don't match event"
+assert "meta_data" not in global_quote, "Metadata should not be present since it's not in the api"
+assert len(global_quote.data) > 0, "Data field is zero or not present"
+
+print(f"Response data {global_quote.json()}")
+```
+### 4. Within an ini file
 #### On mac/linux based machines run the following command BUT use your own API KEY
 
 ```
@@ -121,201 +117,77 @@ assert len(global_quote.data) > 0, "Data field is zero or not present"
 print(f"Response data {global_quote.json()}")
 ```
 
-## Sample Usage Specifying API Key in environment variable
-
-#### On mac/linux based machines run the following command BUT use your own API KEY
+## Obtain Stock Price
 
 ```
-export ALPHAVANTAGE_API_KEY=[your key here]
-```
+from alphavantage_api_client import AlphavantageClient, GlobalQuote
 
-#### Now try the below
 
-```
-from alphavantage_api_client import AlphavantageClient
+def sample_get_stock_price():
+    client = AlphavantageClient()
+    event = {
+        "symbol": "TSLA"
+    }
+    global_quote = client.get_global_quote(event)
+    if not global_quote.success:
+        raise ValueError(f"{global_quote.error_message}")
+    print(global_quote.json())  # convenience method that will convert to json
+    print(f"stock price: ${global_quote.get_price()}")  # convenience method to get stock price
+    print(f"trade volume: {global_quote.get_volume()}")  # convenience method to get volume
+    print(f"low price: ${global_quote.get_low_price()}")  # convenience method to get low price for the day
 
-client = AlphavantageClient()
-event = {
-   "symbol": "ibm",
-   "interval": "5min"
-}
-global_quote = client.get_global_quote(event)
-assert global_quote.success, "Success field is missing or False"
-assert not global_quote.limit_reached, "Limit reached is true but not hitting API"
-assert global_quote.symbol == event["symbol"], "Symbol from results don't match event"
-assert "meta_data" not in global_quote, "Metadata should not be present since it's not in the api"
-assert len(global_quote.data) > 0, "Data field is zero or not present"
 
-print(f"Response data {global_quote.json()}")
-```
-
-## Available Data
-
-### Retry and Cache
-
-A free account only allows so many calls per min.  You can configure the client to use a simple cache and retry
-if it detects your limit has been reached. This way you can get the most out of your free tier :-)
-```
-from alphavantage_api_client import AlphavantageClient
-
-client = AlphavantageClient().should_retry_once().use_simple_cache()
-event = {
-        "symbol": "tsla"
-}
-global_quote = client.get_global_quote(event)
-client.clear_cache() # clear cache
+if __name__ == "__main__":
+    sample_get_stock_price()
 
 ```
-### Stock Price for Today
+returns the following output
+```
+{"success": true, "limit_reached": false, "status_code": 200, "error_message": null, "csv": null, "symbol": "TSLA", "data": {"01. symbol": "TSLA", "02. open": "259.2900", "03. high": "262.4500", "04. low": "252.8000", "05. price": "256.6000", "06. volume": "177460803", "07. latest trading day": "2023-06-23", "08. previous close": "264.6100", "09. change": "-8.0100", "10. change percent": "-3.0271%"}}
+stock price: $256.6000
+trade volume: 177460803
+low price: $252.8000
 
 ```
-from alphavantage_api_client import AlphavantageClient
 
-# see section above to specify api key
-#
-client = AlphavantageClient()
-event = {
-   "symbol": "ibm",
-   "interval": "5min"
-}
-global_quote = client.get_global_quote(event)
-assert global_quote.success, "Success field is missing or False"
-assert not global_quote.limit_reached, "Limit reached is true but not hitting API"
-assert global_quote.symbol == event["symbol"], "Symbol from results don't match event"
-assert "meta_data" not in global_quote, "Metadata should not be present since it's not in the api"
-assert len(global_quote.data) > 0, "Data field is zero or not present"
-
-print(f"Response data {global_quote.json()}")
-```
-
-### Stock Price over multiple days
+## Obtain Accounting Reports / Financial Statements
+There are 4 different accounting reports:
+* **Cash Flow** - A cash flow statement is a financial statement that provides information about the cash inflows and outflows of a company during a specific period of time. It helps investors understand how a company generates and uses cash. 
+* **Balance Sheet** - a financial statement that provides a snapshot of a company's financial position at a specific point in time. It shows the company's assets, liabilities, and shareholders' equity.
+* **Income Statement** - also known as a profit and loss statement or P&L statement, is a financial statement that provides an overview of a company's revenues, expenses, and net income or loss over a specific period of time. It is one of the key financial statements used by investors to assess a company's profitability and financial performance.
+* **Earnings Statements** - An earnings statement, also known as an earnings report or earnings statement, is a financial statement that provides an overview of a company's revenue, expenses, and profit or loss for a specific period of time. It is commonly used by investors to evaluate a company's financial performance. 
 
 ```
-from alphavantage_api_client import AlphavantageClient
+from alphavantage_api_client import AlphavantageClient, GlobalQuote, AccountingReport
 
-# see section above to specify api key
-#
-event = {
-   "symbol": "ibm",
-   "interval": "5min"
-}
-client = AlphavantageClient()
-intraday_quote = client.get_intraday_quote(event)
-assert intraday_quote.success, "Success field is missing or False"
-assert not intraday_quote.limit_reached, "Limit reached is true but not hitting API"
-assert intraday_quote.symbol == event["symbol"], "Symbol from results don't match event"
-assert len(intraday_quote.meta_data) > 0, "Meta Data field is zero or not present"
-assert len(intraday_quote.data) > 0, "Time Series (5min) field is zero or not present"
-print(f"json data{intraday_quote.json()}")
-```
+def sample_accounting_reports():
+    client = AlphavantageClient()
+    earnings = client.get_earnings("TSLA")
+    cash_flow = client.get_cash_flow("TSLA")
+    balance_sheet = client.get_balance_sheet("TSLA")
+    income_statement = client.get_income_statement("TSLA")
+    reports = [earnings,cash_flow, balance_sheet, income_statement]
 
-### Company Overview
+    # show that each report is in the same type and how to access the annual and quarterly reports
+    for accounting_report in reports:
+        if not accounting_report.success:
+            raise ValueError(f"{accounting_report.error_message}")
+        print(accounting_report.json())
+        print(accounting_report.quarterlyReports) # array of  all quarterly report
+        print(accounting_report.annualReports) # array of all annual reports
+        print(accounting_report.get_most_recent_annual_report()) # get the most recent annual report
+        print(accounting_report.get_most_recent_quarterly_report()) # get the most recent quarterly report;
 
-```
-from alphavantage_api_client import AlphavantageClient
 
-# see section above to specify api key
-#
-event = {
-   "symbol": "IBM"
-}
-client = AlphavantageClient()
-company_overview = client.get_company_overview(event)
-assert company_overview.success, "Success field is missing or False"
-assert not company_overview.limit_reached, "Limit reached is true but not hitting API"
-assert company_overview.symbol == event["symbol"], "Symbol from results don't match event"
-assert len(company_overview.ex_dividend_date), "ExDividendDate is missing or empty or None"
-assert len(company_overview.analyst_target_price), "analyst_target_price field is missing or empty or None"
-print(f"json data{company_overview.json()}")
-```
-
-### Get Economic Indicators
+if __name__ == "__main__":
+    sample_accounting_reports()
 
 ```
-from alphavantage_api_client import AlphavantageClient
 
-# see section above to specify api key
-#
-event = {
-   "function": "REAL_GDP"
-}
-client = AlphavantageClient()
-real_gdp = client.get_real_gdp(event)
-assert real_gdp.success, "Success field is missing or False"
-assert not real_gdp.limit_reached, "Limit reached is true but not hitting API"
-assert len(real_gdp.unit), "unit field is missing, empty or None"
-assert len(real_gdp.data), "data field is missing, empty or None"
-print(f"json data{real_gdp.json()}")
-```
 
-### Quote Cryptocurrency
+## Debugging / Logging
 
-```
-from alphavantage_api_client import AlphavantageClient
-
-# see section above to specify api key
-#
-event = {
-   "symbol": "ETH",
-   "function": "CRYPTO_INTRADAY",
-   "outputsize": "full"
-}
-client = AlphavantageClient()
-intraday_quote = client.get_crypto_intraday(event)
-assert intraday_quote.success, "Success field is missing or False"
-assert not intraday_quote.limit_reached, "Limit reached is true but not hitting API"
-assert intraday_quote.symbol == event["symbol"], "Symbol from results don't match event"
-assert len(intraday_quote.data), "data{} is empty but it should contain properties"
-assert len(intraday_quote.meta_data), "meta_data{} is empty but it should contain properties"
-print(f"json data{intraday_quote.json()}")
-```
-
-### Quote Technical Indicators
-
-```
-from alphavantage_api_client import AlphavantageClient
-
-# see section above to specify api key
-#
-event = {
-   "symbol": "ibm",
-   "function": "SMA"
-}
-client = AlphavantageClient()
-quote = client.get_technical_indicator(event)
-assert quote.success, "Success field is missing or False"
-assert not quote.limit_reached, "Limit reached is true but not hitting API"
-assert quote.symbol == event["symbol"], "Symbol from results don't match event"
-assert len(quote.meta_data), "Meta Data field is missing, empty or None"
-assert len(quote.data), "Technical Analysis: SMA field is missing, empty or None"
-print(f"json data{quote.json()}")
-```
-
-### Any Other Data Available
-
-See https://www.alphavantage.co/documentation/
-The event{} dictionary will contain the url parameters exactly as specified in the documentation. The response will include
-the based fields and the exact response from the API. This is bypassing the normalization process, but might be useful
-for you.
-
-```
-from alphavantage_api_client import AlphavantageClient
-import json
-
-# see section above to specify api key
-#
-event = {
-    "function": "EMA"
-}
-client = AlphavantageClient()
-results = client.get_data_from_alpha_vantage(event)
-assert type(results) is dict, "Results object should be a dictionary"
-assert len(results) > 0, "There should be data in the results"
-
-print(f"json data{json.dumps(results)}")
-```
-
-## Debugging
+### Debugging
 
 We use the built in `import logging` library in python. Obtaining more information from the client behavior
 is as simple as adjusting your log levels.
@@ -379,3 +251,51 @@ is as simple as adjusting your log levels.
    INFO:root:{"method": "get_data_from_alpha_vantage", "action": "response_from_alphavantage", "status_code": 200, "data": "{\n    \"Global Quote\": {\n        \"01. symbol\": \"TSLA\",\n        \"02. open\": \"712.4050\",\n        \"03. high\": \"738.2000\",\n        \"04. low\": \"708.2600\",\n        \"05. price\": \"737.1200\",\n        \"06. volume\": \"31923565\",\n        \"07. latest trading day\": \"2022-06-24\",\n        \"08. previous close\": \"705.2100\",\n        \"09. change\": \"31.9100\",\n        \"10. change percent\": \"4.5249%\"\n    }\n}"}
    INFO:root:{"method": "get_data_from_alpha_vantage", "action": "return_value", "data": {"success": true, "limit_reached": false, "status_code": 200, "Global Quote": {"01. symbol": "TSLA", "02. open": "712.4050", "03. high": "738.2000", "04. low": "708.2600", "05. price": "737.1200", "06. volume": "31923565", "07. latest trading day": "2022-06-24", "08. previous close": "705.2100", "09. change": "31.9100", "10. change percent": "4.5249%"}, "symbol": "tsla"}}
    ```
+
+## Retry and Cache
+
+A free account only allows so many calls per min.  You can configure the client to use a simple cache and retry
+if it detects your limit has been reached. This way you can get the most out of your free tier :-)
+```
+from alphavantage_api_client import AlphavantageClient, GlobalQuote
+
+def sample_retry_when_limit_reached():
+    client = AlphavantageClient().use_simple_cache().should_retry_once()
+    symbols = ["TSLA","F","C","WFC","ZIM","PXD","PXD","POOL","INTC","INTU"] # more than 5 calls so should fail
+    for symbol in symbols:
+        event = {
+            "symbol": symbol
+        }
+        global_quote = client.get_global_quote(event)
+        if not global_quote.success:
+            raise ValueError(f"{global_quote.error_message}")
+
+        if global_quote.limit_reached:
+            raise ValueError(f"{global_quote.error_message}")
+        print(f"symbol: {global_quote.symbol}, Price: {global_quote.get_price()}, success {global_quote.success}")
+
+    client.clear_cache() # when you are done making calls, clear cache
+    
+if __name__ == "__main__":
+    sample_retry_when_limit_reached()
+
+```
+Produces output
+```
+symbol: TSLA, Price: 256.6000, success True
+symbol: F, Price: 14.0200, success True
+symbol: C, Price: 46.0200, success True
+symbol: WFC, Price: 40.6100, success True
+symbol: ZIM, Price: 12.1800, success True
+symbol: PXD, Price: 198.6600, success True
+symbol: PXD, Price: 198.6600, success True
+symbol: POOL, Price: 352.3400, success True
+symbol: INTC, Price: 33.0000, success True
+symbol: INTU, Price: 452.6900, success True
+
+Process finished with exit code 0
+```
+
+## More!
+
+Check out our [wiki](https://github.com/xrgarcia/alphavantage_api_client/wiki) for more info!
