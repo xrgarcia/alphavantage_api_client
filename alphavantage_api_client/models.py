@@ -26,6 +26,9 @@ class BaseQuote(BaseResponse):
 class TickerSearch(BaseResponse):
     bestMatches: list[dict]
 
+class MarketStatus(BaseResponse):
+    endpoint: str
+    markets: list[dict]
 
 class Quote(BaseQuote):
     """

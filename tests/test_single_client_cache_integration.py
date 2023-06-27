@@ -1,6 +1,6 @@
 import pytest
 import time
-from alphavantage_api_client import AlphavantageClient, CsvNotSupported, TickerSearch
+from alphavantage_api_client import AlphavantageClient, CsvNotSupported, TickerSearch, MarketStatus
 import logging
 import json
 
@@ -479,3 +479,18 @@ def test_get_fx_currency_data():
     results = client.get_data_from_alpha_vantage(event)
     print(results)
     assert results["success"], f"FX Exchange call failed{results}"
+
+@pytest.mark.integration
+def test_get_market_status():
+    market_status = client.get_market_status()
+    print(market_status)
+    assert market_status.success, f"success was found to be True which is unexpected: {market_status.error_message}"
+    assert not market_status.limit_reached, f"limit_reached is true {market_status.error_message}"
+    assert len(market_status.endpoint), "endPoint is not defined within response"
+    assert len(market_status.markets), "markets list is missing results"
+
+    for market in market_status.markets:
+        assert "market_type" in market, "market_type not found within result"
+        assert "region" in market, "region not found within result"
+        assert "primary_exchanges" in market, "primary_exchanges not found within result"
+        assert "local_open" in market, "local_open not found within result"

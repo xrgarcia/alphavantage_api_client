@@ -6,7 +6,7 @@ import configparser
 from .response_validation_rules import ValidationRuleChecks
 import json
 from alphavantage_api_client.models import GlobalQuote, Quote, AccountingReport, CompanyOverview, RealGDP, \
-    CsvNotSupported, TickerSearch
+    CsvNotSupported, TickerSearch, MarketStatus
 import copy
 import logging
 import hashlib
@@ -653,3 +653,17 @@ class AlphavantageClient:
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return TickerSearch.parse_obj(json_response)
+
+    def get_market_status(self) -> MarketStatus:
+        """
+        This endpoint returns the current market status (open vs. closed) of major trading venues for equities,
+        forex, and cryptocurrencies around the world.
+        Returns:
+
+        """
+        json_request = {
+            "function": "MARKET_STATUS"
+        }
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return MarketStatus.parse_obj(json_response)
