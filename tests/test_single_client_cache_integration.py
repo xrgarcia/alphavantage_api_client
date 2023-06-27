@@ -1,6 +1,6 @@
 import pytest
 import time
-from alphavantage_api_client import AlphavantageClient, CsvNotSupported
+from alphavantage_api_client import AlphavantageClient, CsvNotSupported, TickerSearch
 import logging
 import json
 
@@ -160,6 +160,22 @@ def test_can_quote_intraday():
     assert intra_day_quote.success, f"success is false {intra_day_quote.error_message}"
     assert len(intra_day_quote.data), f"Did not return data for this symbol {intra_day_quote.symbol}"
     logging.warning(f" Successfully quoted symbol {event['symbol']} in JSON")
+
+@pytest.mark.integration
+def test_can_search_ticker():
+    event = {
+        "keywords" : "Tesla"
+    }
+    client = AlphavantageClient()
+    ticker_search_result = client.search_ticker(event)
+    assert not ticker_search_result.limit_reached, f"limit_reached should not be true {ticker_search_result.error_message}"
+    assert ticker_search_result.success, f"success is false {ticker_search_result.error_message}"
+    assert len(ticker_search_result.bestMatches), f"Did not return bestMatches for this search {event['keywords']}"
+    for result in ticker_search_result.bestMatches:
+        assert "9. matchScore" in result, f"9. matchScore property is not in search result for {event['keywords']}"
+        assert "1. symbol" in result, f"1. symbol property is not in search result for {event['keywords']}"
+        assert "2. name" in result, f"2. name property is not in search result for {event['keywords']}"
+        assert "3. type" in result, f"3. type property is not in search result for {event['keywords']}"
 
 
 @pytest.mark.integration_paid

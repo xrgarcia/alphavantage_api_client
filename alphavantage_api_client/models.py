@@ -23,6 +23,10 @@ class BaseQuote(BaseResponse):
     symbol: str
 
 
+class TickerSearch(BaseResponse):
+    bestMatches: list[dict]
+
+
 class Quote(BaseQuote):
     """
     data is this clients abstraction of the response from alpha vantage. Time Series, Technical Indicator

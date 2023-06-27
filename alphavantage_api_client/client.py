@@ -6,7 +6,7 @@ import configparser
 from .response_validation_rules import ValidationRuleChecks
 import json
 from alphavantage_api_client.models import GlobalQuote, Quote, AccountingReport, CompanyOverview, RealGDP, \
-    CsvNotSupported
+    CsvNotSupported, TickerSearch
 import copy
 import logging
 import hashlib
@@ -633,3 +633,23 @@ class AlphavantageClient:
         self.__cache__.clear()
 
         return self
+
+    def search_ticker(self, event) -> TickerSearch:
+        """
+        We've got you covered! The Search Endpoint returns the best-matching symbols and market information based
+        on keywords of your choice. The search results also contain match scores that provide you with the full
+        flexibility to develop your own search and filtering logic.
+        Args:
+            event: dict
+
+        Returns: TickerSearch
+
+        """
+        defaults = {
+            "function": "SYMBOL_SEARCH",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return TickerSearch.parse_obj(json_response)
