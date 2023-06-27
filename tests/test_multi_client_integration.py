@@ -165,10 +165,10 @@ def test_can_quote_intraday():
         "interval": "5min"
     }
     client = AlphavantageClient().should_retry_once()
-    intra_day_quote = client.get_intraday_quote(event)
-    assert not intra_day_quote.limit_reached, f"limit_reached should not be true {intra_day_quote.error_message}"
-    assert intra_day_quote.success, f"success is false {intra_day_quote.error_message}"
-    assert len(intra_day_quote.data), f"Did not return data for this symbol {intra_day_quote.symbol}"
+    quote = client.get_intraday_quote(event)
+    assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
+    assert quote.success, f"success is false {quote.error_message}"
+    assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
     logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
 
 
@@ -178,13 +178,77 @@ def test_can_quote_daily():
         "symbol": "VZ"
     }
     client = AlphavantageClient().should_retry_once()
-    daily_quote = client.get_daily_quote(event)
-    print(daily_quote.json())
-    assert not daily_quote.limit_reached, f"limit_reached should not be true {daily_quote.error_message}"
-    assert daily_quote.success, f"success is false {daily_quote.error_message}"
-    assert len(daily_quote.data), f"Did not return data for this symbol {daily_quote.symbol}"
+    quote = client.get_daily_quote(event)
+    print(quote.json())
+    assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
+    assert quote.success, f"success is false {quote.error_message}"
+    assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
     logging.warning(f" Successfully quoted symbol {event['symbol']} in JSON")
 
+@pytest.mark.integration
+def test_can_quote_daily_adjusted():
+    event = {
+        "symbol": "VZ"
+    }
+    client = AlphavantageClient().should_retry_once()
+    quote = client.get_daily_adjusted_quote(event)
+    print(quote.json())
+    assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
+    assert quote.success, f"success is false {quote.error_message}"
+    assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
+    logging.warning(f" Successfully quoted symbol {event['symbol']} in JSON")
+
+@pytest.mark.integration
+def test_can_quote_weekly():
+    event = {
+        "symbol": "VZ"
+    }
+    client = AlphavantageClient().should_retry_once()
+    quote = client.get_weekly_quote(event)
+    print(quote.json())
+    assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
+    assert quote.success, f"success is false {quote.error_message}"
+    assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
+    logging.warning(f" Successfully quoted symbol {event['symbol']} in JSON")
+
+@pytest.mark.integration
+def test_can_quote_weekly_adjusted():
+    event = {
+        "symbol": "VZ"
+    }
+    client = AlphavantageClient().should_retry_once()
+    quote = client.get_weekly_adjusted_quote(event)
+    print(quote.json())
+    assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
+    assert quote.success, f"success is false {quote.error_message}"
+    assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
+    logging.warning(f" Successfully quoted symbol {event['symbol']} in JSON")
+
+@pytest.mark.integration
+def test_can_quote_monthly():
+    event = {
+        "symbol": "VZ"
+    }
+    client = AlphavantageClient().should_retry_once()
+    quote = client.get_monthly_quote(event)
+    print(quote.json())
+    assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
+    assert quote.success, f"success is false {quote.error_message}"
+    assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
+    logging.warning(f" Successfully quoted symbol {event['symbol']} in JSON")
+
+@pytest.mark.integration
+def test_can_quote_monthly_adjusted():
+    event = {
+        "symbol": "VZ"
+    }
+    client = AlphavantageClient().should_retry_once()
+    quote = client.get_monthly_adjusted_quote(event)
+    print(quote.json())
+    assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
+    assert quote.success, f"success is false {quote.error_message}"
+    assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
+    logging.warning(f" Successfully quoted symbol {event['symbol']} in JSON")
 
 @pytest.mark.integrationn_paid
 def test_can_quote_crypto():
@@ -195,10 +259,10 @@ def test_can_quote_crypto():
         "interval": "5min"
     }
     client = AlphavantageClient().should_retry_once()
-    results = client.get_crypto_intraday(event)
-    assert not results.limit_reached, f"limit_reached should not be true {results.error_message}"
-    assert results.success, f"success is false {results.error_message}"
-    assert len(results.data), "Data{} property is empty but should have information"
+    quote = client.get_crypto_intraday(event)
+    assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
+    assert quote.success, f"success is false {quote.error_message}"
+    assert len(quote.data), "Data{} property is empty but should have information"
     logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
 
 
