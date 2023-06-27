@@ -33,7 +33,12 @@ class Quote(BaseQuote):
     @pydantic.root_validator(pre=True)
     def normalize_fields(cls, values):
         return {
-            "data" if k.startswith("Technical Analysis: ") or k.startswith("Time Series (")
+            "data" if k.startswith("Weekly Adjusted Time Series")
+                      or k.startswith("Monthly Adjusted Time Series")
+                      or k.startswith("Monthly Time Series")
+                      or k.startswith("Weekly Time Series")
+                      or k.startswith("Technical Analysis: ")
+                      or k.startswith("Time Series (")
                       or k.startswith("Time Series Crypto (") else k: v for k, v in values.items()
         }
 
@@ -49,7 +54,7 @@ class Quote(BaseQuote):
     def get_oldest_value(self) -> Optional[dict]:
         if len(self.data) > 0:
             quote_dates = list(self.data.keys())
-            last_quote_date = quote_dates[len(quote_dates)-1]
+            last_quote_date = quote_dates[len(quote_dates) - 1]
             quote = self.data[last_quote_date]
             quote["query_date"] = last_quote_date
 

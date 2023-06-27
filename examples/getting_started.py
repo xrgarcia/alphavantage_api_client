@@ -1,5 +1,5 @@
 from alphavantage_api_client import AlphavantageClient, GlobalQuote, Quote, AccountingReport, CompanyOverview, Ticker
-
+import logging
 
 def sample_global_quote():
     client = AlphavantageClient()
@@ -104,8 +104,9 @@ def sample_cash_flow():
 
 
 def sample_retry_when_limit_reached():
+    logging.basicConfig(level=logging.INFO)
     client = AlphavantageClient().use_simple_cache().should_retry_once()
-    symbols = ["TSLA", "F", "C", "WFC", "ZIM", "PXD", "PXD", "POOL", "INTC", "INTU"]  # more than 5 calls so should fail
+    symbols = ["TSLA", "F", "C", "WFC", "ZIM", "PXD", "PXD", "POOL", "INTC", "INTU", "AAPL"]  # more than 5 calls so should fail
     for symbol in symbols:
         event = {
             "symbol": symbol
@@ -150,6 +151,16 @@ def sample_ticker_usage():
         combined_financial_statements = correlated_financial_statements[fiscal_date_ending]
         print(f"{fiscal_date_ending} = {combined_financial_statements}")
 
+def sample_direct_access():
+    client = AlphavantageClient()
+    event = {
+        "symbol" : "AAPL",
+        "function" : "GLOBAL_QUOTE"
+    } # EACH ATTRIBUTE IS EXACTLY SUPPORTED BY END POINTS
+
+    response = client.get_data_from_alpha_vantage(event)
+    print(response) # a dictionary with exact response from Alpha Vantage End point you requested
+
 
 if __name__ == "__main__":
-    sample_ticker_usage()
+    sample_direct_access()

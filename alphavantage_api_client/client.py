@@ -188,8 +188,100 @@ class AlphavantageClient:
 
         return Quote.parse_obj(json_response)
 
+    def get_daily_adjusted_quote(self, event: dict) -> Quote:
+        """
+                This API returns raw (as-traded) daily open/high/low/close/volume values,
+                daily adjusted close values, and historical split/dividend events of the global
+                equity specified, covering 20+ years of historical data.
+                Args:
+                    event: dict, required
+
+                Returns: Quote
+
+                """
+        # default params
+        defaults = {"datatype": "json", "function": "TIME_SERIES_DAILY_ADJUSTED",
+                    "outputsize": "compact"}
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
+    def get_weekly_quote(self, event: dict) -> Quote:
+        """
+                        This API returns weekly time series (last trading day of each week, weekly open,
+                        weekly high, weekly low, weekly close, weekly volume) of the global equity
+                        specified, covering 20+ years of historical data.
+                        Args:
+                            event: dict, required
+
+                        Returns: Quote
+
+                        """
+        # default params
+        defaults = {"datatype": "json", "function": "TIME_SERIES_WEEKLY",
+                    "outputsize": "compact"}
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
+    def get_weekly_adjusted_quote(self, event: dict) -> Quote:
+        """
+                        This API returns weekly adjusted time series (last trading day of each week, weekly open,
+                        weekly high, weekly low, weekly close, weekly adjusted close, weekly volume, weekly dividend)
+                        of the global equity specified, covering 20+ years of historical data.
+                        Args:
+                            event: dict, required
+
+                        Returns: Quote
+
+                        """
+        # default params
+        defaults = {"datatype": "json", "function": "TIME_SERIES_WEEKLY_ADJUSTED"}
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
+    def get_monthly_quote(self, event: dict) -> Quote:
+        """
+                        This API returns monthly time series (last trading day of each month, monthly open,
+                        monthly high, monthly low, monthly close, monthly volume) of the global equity specified,
+                        covering 20+ years of historical data.
+                        Args:
+                            event: dict, required
+
+                        Returns: Quote
+
+                        """
+        # default params
+        defaults = {"datatype": "json", "function": "TIME_SERIES_MONTHLY"}
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
+    def get_monthly_adjusted_quote(self, event: dict) -> Quote:
+        """
+                        This API returns monthly time series (last trading day of each month, monthly open,
+                        monthly high, monthly low, monthly close, monthly volume) of the global equity specified,
+                        covering 20+ years of historical data.
+                        Args:
+                            event: dict, required
+
+                        Returns: Quote
+
+                        """
+        # default params
+        defaults = {"datatype": "json", "function": "TIME_SERIES_MONTHLY_ADJUSTED"}
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
     def get_intraday_quote(self, event: dict) -> Quote:
-        """ Intraday time series data covering extened trading hours.
+        """ Intraday time series data covering extended trading hours.
 
         This API returns intraday time series of the equity specified, covering extended trading hours where applicable
         (e.g., 4:00am to 8:00pm Eastern Time for the US market). The intraday data is derived from the Securities
