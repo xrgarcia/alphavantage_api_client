@@ -634,7 +634,7 @@ class AlphavantageClient:
 
         return self
 
-    def search_ticker(self, event) -> TickerSearch:
+    def search_ticker(self, event: dict) -> TickerSearch:
         """
         We've got you covered! The Search Endpoint returns the best-matching symbols and market information based
         on keywords of your choice. The search results also contain match scores that provide you with the full
@@ -667,3 +667,18 @@ class AlphavantageClient:
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return MarketStatus.parse_obj(json_response)
+
+    def get_news_and_sentiment(self, event: dict):
+        """
+        Looking for market news signals to augment your trading strategy, or a global news
+        feed API for your web/mobile app? You've just found it. This API returns live and historical market news
+        & sentiment data derived from over 50 major financial news outlets around the world, covering stocks,
+        cryptocurrencies, forex, and a wide range of topics such as fiscal policy, mergers & acquisitions, IPOs, etc.
+        This API, combined with our core stock API, fundamental data, and technical indicator APIs, can provide you
+        with a 360-degree view of the financial market and the broader economy.
+        Args:
+            event: dict
+
+        Returns:
+
+        """

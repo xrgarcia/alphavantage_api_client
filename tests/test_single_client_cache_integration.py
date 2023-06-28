@@ -169,8 +169,8 @@ def test_can_search_ticker():
     ticker_search_result = client.search_ticker(event)
     assert not ticker_search_result.limit_reached, f"limit_reached should not be true {ticker_search_result.error_message}"
     assert ticker_search_result.success, f"success is false {ticker_search_result.error_message}"
-    assert len(ticker_search_result.bestMatches), f"Did not return bestMatches for this search {event['keywords']}"
-    for result in ticker_search_result.bestMatches:
+    assert len(ticker_search_result.data), f"Did not return bestMatches for this search {event['keywords']}"
+    for result in ticker_search_result.data:
         assert "9. matchScore" in result, f"9. matchScore property is not in search result for {event['keywords']}"
         assert "1. symbol" in result, f"1. symbol property is not in search result for {event['keywords']}"
         assert "2. name" in result, f"2. name property is not in search result for {event['keywords']}"
@@ -486,9 +486,9 @@ def test_get_market_status():
     assert market_status.success, f"success was found to be True which is unexpected: {market_status.error_message}"
     assert not market_status.limit_reached, f"limit_reached is true {market_status.error_message}"
     assert len(market_status.endpoint), "endPoint is not defined within response"
-    assert len(market_status.markets), "markets list is missing results"
+    assert len(market_status.data), "data list is missing results"
 
-    for market in market_status.markets:
+    for market in market_status.data:
         assert "market_type" in market, "market_type not found within result"
         assert "region" in market, "region not found within result"
         assert "primary_exchanges" in market, "primary_exchanges not found within result"

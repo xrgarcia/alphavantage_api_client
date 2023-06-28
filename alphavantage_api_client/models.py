@@ -24,11 +24,12 @@ class BaseQuote(BaseResponse):
 
 
 class TickerSearch(BaseResponse):
-    bestMatches: list[dict]
+    data: list[dict] = Field({}, alias='bestMatches')
 
 class MarketStatus(BaseResponse):
     endpoint: str
-    markets: list[dict]
+    data: list[dict] = Field({}, alias='markets')
+
 
 class Quote(BaseQuote):
     """
