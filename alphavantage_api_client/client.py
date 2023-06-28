@@ -6,7 +6,7 @@ import configparser
 from .response_validation_rules import ValidationRuleChecks
 import json
 from alphavantage_api_client.models import GlobalQuote, Quote, AccountingReport, CompanyOverview, RealGDP, \
-    CsvNotSupported, TickerSearch, MarketStatus
+    CsvNotSupported, TickerSearch, MarketStatus, NewsAndSentiment, MarketMovers
 import copy
 import logging
 import hashlib
@@ -634,7 +634,7 @@ class AlphavantageClient:
 
         return self
 
-    def search_ticker(self, event) -> TickerSearch:
+    def search_ticker(self, event: dict) -> TickerSearch:
         """
         We've got you covered! The Search Endpoint returns the best-matching symbols and market information based
         on keywords of your choice. The search results also contain match scores that provide you with the full
@@ -667,3 +667,40 @@ class AlphavantageClient:
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return MarketStatus.parse_obj(json_response)
+
+    def get_top_gainers_and_losers(self) -> MarketMovers:
+        """
+        This endpoint returns the top 20 gainers, losers, and the most active traded tickers in the US market.
+        Returns:
+
+        """
+        json_request = {
+            "function": "TOP_GAINERS_LOSERS"
+        }
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return MarketMovers.parse_obj(json_response)
+
+
+    def get_news_and_sentiment(self, event: dict) -> NewsAndSentiment:
+        """
+        Looking for market news signals to augment your trading strategy, or a global news
+        feed API for your web/mobile app? You've just found it. This API returns live and historical market news
+        & sentiment data derived from over 50 major financial news outlets around the world, covering stocks,
+        cryptocurrencies, forex, and a wide range of topics such as fiscal policy, mergers & acquisitions, IPOs, etc.
+        This API, combined with our core stock API, fundamental data, and technical indicator APIs, can provide you
+        with a 360-degree view of the financial market and the broader economy.
+        Args:
+            event: dict
+
+        Returns:
+
+        """
+        defaults = {
+            "function": "NEWS_SENTIMENT",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return NewsAndSentiment.parse_obj(json_response)

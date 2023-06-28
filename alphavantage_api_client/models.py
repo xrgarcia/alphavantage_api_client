@@ -24,11 +24,24 @@ class BaseQuote(BaseResponse):
 
 
 class TickerSearch(BaseResponse):
-    bestMatches: list[dict]
+    data: list[dict] = Field({}, alias='bestMatches')
 
 class MarketStatus(BaseResponse):
     endpoint: str
-    markets: list[dict]
+    data: list[dict] = Field({}, alias='markets')
+
+class NewsAndSentiment(BaseResponse):
+    items: int
+    sentiment_score_definition: str
+    relevance_score_definition: str
+    data: list[dict] = Field({}, alias='feed')
+
+class MarketMovers(BaseResponse):
+    top_gainers: list[dict]
+    top_losers: list[dict]
+    last_updated: str
+    meta_data: Optional[str] = Field(str, alias='metadata')
+    most_actively_traded: list[dict]
 
 class Quote(BaseQuote):
     """
