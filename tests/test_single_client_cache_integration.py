@@ -543,14 +543,14 @@ def test_get_fx_currency_data():
         "to_currency": "USD"
     }
     results = client.get_data_from_alpha_vantage(event)
-    print(results)
+    #print(results)
     assert results["success"], f"FX Exchange call failed{results}"
 
 
 @pytest.mark.integration
 def test_get_market_status():
     market_status = client.get_market_status()
-    print(market_status)
+    # print(market_status)
     assert market_status.success, f"success was found to be True which is unexpected: {market_status.error_message}"
     assert not market_status.limit_reached, f"limit_reached is true {market_status.error_message}"
     assert len(market_status.endpoint), "endPoint is not defined within response"
@@ -586,7 +586,7 @@ def test_get_news_and_sentiment():
 @pytest.mark.integration
 def test_get_market_movers():
     market_movers = client.get_top_gainers_and_losers()
-    print(market_movers)
+    # print(market_movers)
     assert market_movers.success, f"success was found to be True which is unexpected: {market_movers.error_message}"
     assert not market_movers.limit_reached, f"limit_reached is true {market_movers.error_message}"
     assert len(market_movers.meta_data), "meta_data is not defined within response"
@@ -616,7 +616,8 @@ def test_get_earnings_calendar():
         assert len(earnings_calendar.data), "data is not defined within response"
 
         for item in earnings_calendar.data:
-            print(item.json())
+            #print(item.json())
+            pass
 
 
 @pytest.mark.integration
@@ -634,7 +635,8 @@ def test_get_earnings_calendar():
         assert len(earnings_calendar.data), "data is not defined within response"
 
         for item in earnings_calendar.data:
-            print(item.json())
+            #print(item.json())
+            pass
 
 
 @pytest.mark.integration
@@ -658,7 +660,10 @@ def test_get_forex_exchange_rates():
         "to_currency": "GBP"
     }
     quote = client.get_forex_exchange_rates(event)
-    print(quote.json())
+    #print(quote.json())
+    assert quote.success, f"success was found to be True which is unexpected: {quote.error_message}"
+    assert not quote.limit_reached, f"limit_reached is true {quote.error_message}"
+    assert len(quote.data), "data is not defined within response"
 
 
 @pytest.mark.integration_paid
