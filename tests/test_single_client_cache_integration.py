@@ -1,22 +1,24 @@
 import pytest
 import time
-from alphavantage_api_client import AlphavantageClient, CsvNotSupported, TickerSearch, MarketStatus, MarketMovers\
+from alphavantage_api_client import AlphavantageClient, CsvNotSupported, TickerSearch, MarketStatus, MarketMovers \
     , NewsAndSentiment
 import logging
 import json
 import csv
+
 client = AlphavantageClient().should_retry_once().use_simple_cache()
 
 
 @pytest.mark.integration
 def test_can_get_news_and_sentiment():
     event = {
-        "function" : "NEWS_SENTIMENT",
+        "function": "NEWS_SENTIMENT",
         "tickers": "TSLA"
     }
     result = client.get_data_from_alpha_vantage(event)
     print(json.dumps(result))
     assert result['success'], 'could not get news and sentiment'
+
 
 @pytest.mark.integration
 def test_can_query_from_cache():
@@ -162,10 +164,11 @@ def test_can_quote_intraday():
     assert len(intra_day_quote.data), f"Did not return data for this symbol {intra_day_quote.symbol}"
     logging.warning(f" Successfully quoted symbol {event['symbol']} in JSON")
 
+
 @pytest.mark.integration
 def test_can_search_ticker():
     event = {
-        "keywords" : "Tesla"
+        "keywords": "Tesla"
     }
     ticker_search_result = client.search_ticker(event)
     assert not ticker_search_result.limit_reached, f"limit_reached should not be true {ticker_search_result.error_message}"
@@ -191,33 +194,96 @@ def test_can_quote_daily():
 
 
 @pytest.mark.integration_paid
-def test_can_quote_crypto():
+def test_can_quote_crypto_intraday():
     event = {
-        "function": "CRYPTO_INTRADAY",
         "symbol": "ETH",
-        "market": "USD",
-        "interval": "5min"
+        "outputsize" : "compact"
     }
-    results = client.get_crypto_intraday(event)
-    assert not results.limit_reached, f"limit_reached should not be true {results.error_message}"
-    assert results.success, f"success is false {results.error_message}"
-    assert len(results.data), "Data{} property is empty but should have information"
+    quote = client.get_crypto_intraday(event)
+    # print(quote)
+    assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
+    assert quote.success, f"success is false {quote.error_message}"
+    assert len(quote.data), "Data{} property is empty but should have information"
     logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
+
+
+@pytest.mark.integration
+def test_can_quote_crypto_daily():
+    event = {
+        "symbol": "ETH"
+    }
+    quote = client.get_crypto_daily(event)
+    # print(quote)
+    assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
+    assert quote.success, f"success is false {quote.error_message}"
+    assert len(quote.data), "Data{} property is empty but should have information"
+    logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
+
+
+@pytest.mark.integration
+def test_can_quote_crypto_weekly():
+    event = {
+        "symbol": "ETH"
+    }
+    quote = client.get_crypto_weekly(event)
+    # print(quote)
+    assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
+    assert quote.success, f"success is false {quote.error_message}"
+    assert len(quote.data), "Data{} property is empty but should have information"
+    logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
+
+
+@pytest.mark.integration
+def test_can_quote_crypto_weekly():
+    event = {
+        "symbol": "ETH"
+    }
+    quote = client.get_crypto_weekly(event)
+    # print(quote)
+    assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
+    assert quote.success, f"success is false {quote.error_message}"
+    assert len(quote.data), "Data{} property is empty but should have information"
+    logging.warning(f" Successfully quoted cryptocurrency  weekly symbol {event['symbol']} in JSON")
+
+
+@pytest.mark.integration
+def test_can_quote_crypto_monthly():
+    event = {
+        "symbol": "ETH"
+    }
+    quote = client.get_crypto_monthly(event)
+    # print(quote)
+    assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
+    assert quote.success, f"success is false {quote.error_message}"
+    assert len(quote.data), "Data{} property is empty but should have information"
+    logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
+
+
+@pytest.mark.integration
+def test_can_quote_crypto_exchange_rates():
+    event = {
+        "from_currency": "ETH",
+        "to_currency": "BTC"
+    }
+    quote = client.get_crypto_exchange_rates(event)
+    # print(quote)
+    assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
+    assert quote.success, f"success is false {quote.error_message}"
+    assert len(quote.data), "Data{} property is empty but should have information"
+    logging.warning(
+        f" Successfully quoted cryptocurrency symbol {event['from_currency']} to {event['to_currency']} in JSON")
 
 
 @pytest.mark.integration_paid
 def test_can_quote_crypto_csv():
     event = {
-        "function": "CRYPTO_INTRADAY",
         "symbol": "ETH",
-        "market": "USD",
-        "interval": "5min",
         "datatype": "csv"
     }
     results = client.get_crypto_intraday(event)
     assert not results.limit_reached, f"limit_reached should not be true {results.error_message}"
     assert results.success, f"success is false {results.error_message}"
-    assert len(results.csv), "Data{} property is empty but should have information"
+    assert len(results.csv), "csv property is empty but should have information"
     logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in CSV")
 
 
@@ -469,21 +535,23 @@ def test_get_data_from_alpha_vantage():
 
     logging.warning("Successfully queried data using get_data_from_alpha_vantage")
 
+
 @pytest.mark.integration_paid
 def test_get_fx_currency_data():
     event = {
-        "function" : "CURRENCY_EXCHANGE_RATE",
-        "from_currency" : "JPY",
-        "to_currency" : "USD"
+        "function": "CURRENCY_EXCHANGE_RATE",
+        "from_currency": "JPY",
+        "to_currency": "USD"
     }
     results = client.get_data_from_alpha_vantage(event)
-    print(results)
+    #print(results)
     assert results["success"], f"FX Exchange call failed{results}"
+
 
 @pytest.mark.integration
 def test_get_market_status():
     market_status = client.get_market_status()
-    print(market_status)
+    # print(market_status)
     assert market_status.success, f"success was found to be True which is unexpected: {market_status.error_message}"
     assert not market_status.limit_reached, f"limit_reached is true {market_status.error_message}"
     assert len(market_status.endpoint), "endPoint is not defined within response"
@@ -495,16 +563,18 @@ def test_get_market_status():
         assert "primary_exchanges" in market, "primary_exchanges not found within result"
         assert "local_open" in market, "local_open not found within result"
 
+
 @pytest.mark.integration
 def test_get_news_and_sentiment():
     event = {
-        "topics" : "earnings,technology",
-        "limit" : "25"
+        "topics": "earnings,technology",
+        "limit": "25"
     }
     news_and_sentiment = client.get_news_and_sentiment(event)
     assert news_and_sentiment.success, f"success was found to be True which is unexpected: {news_and_sentiment.error_message}"
     assert not news_and_sentiment.limit_reached, f"limit_reached is true {news_and_sentiment.error_message}"
-    assert len(news_and_sentiment.sentiment_score_definition), "sentiment_score_definition is not defined within response"
+    assert len(
+        news_and_sentiment.sentiment_score_definition), "sentiment_score_definition is not defined within response"
     assert len(news_and_sentiment.data), "data list is missing results"
 
     for item in news_and_sentiment.data:
@@ -513,10 +583,11 @@ def test_get_news_and_sentiment():
         assert "summary" in item, "primary_exchanges not found within result"
         assert "source" in item, "local_open not found within result"
 
+
 @pytest.mark.integration
 def test_get_market_movers():
     market_movers = client.get_top_gainers_and_losers()
-    print(market_movers)
+    # print(market_movers)
     assert market_movers.success, f"success was found to be True which is unexpected: {market_movers.error_message}"
     assert not market_movers.limit_reached, f"limit_reached is true {market_movers.error_message}"
     assert len(market_movers.meta_data), "meta_data is not defined within response"
@@ -530,22 +601,6 @@ def test_get_market_movers():
         assert "change_percentage" in item, "change_percentage not found within result"
         assert "volume" in item, "volume not found within result"
 
-@pytest.mark.integration
-def test_get_earnings_calendar():
-    symbols = ["IBM", "AAPL", "AMZN", "MSFT", "TSLA", "SYM"]
-
-    for symbol in symbols:
-        event = {
-            "symbol": symbol
-        }
-        earnings_calendar = client.get_earnings_calendar(event)
-        assert earnings_calendar.success, f"success was found to be True which is unexpected: {earnings_calendar.error_message}"
-        assert not earnings_calendar.limit_reached, f"limit_reached is true {earnings_calendar.error_message}"
-        assert len(earnings_calendar.csv), "csv is not defined within response"
-        assert len(earnings_calendar.data), "data is not defined within response"
-
-        for item in earnings_calendar.data:
-            print(item.json())
 
 @pytest.mark.integration
 def test_get_earnings_calendar():
@@ -562,11 +617,31 @@ def test_get_earnings_calendar():
         assert len(earnings_calendar.data), "data is not defined within response"
 
         for item in earnings_calendar.data:
-            print(item.json())
+            #print(item.json())
+            pass
+
+
+@pytest.mark.integration
+def test_get_earnings_calendar():
+    symbols = ["IBM", "AAPL", "AMZN", "MSFT", "TSLA", "SYM"]
+
+    for symbol in symbols:
+        event = {
+            "symbol": symbol
+        }
+        earnings_calendar = client.get_earnings_calendar(event)
+        assert earnings_calendar.success, f"success was found to be True which is unexpected: {earnings_calendar.error_message}"
+        assert not earnings_calendar.limit_reached, f"limit_reached is true {earnings_calendar.error_message}"
+        assert len(earnings_calendar.csv), "csv is not defined within response"
+        assert len(earnings_calendar.data), "data is not defined within response"
+
+        for item in earnings_calendar.data:
+            #print(item.json())
+            pass
+
 
 @pytest.mark.integration
 def test_get_ipo_calendar():
-
     ipo_calendar = client.get_ipo_calendar()
     assert ipo_calendar.success, f"success was found to be True which is unexpected: {ipo_calendar.error_message}"
     assert not ipo_calendar.limit_reached, f"limit_reached is true {ipo_calendar.error_message}"
@@ -583,16 +658,20 @@ def test_get_ipo_calendar():
 def test_get_forex_exchange_rates():
     event = {
         "from_currency": "USD",
-        "to_currency" : "GBP"
+        "to_currency": "GBP"
     }
     quote = client.get_forex_exchange_rates(event)
-    print(quote.json())
+    #print(quote.json())
+    assert quote.success, f"success was found to be True which is unexpected: {quote.error_message}"
+    assert not quote.limit_reached, f"limit_reached is true {quote.error_message}"
+    assert len(quote.data), "data is not defined within response"
+
 
 @pytest.mark.integration_paid
 def test_get_forex_intraday_rates():
     event = {
         "from_symbol": "EUR",
-        "to_symbol" : "USD"
+        "to_symbol": "USD"
     }
     currency_quote = client.get_forex_intraday(event)
     assert currency_quote.success, f"success was found to be True which is unexpected: {currency_quote.error_message}"
@@ -600,11 +679,12 @@ def test_get_forex_intraday_rates():
     assert len(currency_quote.meta_data), "meta_data is not defined within response"
     assert len(currency_quote.data), "data is not defined or zero within response"
 
+
 @pytest.mark.integration
 def test_get_forex_daily_rates():
     event = {
         "from_symbol": "EUR",
-        "to_symbol" : "USD"
+        "to_symbol": "USD"
     }
     currency_quote = client.get_forex_daily(event)
     assert currency_quote.success, f"success was found to be True which is unexpected: {currency_quote.error_message}"
@@ -612,11 +692,12 @@ def test_get_forex_daily_rates():
     assert len(currency_quote.meta_data), "meta_data is not defined within response"
     assert len(currency_quote.data), "data is not defined or zero within response"
 
+
 @pytest.mark.integration
 def test_get_forex_weekly_rates():
     event = {
         "from_symbol": "EUR",
-        "to_symbol" : "USD"
+        "to_symbol": "USD"
     }
     currency_quote = client.get_forex_weekly(event)
     assert currency_quote.success, f"success was found to be True which is unexpected: {currency_quote.error_message}"
@@ -624,17 +705,15 @@ def test_get_forex_weekly_rates():
     assert len(currency_quote.meta_data), "meta_data is not defined within response"
     assert len(currency_quote.data), "data is not defined or zero within response"
 
+
 @pytest.mark.integration
 def test_get_forex_monthly_rates():
     event = {
         "from_symbol": "EUR",
-        "to_symbol" : "USD"
+        "to_symbol": "USD"
     }
     currency_quote = client.get_forex_monthly(event)
     assert currency_quote.success, f"success was found to be True which is unexpected: {currency_quote.error_message}"
     assert not currency_quote.limit_reached, f"limit_reached is true {currency_quote.error_message}"
     assert len(currency_quote.meta_data), "meta_data is not defined within response"
     assert len(currency_quote.data), "data is not defined or zero within response"
-
-
-

@@ -75,6 +75,9 @@ class CurrencyQuote(BaseResponse):
     def normalize_fields(cls, values):
         return {
             "data" if k.startswith("Time Series FX (")
+                      or k.startswith("Crypto Intraday (")
+                      or k.startswith("Time Series Crypto (")
+                      or k.startswith("Time Series (Digital Currency")
                       or k.startswith("Realtime Currency Exchange Rate") else k: v for k, v in values.items()
         }
 
