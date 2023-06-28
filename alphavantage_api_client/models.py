@@ -51,6 +51,18 @@ class EarningsCalendarItem(BaseModel):
     estimate: Optional[float]
     currency: Optional[str]
 
+class IpoCalendarItem(BaseModel):
+    symbol: str
+    name: str
+    ipo_date: str = Field(str,alias="ipoDate")
+    price_range_low: Optional[float] = Field(float, alias="priceRangeLow")
+    price_range_high: Optional[float] = Field(float, alias="priceRangeHigh")
+    currency: Optional[str]
+    exchange: Optional[str]
+
+class IpoCalendar(BaseResponse):
+    data: Optional[list[IpoCalendarItem]] = Field([])
+
 class EarningsCalendar(BaseResponse):
     symbol: str
     data: Optional[list[EarningsCalendarItem]] = Field([])

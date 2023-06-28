@@ -6,7 +6,8 @@ import configparser
 from .response_validation_rules import ValidationRuleChecks
 import json
 from alphavantage_api_client.models import GlobalQuote, Quote, AccountingReport, CompanyOverview, RealGDP, \
-    CsvNotSupported, TickerSearch, MarketStatus, NewsAndSentiment, MarketMovers, EarningsCalendar
+    CsvNotSupported, TickerSearch, MarketStatus, NewsAndSentiment, MarketMovers, EarningsCalendar\
+    , IpoCalendarItem, IpoCalendar
 import copy
 import logging
 import hashlib
@@ -704,6 +705,28 @@ class AlphavantageClient:
         json_response['data'] = items
 
         return EarningsCalendar.parse_obj(json_response)
+
+    def get_ipo_calendar(self) -> IpoCalendar:
+        """
+        This API returns a list of company earnings expected in the next 3, 6, or 12 months.
+        Returns:
+
+        """
+        json_request = {
+            "function": "IPO_CALENDAR",
+            "datatype": "csv"
+        }
+
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+        records = json_response['csv'].split("\n")
+        header = records.pop(0)
+        headers = header.split(",")
+        reader = csv.DictReader(records, delimiter=',')
+        reader.fieldnames = headers
+        items = list(reader)
+        json_response['data'] = items
+
+        return IpoCalendar.parse_obj(json_response)
 
     def get_news_and_sentiment(self, event: dict) -> NewsAndSentiment:
         """
