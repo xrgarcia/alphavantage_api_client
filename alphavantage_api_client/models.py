@@ -43,6 +43,30 @@ class MarketMovers(BaseResponse):
     meta_data: Optional[str] = Field(str, alias='metadata')
     most_actively_traded: list[dict]
 
+class EarningsCalendarItem(BaseModel):
+    symbol: str
+    name: str
+    report_date: str = Field(str,alias='reportDate')
+    fiscal_date_ending: str = Field(str,alias='fiscalDateEnding')
+    estimate: Optional[float]
+    currency: Optional[str]
+
+class IpoCalendarItem(BaseModel):
+    symbol: str
+    name: str
+    ipo_date: str = Field(str,alias="ipoDate")
+    price_range_low: Optional[float] = Field(float, alias="priceRangeLow")
+    price_range_high: Optional[float] = Field(float, alias="priceRangeHigh")
+    currency: Optional[str]
+    exchange: Optional[str]
+
+class IpoCalendar(BaseResponse):
+    data: Optional[list[IpoCalendarItem]] = Field([])
+
+class EarningsCalendar(BaseResponse):
+    symbol: str
+    data: Optional[list[EarningsCalendarItem]] = Field([])
+
 class Quote(BaseQuote):
     """
     data is this clients abstraction of the response from alpha vantage. Time Series, Technical Indicator

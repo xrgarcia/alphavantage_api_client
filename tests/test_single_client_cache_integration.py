@@ -4,7 +4,7 @@ from alphavantage_api_client import AlphavantageClient, CsvNotSupported, TickerS
     , NewsAndSentiment
 import logging
 import json
-
+import csv
 client = AlphavantageClient().should_retry_once().use_simple_cache()
 
 
@@ -529,3 +529,52 @@ def test_get_market_movers():
         assert "change_amount" in item, "change_amount not found within result"
         assert "change_percentage" in item, "change_percentage not found within result"
         assert "volume" in item, "volume not found within result"
+
+@pytest.mark.integration
+def test_get_earnings_calendar():
+    symbols = ["IBM", "AAPL", "AMZN", "MSFT", "TSLA", "SYM"]
+
+    for symbol in symbols:
+        event = {
+            "symbol": symbol
+        }
+        earnings_calendar = client.get_earnings_calendar(event)
+        assert earnings_calendar.success, f"success was found to be True which is unexpected: {earnings_calendar.error_message}"
+        assert not earnings_calendar.limit_reached, f"limit_reached is true {earnings_calendar.error_message}"
+        assert len(earnings_calendar.csv), "csv is not defined within response"
+        assert len(earnings_calendar.data), "data is not defined within response"
+
+        for item in earnings_calendar.data:
+            print(item.json())
+
+@pytest.mark.integration
+def test_get_earnings_calendar():
+    symbols = ["IBM", "AAPL", "AMZN", "MSFT", "TSLA", "SYM"]
+
+    for symbol in symbols:
+        event = {
+            "symbol": symbol
+        }
+        earnings_calendar = client.get_earnings_calendar(event)
+        assert earnings_calendar.success, f"success was found to be True which is unexpected: {earnings_calendar.error_message}"
+        assert not earnings_calendar.limit_reached, f"limit_reached is true {earnings_calendar.error_message}"
+        assert len(earnings_calendar.csv), "csv is not defined within response"
+        assert len(earnings_calendar.data), "data is not defined within response"
+
+        for item in earnings_calendar.data:
+            print(item.json())
+
+def test_get_ipo_calendar():
+
+    ipo_calendar = client.get_ipo_calendar()
+    assert ipo_calendar.success, f"success was found to be True which is unexpected: {ipo_calendar.error_message}"
+    assert not ipo_calendar.limit_reached, f"limit_reached is true {ipo_calendar.error_message}"
+    assert len(ipo_calendar.csv), "csv is not defined within response"
+    assert len(ipo_calendar.data), "data is not defined within response"
+
+    for item in ipo_calendar.data:
+        assert len(item.symbol), "csv is not defined within response"
+        assert len(item.ipo_date), "ipo_date is not defined within response"
+        assert len(item.name), "name is not defined within response"
+
+
