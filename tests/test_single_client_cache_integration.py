@@ -588,7 +588,7 @@ def test_get_forex_exchange_rates():
     quote = client.get_forex_exchange_rates(event)
     print(quote.json())
 
-@pytest.mark.integration
+@pytest.mark.integration_paid
 def test_get_forex_intraday_rates():
     event = {
         "from_symbol": "EUR",
