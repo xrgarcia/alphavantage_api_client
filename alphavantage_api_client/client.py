@@ -6,7 +6,7 @@ import configparser
 from .response_validation_rules import ValidationRuleChecks
 import json
 from alphavantage_api_client.models import GlobalQuote, Quote, AccountingReport, CompanyOverview, RealGDP, \
-    CsvNotSupported, TickerSearch, MarketStatus
+    CsvNotSupported, TickerSearch, MarketStatus, NewsAndSentiment
 import copy
 import logging
 import hashlib
@@ -668,7 +668,7 @@ class AlphavantageClient:
 
         return MarketStatus.parse_obj(json_response)
 
-    def get_news_and_sentiment(self, event: dict):
+    def get_news_and_sentiment(self, event: dict) -> NewsAndSentiment:
         """
         Looking for market news signals to augment your trading strategy, or a global news
         feed API for your web/mobile app? You've just found it. This API returns live and historical market news
@@ -682,3 +682,11 @@ class AlphavantageClient:
         Returns:
 
         """
+        defaults = {
+            "function": "NEWS_SENTIMENT",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return NewsAndSentiment.parse_obj(json_response)

@@ -30,6 +30,11 @@ class MarketStatus(BaseResponse):
     endpoint: str
     data: list[dict] = Field({}, alias='markets')
 
+class NewsAndSentiment(BaseResponse):
+    items: int
+    sentiment_score_definition: str
+    relevance_score_definition: str
+    data: list[dict] = Field({}, alias='feed')
 
 class Quote(BaseQuote):
     """

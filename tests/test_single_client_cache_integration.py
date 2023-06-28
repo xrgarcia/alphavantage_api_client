@@ -493,3 +493,21 @@ def test_get_market_status():
         assert "region" in market, "region not found within result"
         assert "primary_exchanges" in market, "primary_exchanges not found within result"
         assert "local_open" in market, "local_open not found within result"
+
+@pytest.mark.integration
+def test_get_news_and_sentiment():
+    event = {
+        "topics" : "earnings,technology",
+        "limit" : "25"
+    }
+    news_and_sentiment = client.get_news_and_sentiment(event)
+    assert news_and_sentiment.success, f"success was found to be True which is unexpected: {news_and_sentiment.error_message}"
+    assert not news_and_sentiment.limit_reached, f"limit_reached is true {news_and_sentiment.error_message}"
+    assert len(news_and_sentiment.sentiment_score_definition), "sentiment_score_definition is not defined within response"
+    assert len(news_and_sentiment.data), "data list is missing results"
+
+    for item in news_and_sentiment.data:
+        assert "title" in item, "market_type not found within result"
+        assert "url" in item, "region not found within result"
+        assert "summary" in item, "primary_exchanges not found within result"
+        assert "source" in item, "local_open not found within result"
