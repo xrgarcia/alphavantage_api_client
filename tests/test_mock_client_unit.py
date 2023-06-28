@@ -50,7 +50,7 @@ def test_news_an_sentiment():
     }
     result = client.get_data_from_alpha_vantage(event)
     assert result['success'], 'We should have gotten news and sentiment correctly'
-    print(json.dumps(result))
+    #print(json.dumps(result))
 
 @pytest.mark.unit
 def test_get_cash_flow():
