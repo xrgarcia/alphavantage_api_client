@@ -67,6 +67,17 @@ class EarningsCalendar(BaseResponse):
     symbol: str
     data: Optional[list[EarningsCalendarItem]] = Field([])
 
+class CurrencyQuote(BaseResponse):
+    data: Optional[dict] = Field({})
+    meta_data: Optional[dict] = Field({}, alias='Meta Data')
+
+    @pydantic.root_validator(pre=True)
+    def normalize_fields(cls, values):
+        return {
+            "data" if k.startswith("Time Series FX (")
+                      or k.startswith("Realtime Currency Exchange Rate") else k: v for k, v in values.items()
+        }
+
 class Quote(BaseQuote):
     """
     data is this clients abstraction of the response from alpha vantage. Time Series, Technical Indicator

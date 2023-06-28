@@ -7,7 +7,7 @@ from .response_validation_rules import ValidationRuleChecks
 import json
 from alphavantage_api_client.models import GlobalQuote, Quote, AccountingReport, CompanyOverview, RealGDP, \
     CsvNotSupported, TickerSearch, MarketStatus, NewsAndSentiment, MarketMovers, EarningsCalendar\
-    , IpoCalendarItem, IpoCalendar
+    , IpoCalendarItem, IpoCalendar, CurrencyQuote
 import copy
 import logging
 import hashlib
@@ -750,3 +750,86 @@ class AlphavantageClient:
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return NewsAndSentiment.parse_obj(json_response)
+
+    def get_forex_exchange_rates(self, event: dict) -> CurrencyQuote:
+        """
+        This API returns the realtime exchange rate for a pair of digital currency (e.g., Bitcoin) and physical currency (e.g., USD).
+        Returns:
+
+        """
+        defaults = {
+            "function": "CURRENCY_EXCHANGE_RATE",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return CurrencyQuote.parse_obj(json_response)
+
+    def get_forex_intraday(self, event: dict) -> CurrencyQuote:
+        """
+        This API returns intraday time series (timestamp, open, high, low, close) of the FX currency pair specified, updated realtime.
+        Returns:
+
+        """
+        defaults = {
+            "function": "FX_INTRADAY",
+            "datatype": "json",
+            "interval": "60min",
+            "outputsize": "compact"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return CurrencyQuote.parse_obj(json_response)
+
+    def get_forex_daily(self, event: dict) -> CurrencyQuote:
+        """
+        This API returns intraday time series (timestamp, open, high, low, close) of the FX currency pair specified, updated realtime.
+        Returns:
+
+        """
+        defaults = {
+            "function": "FX_DAILY",
+            "datatype": "json",
+            "interval": "60min",
+            "outputsize": "compact"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return CurrencyQuote.parse_obj(json_response)
+
+    def get_forex_weekly(self, event: dict) -> CurrencyQuote:
+        """
+        This API returns intraday time series (timestamp, open, high, low, close) of the FX currency pair specified, updated realtime.
+        Returns:
+
+        """
+        defaults = {
+            "function": "FX_WEEKLY",
+            "datatype": "json",
+            "interval": "60min",
+            "outputsize": "compact"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return CurrencyQuote.parse_obj(json_response)
+
+    def get_forex_monthly(self, event: dict) -> CurrencyQuote:
+        """
+        This API returns intraday time series (timestamp, open, high, low, close) of the FX currency pair specified, updated realtime.
+        Returns:
+
+        """
+        defaults = {
+            "function": "FX_MONTHLY",
+            "datatype": "json",
+            "interval": "60min",
+            "outputsize": "compact"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return CurrencyQuote.parse_obj(json_response)
