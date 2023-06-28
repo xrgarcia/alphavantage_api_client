@@ -179,7 +179,7 @@ def test_can_quote_daily():
     }
     client = AlphavantageClient().should_retry_once()
     quote = client.get_daily_quote(event)
-    print(quote.json())
+    #print(quote.json())
     assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
     assert quote.success, f"success is false {quote.error_message}"
     assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
@@ -192,7 +192,7 @@ def test_can_quote_daily_adjusted():
     }
     client = AlphavantageClient().should_retry_once()
     quote = client.get_daily_adjusted_quote(event)
-    print(quote.json())
+    # print(quote.json())
     assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
     assert quote.success, f"success is false {quote.error_message}"
     assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
@@ -205,7 +205,7 @@ def test_can_quote_weekly():
     }
     client = AlphavantageClient().should_retry_once()
     quote = client.get_weekly_quote(event)
-    print(quote.json())
+    # print(quote.json())
     assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
     assert quote.success, f"success is false {quote.error_message}"
     assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
@@ -218,7 +218,7 @@ def test_can_quote_weekly_adjusted():
     }
     client = AlphavantageClient().should_retry_once()
     quote = client.get_weekly_adjusted_quote(event)
-    print(quote.json())
+    # print(quote.json())
     assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
     assert quote.success, f"success is false {quote.error_message}"
     assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
@@ -231,7 +231,7 @@ def test_can_quote_monthly():
     }
     client = AlphavantageClient().should_retry_once()
     quote = client.get_monthly_quote(event)
-    print(quote.json())
+    # print(quote.json())
     assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
     assert quote.success, f"success is false {quote.error_message}"
     assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
@@ -244,7 +244,7 @@ def test_can_quote_monthly_adjusted():
     }
     client = AlphavantageClient().should_retry_once()
     quote = client.get_monthly_adjusted_quote(event)
-    print(quote.json())
+    # print(quote.json())
     assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
     assert quote.success, f"success is false {quote.error_message}"
     assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
@@ -559,5 +559,5 @@ def test_get_fx_currency_data():
     }
     client = AlphavantageClient().should_retry_once()
     results = client.get_data_from_alpha_vantage(event)
-    print(results)
+    # print(results)
     assert results["success"], f"FX Exchange call failed{results}"
