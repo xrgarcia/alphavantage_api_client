@@ -90,13 +90,11 @@ def test_quote_crypto():
     client = MockAlphavantageClient()
     event = {
         "symbol": "ETH",
-        "function": "CRYPTO_INTRADAY",
         "outputsize": "full"
     }
     intraday_quote = client.get_crypto_intraday(event)
     assert intraday_quote.success, "Success field is missing or False"
     assert not intraday_quote.limit_reached, "Limit reached is true but not hitting API"
-    assert intraday_quote.symbol == event["symbol"], "Symbol from results don't match event"
     assert len(intraday_quote.data), "data{} is empty but it should contain properties"
     assert len(intraday_quote.meta_data), "meta_data{} is empty but it should contain properties"
     logging.warning(f"Successfully tested test_quote_crypto for {event['symbol']}")

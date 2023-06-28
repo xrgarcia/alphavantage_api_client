@@ -196,7 +196,8 @@ def test_can_quote_daily():
 @pytest.mark.integration_paid
 def test_can_quote_crypto_intraday():
     event = {
-        "symbol": "ETH"
+        "symbol": "ETH",
+        "outputsize" : "compact"
     }
     quote = client.get_crypto_intraday(event)
     # print(quote)
