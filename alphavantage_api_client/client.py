@@ -449,7 +449,7 @@ class AlphavantageClient:
 
         return CompanyOverview.parse_obj(json_response)
 
-    def get_crypto_intraday(self, event: dict) -> Quote:
+    def get_crypto_intraday(self, event: dict) -> CurrencyQuote:
         """
         This API returns intraday time series (timestamp, open, high, low, close, volume) of the cryptocurrency
         specified, updated realtime.
@@ -459,7 +459,7 @@ class AlphavantageClient:
             Minimum required is ``symbol`` = (``str``)
 
         Returns:
-            :rtype: Quote
+            :rtype: CurrencyQuote
 
         """
         defaults = {
@@ -470,8 +470,97 @@ class AlphavantageClient:
         }
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+        print(json_response)
+        return CurrencyQuote.parse_obj(json_response)
 
-        return Quote.parse_obj(json_response)
+
+    def get_crypto_daily(self, event: dict) -> CurrencyQuote:
+        """
+        This API returns the daily historical time series for a digital currency (e.g., BTC)
+        traded on a specific market (e.g., CNY/Chinese Yuan), refreshed daily at midnight (UTC). Prices and
+        volumes are quoted in both the market-specific currency and USD.
+
+        Args:
+            event (dict): A Dictionary of parameters that will be passed to the api.
+            Minimum required is ``symbol`` = (``str``)
+
+        Returns:
+            :rtype: CurrencyQuote
+
+        """
+        defaults = {
+            "function": "DIGITAL_CURRENCY_DAILY",
+            "market": "CNY"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+        return CurrencyQuote.parse_obj(json_response)
+
+    def get_crypto_weekly(self, event: dict) -> CurrencyQuote:
+        """
+        This API returns the daily historical time series for a digital currency (e.g., BTC)
+        traded on a specific market (e.g., CNY/Chinese Yuan), refreshed daily at midnight (UTC). Prices and
+        volumes are quoted in both the market-specific currency and USD.
+
+        Args:
+            event (dict): A Dictionary of parameters that will be passed to the api.
+            Minimum required is ``symbol`` = (``str``)
+
+        Returns:
+            :rtype: CurrencyQuote
+
+        """
+        defaults = {
+            "function": "DIGITAL_CURRENCY_WEEKLY",
+            "market": "CNY"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+        return CurrencyQuote.parse_obj(json_response)
+
+    def get_crypto_monthly(self, event: dict) -> CurrencyQuote:
+        """
+        This API returns the monthly historical time series for a digital currency (e.g., BTC) traded on a specific
+         market (e.g., CNY/Chinese Yuan), refreshed daily at midnight (UTC). Prices and volumes are quoted
+         in both the market-specific currency and USD.
+
+        Args:
+            event (dict): A Dictionary of parameters that will be passed to the api.
+            Minimum required is ``symbol`` = (``str``)
+
+        Returns:
+            :rtype: CurrencyQuote
+
+        """
+        defaults = {
+            "function": "DIGITAL_CURRENCY_MONTHLY",
+            "market": "CNY"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+        return CurrencyQuote.parse_obj(json_response)
+
+    def get_crypto_exchange_rates(self, event: dict) -> CurrencyQuote:
+        """
+        This API returns the monthly historical time series for a digital currency (e.g., BTC) traded on a specific
+         market (e.g., CNY/Chinese Yuan), refreshed daily at midnight (UTC). Prices and volumes are quoted
+         in both the market-specific currency and USD.
+
+        Args:
+            event (dict): A Dictionary of parameters that will be passed to the api.
+            Minimum required is ``symbol`` = (``str``)
+
+        Returns:
+            :rtype: CurrencyQuote
+
+        """
+        defaults = {
+            "function": "CURRENCY_EXCHANGE_RATE",
+            "market": "CNY"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+        return CurrencyQuote.parse_obj(json_response)
 
     def get_real_gdp(self, event: dict = None) -> RealGDP:
         """
@@ -753,8 +842,9 @@ class AlphavantageClient:
 
     def get_forex_exchange_rates(self, event: dict) -> CurrencyQuote:
         """
-        This API returns the realtime exchange rate for a pair of digital currency (e.g., Bitcoin) and physical currency (e.g., USD).
-        Returns:
+        This API returns the realtime exchange rate for a pair of digital currency (e.g., Bitcoin)
+        and physical currency (e.g., USD).
+        Returns: CurrencyQuote
 
         """
         defaults = {
@@ -768,7 +858,8 @@ class AlphavantageClient:
 
     def get_forex_intraday(self, event: dict) -> CurrencyQuote:
         """
-        This API returns intraday time series (timestamp, open, high, low, close) of the FX currency pair specified, updated realtime.
+        This API returns intraday time series (timestamp, open, high, low, close) of the FX
+        currency pair specified, updated realtime.
         Returns:
 
         """
@@ -785,8 +876,9 @@ class AlphavantageClient:
 
     def get_forex_daily(self, event: dict) -> CurrencyQuote:
         """
-        This API returns intraday time series (timestamp, open, high, low, close) of the FX currency pair specified, updated realtime.
-        Returns:
+       This API returns the daily time series (timestamp, open, high, low, close) of the FX
+       currency pair specified, updated realtime.
+        Returns: CurrencyQuote
 
         """
         defaults = {
@@ -802,8 +894,10 @@ class AlphavantageClient:
 
     def get_forex_weekly(self, event: dict) -> CurrencyQuote:
         """
-        This API returns intraday time series (timestamp, open, high, low, close) of the FX currency pair specified, updated realtime.
-        Returns:
+        This API returns the weekly time series (timestamp, open, high, low, close) of the FX currency pair specified, updated realtime.
+
+The latest data point is the price information for the week (or partial week) containing the current trading day, updated realtime.
+        Returns: CurrencyQuote
 
         """
         defaults = {
@@ -819,8 +913,12 @@ class AlphavantageClient:
 
     def get_forex_monthly(self, event: dict) -> CurrencyQuote:
         """
-        This API returns intraday time series (timestamp, open, high, low, close) of the FX currency pair specified, updated realtime.
-        Returns:
+        This API returns the monthly time series (timestamp, open, high, low, close) of the FX
+        currency pair specified, updated realtime.
+
+        The latest data point is the prices information for the month (or partial month)
+        containing the current trading day, updated realtime.
+        Returns: CurrencyQuote
 
         """
         defaults = {

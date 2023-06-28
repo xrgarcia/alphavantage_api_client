@@ -191,30 +191,91 @@ def test_can_quote_daily():
 
 
 @pytest.mark.integration_paid
-def test_can_quote_crypto():
+def test_can_quote_crypto_intraday():
     event = {
         "symbol": "ETH"
     }
-    results = client.get_crypto_intraday(event)
-    assert not results.limit_reached, f"limit_reached should not be true {results.error_message}"
-    assert results.success, f"success is false {results.error_message}"
-    assert len(results.data), "Data{} property is empty but should have information"
+    quote = client.get_crypto_intraday(event)
+    #print(quote)
+    assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
+    assert quote.success, f"success is false {quote.error_message}"
+    assert len(quote.data), "Data{} property is empty but should have information"
     logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
+
+@pytest.mark.integration
+def test_can_quote_crypto_daily():
+    event = {
+        "symbol": "ETH"
+    }
+    quote = client.get_crypto_daily(event)
+    #print(quote)
+    assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
+    assert quote.success, f"success is false {quote.error_message}"
+    assert len(quote.data), "Data{} property is empty but should have information"
+    logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
+
+@pytest.mark.integration
+def test_can_quote_crypto_weekly():
+    event = {
+        "symbol": "ETH"
+    }
+    quote = client.get_crypto_weekly(event)
+    #print(quote)
+    assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
+    assert quote.success, f"success is false {quote.error_message}"
+    assert len(quote.data), "Data{} property is empty but should have information"
+    logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
+
+
+@pytest.mark.integration
+def test_can_quote_crypto_weekly():
+    event = {
+        "symbol": "ETH"
+    }
+    quote = client.get_crypto_weekly(event)
+    #print(quote)
+    assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
+    assert quote.success, f"success is false {quote.error_message}"
+    assert len(quote.data), "Data{} property is empty but should have information"
+    logging.warning(f" Successfully quoted cryptocurrency  weekly symbol {event['symbol']} in JSON")
+
+
+@pytest.mark.integration
+def test_can_quote_crypto_monthly():
+    event = {
+        "symbol": "ETH"
+    }
+    quote = client.get_crypto_monthly(event)
+    #print(quote)
+    assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
+    assert quote.success, f"success is false {quote.error_message}"
+    assert len(quote.data), "Data{} property is empty but should have information"
+    logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
+
+@pytest.mark.integration
+def test_can_quote_crypto_exchange_rates():
+    event = {
+        "from_currency": "ETH",
+        "to_currency": "BTC"
+    }
+    quote = client.get_crypto_exchange_rates(event)
+    #print(quote)
+    assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
+    assert quote.success, f"success is false {quote.error_message}"
+    assert len(quote.data), "Data{} property is empty but should have information"
+    logging.warning(f" Successfully quoted cryptocurrency symbol {event['from_currency']} to {event['to_currency']} in JSON")
 
 
 @pytest.mark.integration_paid
 def test_can_quote_crypto_csv():
     event = {
-        "function": "CRYPTO_INTRADAY",
         "symbol": "ETH",
-        "market": "USD",
-        "interval": "5min",
         "datatype": "csv"
     }
     results = client.get_crypto_intraday(event)
     assert not results.limit_reached, f"limit_reached should not be true {results.error_message}"
     assert results.success, f"success is false {results.error_message}"
-    assert len(results.csv), "Data{} property is empty but should have information"
+    assert len(results.csv), "csv property is empty but should have information"
     logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in CSV")
 
 
