@@ -166,7 +166,6 @@ def test_can_search_ticker():
     event = {
         "keywords" : "Tesla"
     }
-    client = AlphavantageClient()
     ticker_search_result = client.search_ticker(event)
     assert not ticker_search_result.limit_reached, f"limit_reached should not be true {ticker_search_result.error_message}"
     assert ticker_search_result.success, f"success is false {ticker_search_result.error_message}"
