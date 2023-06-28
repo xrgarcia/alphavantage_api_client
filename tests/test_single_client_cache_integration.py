@@ -193,10 +193,7 @@ def test_can_quote_daily():
 @pytest.mark.integration_paid
 def test_can_quote_crypto():
     event = {
-        "function": "CRYPTO_INTRADAY",
-        "symbol": "ETH",
-        "market": "USD",
-        "interval": "5min"
+        "symbol": "ETH"
     }
     results = client.get_crypto_intraday(event)
     assert not results.limit_reached, f"limit_reached should not be true {results.error_message}"
