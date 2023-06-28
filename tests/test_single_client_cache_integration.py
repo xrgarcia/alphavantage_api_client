@@ -1,6 +1,7 @@
 import pytest
 import time
-from alphavantage_api_client import AlphavantageClient, CsvNotSupported, TickerSearch, MarketStatus
+from alphavantage_api_client import AlphavantageClient, CsvNotSupported, TickerSearch, MarketStatus, MarketMovers\
+    , NewsAndSentiment
 import logging
 import json
 
@@ -511,3 +512,20 @@ def test_get_news_and_sentiment():
         assert "url" in item, "region not found within result"
         assert "summary" in item, "primary_exchanges not found within result"
         assert "source" in item, "local_open not found within result"
+
+@pytest.mark.integration
+def test_get_market_movers():
+    market_movers = client.get_top_gainers_and_losers()
+    print(market_movers)
+    assert market_movers.success, f"success was found to be True which is unexpected: {market_movers.error_message}"
+    assert not market_movers.limit_reached, f"limit_reached is true {market_movers.error_message}"
+    assert len(market_movers.meta_data), "meta_data is not defined within response"
+    assert len(market_movers.top_gainers), "top_gainers list is missing results"
+    assert len(market_movers.top_losers), "top_losers list is missing results"
+
+    for item in market_movers.top_gainers:
+        assert "ticker" in item, "ticker not found within result"
+        assert "price" in item, "price not found within result"
+        assert "change_amount" in item, "change_amount not found within result"
+        assert "change_percentage" in item, "change_percentage not found within result"
+        assert "volume" in item, "volume not found within result"

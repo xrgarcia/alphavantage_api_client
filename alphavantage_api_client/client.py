@@ -6,7 +6,7 @@ import configparser
 from .response_validation_rules import ValidationRuleChecks
 import json
 from alphavantage_api_client.models import GlobalQuote, Quote, AccountingReport, CompanyOverview, RealGDP, \
-    CsvNotSupported, TickerSearch, MarketStatus, NewsAndSentiment
+    CsvNotSupported, TickerSearch, MarketStatus, NewsAndSentiment, MarketMovers
 import copy
 import logging
 import hashlib
@@ -667,6 +667,20 @@ class AlphavantageClient:
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return MarketStatus.parse_obj(json_response)
+
+    def get_top_gainers_and_losers(self) -> MarketMovers:
+        """
+        This endpoint returns the top 20 gainers, losers, and the most active traded tickers in the US market.
+        Returns:
+
+        """
+        json_request = {
+            "function": "TOP_GAINERS_LOSERS"
+        }
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return MarketMovers.parse_obj(json_response)
+
 
     def get_news_and_sentiment(self, event: dict) -> NewsAndSentiment:
         """

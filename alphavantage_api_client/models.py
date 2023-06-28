@@ -36,6 +36,13 @@ class NewsAndSentiment(BaseResponse):
     relevance_score_definition: str
     data: list[dict] = Field({}, alias='feed')
 
+class MarketMovers(BaseResponse):
+    top_gainers: list[dict]
+    top_losers: list[dict]
+    last_updated: str
+    meta_data: Optional[str] = Field(str, alias='metadata')
+    most_actively_traded: list[dict]
+
 class Quote(BaseQuote):
     """
     data is this clients abstraction of the response from alpha vantage. Time Series, Technical Indicator
