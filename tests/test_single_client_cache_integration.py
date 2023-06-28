@@ -564,6 +564,7 @@ def test_get_earnings_calendar():
         for item in earnings_calendar.data:
             print(item.json())
 
+@pytest.mark.integration
 def test_get_ipo_calendar():
 
     ipo_calendar = client.get_ipo_calendar()
@@ -576,5 +577,64 @@ def test_get_ipo_calendar():
         assert len(item.symbol), "csv is not defined within response"
         assert len(item.ipo_date), "ipo_date is not defined within response"
         assert len(item.name), "name is not defined within response"
+
+
+@pytest.mark.integration
+def test_get_forex_exchange_rates():
+    event = {
+        "from_currency": "USD",
+        "to_currency" : "GBP"
+    }
+    quote = client.get_forex_exchange_rates(event)
+    print(quote.json())
+
+@pytest.mark.integration
+def test_get_forex_intraday_rates():
+    event = {
+        "from_symbol": "EUR",
+        "to_symbol" : "USD"
+    }
+    currency_quote = client.get_forex_intraday(event)
+    assert currency_quote.success, f"success was found to be True which is unexpected: {currency_quote.error_message}"
+    assert not currency_quote.limit_reached, f"limit_reached is true {currency_quote.error_message}"
+    assert len(currency_quote.meta_data), "meta_data is not defined within response"
+    assert len(currency_quote.data), "data is not defined or zero within response"
+
+@pytest.mark.integration
+def test_get_forex_daily_rates():
+    event = {
+        "from_symbol": "EUR",
+        "to_symbol" : "USD"
+    }
+    currency_quote = client.get_forex_daily(event)
+    assert currency_quote.success, f"success was found to be True which is unexpected: {currency_quote.error_message}"
+    assert not currency_quote.limit_reached, f"limit_reached is true {currency_quote.error_message}"
+    assert len(currency_quote.meta_data), "meta_data is not defined within response"
+    assert len(currency_quote.data), "data is not defined or zero within response"
+
+@pytest.mark.integration
+def test_get_forex_weekly_rates():
+    event = {
+        "from_symbol": "EUR",
+        "to_symbol" : "USD"
+    }
+    currency_quote = client.get_forex_weekly(event)
+    assert currency_quote.success, f"success was found to be True which is unexpected: {currency_quote.error_message}"
+    assert not currency_quote.limit_reached, f"limit_reached is true {currency_quote.error_message}"
+    assert len(currency_quote.meta_data), "meta_data is not defined within response"
+    assert len(currency_quote.data), "data is not defined or zero within response"
+
+@pytest.mark.integration
+def test_get_forex_monthly_rates():
+    event = {
+        "from_symbol": "EUR",
+        "to_symbol" : "USD"
+    }
+    currency_quote = client.get_forex_monthly(event)
+    assert currency_quote.success, f"success was found to be True which is unexpected: {currency_quote.error_message}"
+    assert not currency_quote.limit_reached, f"limit_reached is true {currency_quote.error_message}"
+    assert len(currency_quote.meta_data), "meta_data is not defined within response"
+    assert len(currency_quote.data), "data is not defined or zero within response"
+
 
 
