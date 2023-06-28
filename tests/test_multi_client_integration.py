@@ -250,7 +250,7 @@ def test_can_quote_monthly_adjusted():
     assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
     logging.warning(f" Successfully quoted symbol {event['symbol']} in JSON")
 
-@pytest.mark.integrationn_paid
+@pytest.mark.integration_paid
 def test_can_quote_crypto():
     event = {
         "function": "CRYPTO_INTRADAY",
