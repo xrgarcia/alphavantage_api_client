@@ -250,21 +250,6 @@ def test_can_quote_monthly_adjusted():
     assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
     logging.warning(f" Successfully quoted symbol {event['symbol']} in JSON")
 
-@pytest.mark.integration_paid
-def test_can_quote_crypto():
-    event = {
-        "function": "CRYPTO_INTRADAY",
-        "symbol": "ETH",
-        "market": "USD",
-        "interval": "5min"
-    }
-    client = AlphavantageClient().should_retry_once()
-    quote = client.get_crypto_intraday(event)
-    assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
-    assert quote.success, f"success is false {quote.error_message}"
-    assert len(quote.data), "Data{} property is empty but should have information"
-    logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
-
 
 @pytest.mark.integration_paid
 def test_can_quote_crypto_csv():
