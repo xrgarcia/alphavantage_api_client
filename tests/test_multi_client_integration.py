@@ -574,7 +574,7 @@ def test_get_crude_oil_wti():
     event = {
         "interval": "daily"
     }
-    crude_wti = client.get_crude_oil_wti(event)
+    crude_wti = client.get_crude_oil_wti_prices(event)
     name = crude_wti.name
     assert crude_wti.success, f"success was found to be False: {crude_wti.error_message}"
     assert not crude_wti.limit_reached, f"limit_reached is true {crude_wti.error_message}"
@@ -588,7 +588,7 @@ def test_get_crude_oil_brent():
     event = {
         "interval": "daily"
     }
-    crude_brent = client.get_crude_oil_brent(event)
+    crude_brent = client.get_crude_oil_brent_prices(event)
     name = crude_brent.name
     assert crude_brent.success, f"success was found to be False: {crude_brent.error_message}"
     assert not crude_brent.limit_reached, f"limit_reached is true {crude_brent.error_message}"
@@ -602,7 +602,7 @@ def test_get_natural_gas():
     event = {
         "interval": "daily"
     }
-    natural_gas = client.get_natural_gas(event)
+    natural_gas = client.get_natural_gas_prices(event)
     name = natural_gas.name
     assert natural_gas.success, f"success was found to be False: {natural_gas.error_message}"
     assert not natural_gas.limit_reached, f"limit_reached is true {natural_gas.error_message}"
@@ -616,7 +616,7 @@ def test_get_copper():
     event = {
         "interval": "daily"
     }
-    copper = client.get_copper(event)
+    copper = client.get_copper_prices(event)
     name = copper.name
     assert copper.success, f"success was found to be False: {copper.error_message}"
     assert not copper.limit_reached, f"limit_reached is true {copper.error_message}"
@@ -629,7 +629,7 @@ def test_get_aluminum():
     event = {
         "interval": "daily"
     }
-    aluminum = client.get_aluminum(event)
+    aluminum = client.get_aluminum_prices(event)
     name = aluminum.name
     assert aluminum.success, f"success was found to be False: {aluminum.error_message}"
     assert not aluminum.limit_reached, f"limit_reached is true {aluminum.error_message}"
@@ -642,7 +642,7 @@ def test_get_wheat():
     event = {
         "interval": "daily"
     }
-    wheat = client.get_wheat(event)
+    wheat = client.get_wheat_prices(event)
     name = wheat.name
     assert wheat.success, f"success was found to be False: {wheat.error_message}"
     assert not wheat.limit_reached, f"limit_reached is true {wheat.error_message}"
@@ -655,7 +655,7 @@ def test_get_corn():
     event = {
         "interval": "daily"
     }
-    corn = client.get_corn(event)
+    corn = client.get_corn_prices(event)
     name = corn.name
     assert corn.success, f"success was found to be False: {corn.error_message}"
     assert not corn.limit_reached, f"limit_reached is true {corn.error_message}"
@@ -668,7 +668,7 @@ def test_get_cotton():
     event = {
         "interval": "daily"
     }
-    cotton = client.get_cotton(event)
+    cotton = client.get_cotton_prices(event)
     name = cotton.name
     assert cotton.success, f"success was found to be False: {cotton.error_message}"
     assert not cotton.limit_reached, f"limit_reached is true {cotton.error_message}"
@@ -681,7 +681,7 @@ def test_get_sugar():
     event = {
         "interval": "daily"
     }
-    sugar = client.get_sugar(event)
+    sugar = client.get_sugar_prices(event)
     name = sugar.name
     assert sugar.success, f"success was found to be False: {sugar.error_message}"
     assert not sugar.limit_reached, f"limit_reached is true {sugar.error_message}"
@@ -695,7 +695,7 @@ def test_get_coffee_commodity():
     event = {
         "interval": "daily"
     }
-    coffee = client.get_coffee(event)
+    coffee = client.get_coffee_prices(event)
     name = coffee.name
     assert coffee.success, f"success was found to be False: {coffee.error_message}"
     assert not coffee.limit_reached, f"limit_reached is true {coffee.error_message}"
@@ -709,7 +709,7 @@ def test_get_all_commodities():
     event = {
         "interval": "daily"
     }
-    all_commodities = client.get_all_commodities(event)
+    all_commodities = client.get_all_commodity_prices(event)
     name = all_commodities.name
     assert all_commodities.success, f"success was found to be False: {all_commodities.error_message}"
     assert not all_commodities.limit_reached, f"limit_reached is true {all_commodities.error_message}"

@@ -931,7 +931,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return CurrencyQuote.parse_obj(json_response)
 
-    def get_crude_oil_wti(self, event) -> Commodity:
+    def get_crude_oil_wti_prices(self, event) -> Commodity:
         """
         This API returns the West Texas Intermediate (WTI) crude oil prices in daily, weekly, and monthly horizons.
 
@@ -955,7 +955,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Commodity.parse_obj(json_response)
 
-    def get_crude_oil_brent(self, event: dict) -> Commodity:
+    def get_crude_oil_brent_prices(self, event: dict) -> Commodity:
         """
         This API returns the Brent (Europe) crude oil prices in daily, weekly, and monthly horizons.
         Source: U.S. Energy Information Administration, Crude Oil Prices: Brent - Europe, retrieved from FRED,
@@ -977,7 +977,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Commodity.parse_obj(json_response)
 
-    def get_natural_gas(self, event: dict) -> Commodity:
+    def get_natural_gas_prices(self, event: dict) -> Commodity:
         """
         This API returns the Henry Hub natural gas spot prices in daily, weekly, and monthly horizons.
         Source: U.S. Energy Information Administration, Henry Hub Natural Gas Spot Price, retrieved from FRED,
@@ -999,7 +999,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Commodity.parse_obj(json_response)
 
-    def get_copper(self, event: dict) -> Commodity:
+    def get_copper_prices(self, event: dict) -> Commodity:
         """
         This API returns the global price of copper in monthly, quarterly, and annual horizons.
         Source: International Monetary Fund (IMF Terms of Use), Global price of Copper, retrieved from FRED, Federal
@@ -1021,7 +1021,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Commodity.parse_obj(json_response)
 
-    def get_aluminum(self, event: dict) -> Commodity:
+    def get_aluminum_prices(self, event: dict) -> Commodity:
         """
         This API returns the global price of aluminum in monthly, quarterly, and annual horizons.
         Source: International Monetary Fund (IMF Terms of Use), Global price of Aluminum, retrieved from FRED, Federal
@@ -1043,7 +1043,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Commodity.parse_obj(json_response)
 
-    def get_wheat(self, event: dict) -> Commodity:
+    def get_wheat_prices(self, event: dict) -> Commodity:
         """
         This API returns the global price of wheat in monthly, quarterly, and annual horizons.
         Source: International Monetary Fund (IMF Terms of Use), Global price of Wheat, retrieved from FRED, Federal
@@ -1065,7 +1065,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Commodity.parse_obj(json_response)
 
-    def get_corn(self, event: dict) -> Commodity:
+    def get_corn_prices(self, event: dict) -> Commodity:
         """
         This API returns the global price of corn in monthly, quarterly, and annual horizons.
         Source: International Monetary Fund (IMF Terms of Use), Global price of Corn, retrieved from FRED, Federal
@@ -1087,7 +1087,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Commodity.parse_obj(json_response)
 
-    def get_cotton(self, event: dict) -> Commodity:
+    def get_cotton_prices(self, event: dict) -> Commodity:
         """
         This API returns the global price of cotton in monthly, quarterly, and annual horizons.
         Source: International Monetary Fund (IMF Terms of Use), Global price of Cotton, retrieved from FRED, Federal
@@ -1109,7 +1109,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Commodity.parse_obj(json_response)
 
-    def get_sugar(self, event: dict) -> Commodity:
+    def get_sugar_prices(self, event: dict) -> Commodity:
         """
         This API returns the global price of sugar in monthly, quarterly, and annual horizons.
         Source: International Monetary Fund (IMF Terms of Use), Global price of Sugar, No. 11, World, retrieved from
@@ -1132,7 +1132,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Commodity.parse_obj(json_response)
 
-    def get_coffee(self, event: dict) -> Commodity:
+    def get_coffee_prices(self, event: dict) -> Commodity:
         """
         This API returns the global price of coffee in monthly, quarterly, and annual horizons.
         Source: International Monetary Fund (IMF Terms of Use), Global price of Coffee, Other Mild Arabica,
@@ -1155,7 +1155,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Commodity.parse_obj(json_response)
 
-    def get_all_commodities(self, event: dict) -> Commodity:
+    def get_all_commodity_prices(self, event: dict) -> Commodity:
         """
         This API returns the global price index of all commodities in monthly, quarterly, and annual temporal dimensions.
         Source: International Monetary Fund (IMF Terms of Use), Global Price Index of All Commodities, retrieved
