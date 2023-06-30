@@ -81,6 +81,12 @@ class CurrencyQuote(BaseResponse):
                       or k.startswith("Realtime Currency Exchange Rate") else k: v for k, v in values.items()
         }
 
+class Commodity(BaseResponse):
+    name: str
+    interval: str
+    unit: str
+    data: list[dict]
+
 class Quote(BaseQuote):
     """
     data is this clients abstraction of the response from alpha vantage. Time Series, Technical Indicator
