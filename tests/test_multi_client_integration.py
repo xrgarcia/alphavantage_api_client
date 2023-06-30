@@ -179,11 +179,12 @@ def test_can_quote_daily():
     }
     client = AlphavantageClient().should_retry_once()
     quote = client.get_daily_quote(event)
-    #print(quote.json())
+    # print(quote.json())
     assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
     assert quote.success, f"success is false {quote.error_message}"
     assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
     logging.warning(f" Successfully quoted symbol {event['symbol']} in JSON")
+
 
 @pytest.mark.integration
 def test_can_quote_daily_adjusted():
@@ -198,6 +199,7 @@ def test_can_quote_daily_adjusted():
     assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
     logging.warning(f" Successfully quoted symbol {event['symbol']} in JSON")
 
+
 @pytest.mark.integration
 def test_can_quote_weekly():
     event = {
@@ -210,6 +212,7 @@ def test_can_quote_weekly():
     assert quote.success, f"success is false {quote.error_message}"
     assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
     logging.warning(f" Successfully quoted symbol {event['symbol']} in JSON")
+
 
 @pytest.mark.integration
 def test_can_quote_weekly_adjusted():
@@ -224,6 +227,7 @@ def test_can_quote_weekly_adjusted():
     assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
     logging.warning(f" Successfully quoted symbol {event['symbol']} in JSON")
 
+
 @pytest.mark.integration
 def test_can_quote_monthly():
     event = {
@@ -237,6 +241,7 @@ def test_can_quote_monthly():
     assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
     logging.warning(f" Successfully quoted symbol {event['symbol']} in JSON")
 
+
 @pytest.mark.integration
 def test_can_quote_monthly_adjusted():
     event = {
@@ -249,6 +254,22 @@ def test_can_quote_monthly_adjusted():
     assert quote.success, f"success is false {quote.error_message}"
     assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
     logging.warning(f" Successfully quoted symbol {event['symbol']} in JSON")
+
+
+@pytest.mark.integration_paid
+def test_can_quote_crypto():
+    event = {
+        "function": "CRYPTO_INTRADAY",
+        "symbol": "ETH",
+        "market": "USD",
+        "interval": "5min"
+    }
+    client = AlphavantageClient().should_retry_once()
+    quote = client.get_crypto_intraday(event)
+    assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
+    assert quote.success, f"success is false {quote.error_message}"
+    assert len(quote.data), "Data{} property is empty but should have information"
+    logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
 
 
 @pytest.mark.integration_paid
@@ -371,7 +392,6 @@ def test_can_not_query_csv_company_overview():
 
 @pytest.mark.integration
 def test_can_not_query_income_statement():
-
     event = {
         "symbol": "tsla22354q2354"
     }
@@ -538,11 +558,160 @@ def test_get_data_from_alpha_vantage():
 @pytest.mark.integration_paid
 def test_get_fx_currency_data():
     event = {
-        "function" : "CURRENCY_EXCHANGE_RATE",
-        "from_currency" : "JPY",
-        "to_currency" : "USD"
+        "function": "CURRENCY_EXCHANGE_RATE",
+        "from_currency": "JPY",
+        "to_currency": "USD"
     }
     client = AlphavantageClient().should_retry_once()
     results = client.get_data_from_alpha_vantage(event)
     # print(results)
     assert results["success"], f"FX Exchange call failed{results}"
+
+
+@pytest.mark.integration
+def test_get_crude_oil_wti():
+    client = AlphavantageClient()
+    event = {
+        "interval": "daily"
+    }
+    crude_wti = client.get_crude_oil_wti_prices(event)
+    name = crude_wti.name
+    assert crude_wti.success, f"success was found to be False: {crude_wti.error_message}"
+    assert not crude_wti.limit_reached, f"limit_reached is true {crude_wti.error_message}"
+    assert len(crude_wti.data), f"data is empty, we should have {name} prices"
+    assert name == "Crude Oil Prices WTI", f"You are not testing {name}"
+
+
+@pytest.mark.integration
+def test_get_crude_oil_brent():
+    client = AlphavantageClient()
+    event = {
+        "interval": "daily"
+    }
+    crude_brent = client.get_crude_oil_brent_prices(event)
+    name = crude_brent.name
+    assert crude_brent.success, f"success was found to be False: {crude_brent.error_message}"
+    assert not crude_brent.limit_reached, f"limit_reached is true {crude_brent.error_message}"
+    assert len(crude_brent.data), f"data is empty, we should have {name} prices"
+    assert name == "Crude Oil Prices Brent", f"You are not testing {name}"
+
+
+@pytest.mark.integration
+def test_get_natural_gas():
+    client = AlphavantageClient()
+    event = {
+        "interval": "daily"
+    }
+    natural_gas = client.get_natural_gas_prices(event)
+    name = natural_gas.name
+    assert natural_gas.success, f"success was found to be False: {natural_gas.error_message}"
+    assert not natural_gas.limit_reached, f"limit_reached is true {natural_gas.error_message}"
+    assert len(natural_gas.data), f"data is empty, we should have {name} prices"
+    assert name == "Henry Hub Natural Gas Spot Price", f"You are not testing {name}"
+
+
+@pytest.mark.integration
+def test_get_copper():
+    client = AlphavantageClient()
+    event = {
+        "interval": "daily"
+    }
+    copper = client.get_copper_prices(event)
+    name = copper.name
+    assert copper.success, f"success was found to be False: {copper.error_message}"
+    assert not copper.limit_reached, f"limit_reached is true {copper.error_message}"
+    assert len(copper.data), f"data is empty, we should have {name} prices"
+    assert name == "Global Price of Copper", f"You are not testing {name}"
+
+
+def test_get_aluminum():
+    client = AlphavantageClient()
+    event = {
+        "interval": "daily"
+    }
+    aluminum = client.get_aluminum_prices(event)
+    name = aluminum.name
+    assert aluminum.success, f"success was found to be False: {aluminum.error_message}"
+    assert not aluminum.limit_reached, f"limit_reached is true {aluminum.error_message}"
+    assert len(aluminum.data), f"data is empty, we should have {name} prices"
+    assert name == "Global Price of Aluminum", f"You are not testing {name}"
+
+
+def test_get_wheat():
+    client = AlphavantageClient()
+    event = {
+        "interval": "daily"
+    }
+    wheat = client.get_wheat_prices(event)
+    name = wheat.name
+    assert wheat.success, f"success was found to be False: {wheat.error_message}"
+    assert not wheat.limit_reached, f"limit_reached is true {wheat.error_message}"
+    assert len(wheat.data), f"data is empty, we should have {name} prices"
+    assert name == "Global Price of Wheat", f"You are not testing {name}"
+
+
+def test_get_corn():
+    client = AlphavantageClient()
+    event = {
+        "interval": "daily"
+    }
+    corn = client.get_corn_prices(event)
+    name = corn.name
+    assert corn.success, f"success was found to be False: {corn.error_message}"
+    assert not corn.limit_reached, f"limit_reached is true {corn.error_message}"
+    assert len(corn.data), f"data is empty, we should have {name} prices"
+    assert name == "Global Price of Corn", f"You are not testing {name}"
+
+
+def test_get_cotton():
+    client = AlphavantageClient()
+    event = {
+        "interval": "daily"
+    }
+    cotton = client.get_cotton_prices(event)
+    name = cotton.name
+    assert cotton.success, f"success was found to be False: {cotton.error_message}"
+    assert not cotton.limit_reached, f"limit_reached is true {cotton.error_message}"
+    assert len(cotton.data), f"data is empty, we should have {name} prices"
+    assert name == "Global Price of Cotton", f"You are not testing {name}"
+
+
+def test_get_sugar():
+    client = AlphavantageClient()
+    event = {
+        "interval": "daily"
+    }
+    sugar = client.get_sugar_prices(event)
+    name = sugar.name
+    assert sugar.success, f"success was found to be False: {sugar.error_message}"
+    assert not sugar.limit_reached, f"limit_reached is true {sugar.error_message}"
+    assert len(sugar.data), f"data is empty, we should have {name} prices"
+    assert name == "Global Price of Sugar", f"You are not testing {name}"
+
+
+@pytest.mark.integration
+def test_get_coffee_commodity():
+    client = AlphavantageClient()
+    event = {
+        "interval": "daily"
+    }
+    coffee = client.get_coffee_prices(event)
+    name = coffee.name
+    assert coffee.success, f"success was found to be False: {coffee.error_message}"
+    assert not coffee.limit_reached, f"limit_reached is true {coffee.error_message}"
+    assert len(coffee.data), f"data is empty, we should have {name} prices"
+    assert name == "Global Price of Coffee", f"You are not testing {name}"
+
+
+@pytest.mark.integration
+def test_get_all_commodities():
+    client = AlphavantageClient()
+    event = {
+        "interval": "daily"
+    }
+    all_commodities = client.get_all_commodity_prices(event)
+    name = all_commodities.name
+    assert all_commodities.success, f"success was found to be False: {all_commodities.error_message}"
+    assert not all_commodities.limit_reached, f"limit_reached is true {all_commodities.error_message}"
+    assert len(all_commodities.data), f"data is empty, we should have {name} prices"
+    assert name == "Global Price Index of All Commodities", f"You are not testing {name}"

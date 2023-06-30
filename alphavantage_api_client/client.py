@@ -6,8 +6,8 @@ import configparser
 from .response_validation_rules import ValidationRuleChecks
 import json
 from alphavantage_api_client.models import GlobalQuote, Quote, AccountingReport, CompanyOverview, RealGDP, \
-    CsvNotSupported, TickerSearch, MarketStatus, NewsAndSentiment, MarketMovers, EarningsCalendar\
-    , IpoCalendarItem, IpoCalendar, CurrencyQuote
+    CsvNotSupported, TickerSearch, MarketStatus, NewsAndSentiment, MarketMovers, EarningsCalendar \
+    , IpoCalendarItem, IpoCalendar, CurrencyQuote, Commodity
 import copy
 import logging
 import hashlib
@@ -470,9 +470,8 @@ class AlphavantageClient:
         }
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
-        #print(json.dumps(json_response))
+        # print(json.dumps(json_response))
         return CurrencyQuote.parse_obj(json_response)
-
 
     def get_crypto_daily(self, event: dict) -> CurrencyQuote:
         """
@@ -931,3 +930,250 @@ The latest data point is the price information for the week (or partial week) co
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return CurrencyQuote.parse_obj(json_response)
+
+    def get_crude_oil_wti_prices(self, event) -> Commodity:
+        """
+        This API returns the West Texas Intermediate (WTI) crude oil prices in daily, weekly, and monthly horizons.
+
+        Source: U.S. Energy Information Administration, Crude Oil Prices: West Texas Intermediate (WTI) - Cushing,
+        Oklahoma, retrieved from FRED, Federal Reserve Bank of St. Louis. This data feed uses the FRED® API but is not
+        endorsed or certified by the Federal Reserve Bank of St. Louis. By using this data feed, you agree to be
+        bound by the FRED® API Terms of Use.
+        Args:
+            event:
+
+        Returns:
+
+        """
+        defaults = {
+            "function": "WTI",
+            "interval": "monthly",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Commodity.parse_obj(json_response)
+
+    def get_crude_oil_brent_prices(self, event: dict) -> Commodity:
+        """
+        This API returns the Brent (Europe) crude oil prices in daily, weekly, and monthly horizons.
+        Source: U.S. Energy Information Administration, Crude Oil Prices: Brent - Europe, retrieved from FRED,
+        Federal Reserve Bank of St. Louis. This data feed uses the FRED® API but is not endorsed or certified by the
+        Federal Reserve Bank of St. Louis. By using this data feed, you agree to be bound by the FRED® API Terms of Use.
+        Args:
+            event: dict
+
+        Returns: Commodity
+
+        """
+        defaults = {
+            "function": "BRENT",
+            "interval": "monthly",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Commodity.parse_obj(json_response)
+
+    def get_natural_gas_prices(self, event: dict) -> Commodity:
+        """
+        This API returns the Henry Hub natural gas spot prices in daily, weekly, and monthly horizons.
+        Source: U.S. Energy Information Administration, Henry Hub Natural Gas Spot Price, retrieved from FRED,
+        Federal Reserve Bank of St. Louis. This data feed uses the FRED® API but is not endorsed or certified by the
+        Federal Reserve Bank of St. Louis. By using this data feed, you agree to be bound by the FRED® API Terms of Use.
+        Args:
+            event: dict
+
+        Returns: Commodity
+
+        """
+        defaults = {
+            "function": "NATURAL_GAS",
+            "interval": "monthly",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Commodity.parse_obj(json_response)
+
+    def get_copper_prices(self, event: dict) -> Commodity:
+        """
+        This API returns the global price of copper in monthly, quarterly, and annual horizons.
+        Source: International Monetary Fund (IMF Terms of Use), Global price of Copper, retrieved from FRED, Federal
+        Reserve Bank of St. Louis. This data feed uses the FRED® API but is not endorsed or certified by the Federal
+        Reserve Bank of St. Louis. By using this data feed, you agree to be bound by the FRED® API Terms of Use.
+        Args:
+            event:
+
+        Returns:
+
+        """
+        defaults = {
+            "function": "COPPER",
+            "interval": "monthly",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Commodity.parse_obj(json_response)
+
+    def get_aluminum_prices(self, event: dict) -> Commodity:
+        """
+        This API returns the global price of aluminum in monthly, quarterly, and annual horizons.
+        Source: International Monetary Fund (IMF Terms of Use), Global price of Aluminum, retrieved from FRED, Federal
+        Reserve Bank of St. Louis. This data feed uses the FRED® API but is not endorsed or certified by the Federal
+        Reserve Bank of St. Louis. By using this data feed, you agree to be bound by the FRED® API Terms of Use.
+        Args:
+            event: dict
+
+        Returns: Commodity
+
+        """
+        defaults = {
+            "function": "ALUMINUM",
+            "interval": "monthly",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Commodity.parse_obj(json_response)
+
+    def get_wheat_prices(self, event: dict) -> Commodity:
+        """
+        This API returns the global price of wheat in monthly, quarterly, and annual horizons.
+        Source: International Monetary Fund (IMF Terms of Use), Global price of Wheat, retrieved from FRED, Federal
+        Reserve Bank of St. Louis. This data feed uses the FRED® API but is not endorsed or certified by the Federal
+        Reserve Bank of St. Louis. By using this data feed, you agree to be bound by the FRED® API Terms of Use.
+        Args:
+            event: dict
+
+        Returns: Commodity
+
+        """
+        defaults = {
+            "function": "WHEAT",
+            "interval": "monthly",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Commodity.parse_obj(json_response)
+
+    def get_corn_prices(self, event: dict) -> Commodity:
+        """
+        This API returns the global price of corn in monthly, quarterly, and annual horizons.
+        Source: International Monetary Fund (IMF Terms of Use), Global price of Corn, retrieved from FRED, Federal
+        Reserve Bank of St. Louis. This data feed uses the FRED® API but is not endorsed or certified by the Federal
+        Reserve Bank of St. Louis. By using this data feed, you agree to be bound by the FRED® API Terms of Use.
+        Args:
+            event: dict
+
+        Returns: Commodity
+
+        """
+        defaults = {
+            "function": "CORN",
+            "interval": "monthly",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Commodity.parse_obj(json_response)
+
+    def get_cotton_prices(self, event: dict) -> Commodity:
+        """
+        This API returns the global price of cotton in monthly, quarterly, and annual horizons.
+        Source: International Monetary Fund (IMF Terms of Use), Global price of Cotton, retrieved from FRED, Federal
+        Reserve Bank of St. Louis. This data feed uses the FRED® API but is not endorsed or certified by the Federal
+        Reserve Bank of St. Louis. By using this data feed, you agree to be bound by the FRED® API Terms of Use.
+        Args:
+            event: dict
+
+        Returns: Commodity
+
+        """
+        defaults = {
+            "function": "COTTON",
+            "interval": "monthly",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Commodity.parse_obj(json_response)
+
+    def get_sugar_prices(self, event: dict) -> Commodity:
+        """
+        This API returns the global price of sugar in monthly, quarterly, and annual horizons.
+        Source: International Monetary Fund (IMF Terms of Use), Global price of Sugar, No. 11, World, retrieved from
+        FRED, Federal Reserve Bank of St. Louis. This data feed uses the FRED® API but is not endorsed or certified by
+        the Federal Reserve Bank of St. Louis. By using this data feed, you agree to be bound
+        by the FRED® API Terms of Use.
+        Args:
+            event: dict
+
+        Returns: Commodity
+
+        """
+        defaults = {
+            "function": "SUGAR",
+            "interval": "monthly",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Commodity.parse_obj(json_response)
+
+    def get_coffee_prices(self, event: dict) -> Commodity:
+        """
+        This API returns the global price of coffee in monthly, quarterly, and annual horizons.
+        Source: International Monetary Fund (IMF Terms of Use), Global price of Coffee, Other Mild Arabica,
+        retrieved from FRED, Federal Reserve Bank of St. Louis. This data feed uses the FRED® API but is not
+        endorsed or certified by the Federal Reserve Bank of St. Louis. By using this data feed, you agree to be
+        bound by the FRED® API Terms of Use.
+        Args:
+            event: dict
+
+        Returns: Commodity
+
+        """
+        defaults = {
+            "function": "COFFEE",
+            "interval": "monthly",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Commodity.parse_obj(json_response)
+
+    def get_all_commodity_prices(self, event: dict) -> Commodity:
+        """
+        This API returns the global price index of all commodities in monthly, quarterly, and annual temporal dimensions.
+        Source: International Monetary Fund (IMF Terms of Use), Global Price Index of All Commodities, retrieved
+        from FRED, Federal Reserve Bank of St. Louis. This data feed uses the FRED® API but is not endorsed or
+        certified by the Federal Reserve Bank of St. Louis. By using this data feed, you agree to be bound by
+        the FRED® API Terms of Use.
+        Args:
+            event: dict
+
+        Returns: Commodity
+
+        """
+        defaults = {
+            "function": "ALL_COMMODITIES",
+            "interval": "monthly",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Commodity.parse_obj(json_response)
