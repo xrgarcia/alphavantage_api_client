@@ -554,8 +554,7 @@ class AlphavantageClient:
 
         """
         defaults = {
-            "function": "CURRENCY_EXCHANGE_RATE",
-            "market": "CNY"
+            "function": "CURRENCY_EXCHANGE_RATE"
         }
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)

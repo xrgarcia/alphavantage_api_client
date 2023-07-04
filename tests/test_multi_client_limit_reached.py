@@ -1,5 +1,5 @@
 from alphavantage_api_client import AlphavantageClient
-from .test_all_endpoints import AllEndPointTests
+from .test_all_free_endpoints import AllEndPointTests
 from .test_base import BaseTestSuite
 import pytest
 import logging

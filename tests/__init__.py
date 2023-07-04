@@ -1,2 +1,3 @@
 from .test_base import BaseTestSuite
-from .test_all_endpoints import AllEndPointTests
+from .test_all_free_endpoints import AllEndPointTests
+from .test_all_paid_endpoints import AllPaidEndPointTests
