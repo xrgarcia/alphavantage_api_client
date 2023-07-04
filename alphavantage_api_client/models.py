@@ -207,7 +207,7 @@ class AccountingReport(BaseQuote):
         return None
 
 
-class RealGDP(BaseResponse):
+class EconomicIndicator(BaseResponse):
     name: Optional[str]
     interval: Optional[str]
     unit: Optional[str]

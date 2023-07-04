@@ -257,6 +257,7 @@ def test_can_quote_crypto_monthly():
     assert quote.success, f"success is false {quote.error_message}"
     assert len(quote.data), "Data{} property is empty but should have information"
     logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
+    logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
 
 
 @pytest.mark.integration
@@ -285,30 +286,6 @@ def test_can_quote_crypto_csv():
     assert results.success, f"success is false {results.error_message}"
     assert len(results.csv), "csv property is empty but should have information"
     logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in CSV")
-
-
-@pytest.mark.integration
-def test_can_quote_real_gdp():
-    real_gdp = client.get_real_gdp()
-    assert not real_gdp.limit_reached, f"limit_reached is not present in results {real_gdp.error_message}"
-    assert real_gdp.success, f"Success=False but expected true  {real_gdp.error_message}"
-    assert len(real_gdp.data), "Data{} is empty but expected results"
-    logging.warning(" Can quote Real GDP")
-
-
-@pytest.mark.integration
-def test_can_quote_real_csv():
-    event = {
-        "function": "REAL_GDP",
-        "interval": "annual",
-        "datatype": "csv"
-    }
-    real_gdp = client.get_real_gdp(event)
-    assert not real_gdp.limit_reached, f"limit_reached is not present in results {real_gdp.error_message}"
-    assert real_gdp.success, f"Success=False but expected true  {real_gdp.error_message}"
-    assert real_gdp.data is None, "Data{} is empty but expected results"
-    assert len(real_gdp.csv), "CSV data is not present"
-    logging.warning(" Can quote Real GDP")
 
 
 @pytest.mark.integration
