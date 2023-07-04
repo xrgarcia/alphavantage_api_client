@@ -1,8 +1,8 @@
 from alphavantage_api_client import AlphavantageClient
 from .test_all_endpoints import AllEndPointTests
+from .mock_client import MockAlphavantageClient
 
-
-class TestMultiClientIntegrationSuite(AllEndPointTests):
+class TestMultiClientUnitSuite(AllEndPointTests):
 
     def get_client(self) -> AlphavantageClient:
-        return AlphavantageClient().should_retry_once()
+        return MockAlphavantageClient()
