@@ -579,7 +579,6 @@ class AllEndPointTests(BaseTestSuite):
             "to_currency": "BTC"
         }
         quote = self.get_client().get_crypto_exchange_rates(event)
-        print(quote.json())
         assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
         assert quote.success, f"success is false {quote.error_message}"
         assert len(quote.data), "Data{} property is empty but should have information"
