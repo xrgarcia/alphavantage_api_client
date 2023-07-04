@@ -68,4 +68,5 @@ class MockAlphavantageClient(AlphavantageClient):
         json_response["status_code"] = 200
         if "symbol" in event:
             json_response["symbol"] = event["symbol"]
+        json_response["error_message"] = "Could not find requested data"
         return json_response
