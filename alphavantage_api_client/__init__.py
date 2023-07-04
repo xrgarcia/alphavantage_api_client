@@ -3,3 +3,4 @@ from alphavantage_api_client.models import GlobalQuote, Quote, AccountingReport,
     CsvNotSupported, TickerSearch, MarketStatus, MarketMovers, NewsAndSentiment, EarningsCalendar\
     , EarningsCalendarItem,IpoCalendarItem, IpoCalendar, CurrencyQuote, Commodity
 from alphavantage_api_client.ticker import Ticker
+from alphavantage_api_client.response_validation_rules import ValidationRuleChecks
