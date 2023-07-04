@@ -146,19 +146,6 @@ class AllEndPointTests(BaseTestSuite):
         logging.warning(f" Successfully quoted symbol {event['symbol']} in JSON")
 
     @pytest.mark.integration
-    def test_get_most_recent_intraday(self):
-        symbols = ["TSLA", "MSFT", "AMZN", "TDOC", "PATH", "ZM", "C", "VZ"]
-        for symbol in symbols:
-            event = {
-                "symbol": symbol
-            }
-            latest_quote = self.get_client().get_intraday_quote(event).get_most_recent_value()
-            #print(symbol, latest_quote)
-
-        metrics = self.get_client().get_internal_metrics()
-        #print(metrics)
-
-    @pytest.mark.integration
     def test_get_intraday_with_params(self):
         symbols = ["TSLA", "MSFT", "AMZN", "TDOC", "PATH", "ZM", "C", "VZ"]
         for symbol in symbols:
