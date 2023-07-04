@@ -2,7 +2,7 @@ import pytest
 import json
 
 from alphavantage_api_client import AlphavantageClient
-from .test_all_endpoints import AllEndPointTests
+from .test_all_free_endpoints import AllEndPointTests
 
 
 class TestSingleClientIntegrationSuite(AllEndPointTests):
