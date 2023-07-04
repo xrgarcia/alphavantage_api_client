@@ -1,9 +1,12 @@
-import logging
+import time
 
-from alphavantage_api_client import AlphavantageClient
-import json
+import requests
 import os
-from os.path import exists
+import configparser
+from alphavantage_api_client import ValidationRuleChecks, AlphavantageClient
+import json
+import copy
+import logging
 
 
 class MockAlphavantageClient(AlphavantageClient):
@@ -13,7 +16,7 @@ class MockAlphavantageClient(AlphavantageClient):
         path = os.getcwd()
         logging.info(f"current path = {path}")
         self.base_path = f"{path}/tests/mocks"
-        if not exists(self.base_path):
+        if not os.path.exists(self.base_path):
             logging.info(f"I must be running from pycharm as a test since cwd is {self.base_path}, need to fix")
             path = os.path.dirname(os.getcwd())
             os.chdir(path) # go up a directory
@@ -21,54 +24,49 @@ class MockAlphavantageClient(AlphavantageClient):
             self.base_path = f"{path}/tests/mocks"
 
         logging.info(f"self.base_path = {self.base_path}")
+        self.load_cache_from_disk()
 
-    def get_data_from_alpha_vantage(self, event, context=None):
-        '''
-        Get all data from alpha vantage
-        :param event:
-        :param context:
-        :return:
-        :rtype: dict
-        '''
-        if event is None:
-            raise ValueError("Event property isn't define")
+    def load_cache_from_disk(self):
+        self.use_simple_cache()
+        with open(f"{self.base_path}/mock_data.json",'r') as file:
+            json_string = file.read()
+        cache = json.loads(json_string)
+        self.__cache__ = cache
 
-        text_file = None
-        if event.get("function") == "GLOBAL_QUOTE":
-            text_file = open(f"{self.base_path}/mock_stock_quote.json", "r")
-        elif event.get("function") == "BALANCE_SHEET":
-            text_file = open(f"{self.base_path}/mock_balance_sheet.json", "r")
-        elif event.get("function") == "INCOME_STATEMENT":
-            text_file = open(f"{self.base_path}/mock_income_statement.json", "r")
-        elif event.get("function") == "CASH_FLOW":
-            text_file = open(f"{self.base_path}/mock_cash_flow.json", "r")
-        elif event.get("function") == "EARNINGS":
-            text_file = open(f"{self.base_path}/mock_earnings.json", "r")
-        elif event.get("function") == "OVERVIEW":
-            text_file = open(f"{self.base_path}/mock_company_profile.json", "r")
-        elif event.get("function") == "CRYPTO_INTRADAY" and event.get("outputsize") == "full":
-            text_file = open(f"{self.base_path}/mock_crypto_full.json", "r")
-        elif event.get("function") == "REAL_GDP":
-            text_file = open(f"{self.base_path}/mock_real_gdp.json", "r")
-        elif event.get("function") == "EMA":
-            text_file = open(f"{self.base_path}/mock_technical_indicator_ema.json")
-        elif event.get("function") == "SMA":
-            text_file = open(f"{self.base_path}/mock_technical_indicator_sma_equity.json", "r")
-        elif event.get("function") == "TIME_SERIES_DAILY" and event.get("outputsize") == "compact":
-            text_file = open(f"{self.base_path}/mock_stock_price_full.json", "r")
-        elif event.get("function") == "TIME_SERIES_INTRADAY" and event.get("interval") == "5min":
-            text_file = open(f"{self.base_path}/mock_intraday_series_quote.json", "r")
-        elif event.get("function") == "NEWS_SENTIMENT":
-            text_file = open(f"{self.base_path}/mock_news_an_sentiment.json", "r")
-        else:
-            raise ValueError(f"We don't have a mock data file for your request {json.dumps(event)}")
+    def get_data_from_alpha_vantage(self, event: dict, should_retry: bool = False) -> dict:
+        """
+        This is the underlying function that talks to alphavantage api.  Feel free to pass in any parameters supported
+        by the api.  You will receive a dictionary with the response from the web api. In addition, you will obtain
+        the ``success``, ``error_message`` and ``limit_reached`` fields.
+        Args:
+            event (dictionary): The url parameters supported by the web api
 
-        data = text_file.read()
-        text_file.close()
-        json_response = json.loads(data)
-        json_response["success"] = True
+        Returns:
+            :rtype: dict
+
+        """
+        # validate api key and insert into the request if needed
+        checks = ValidationRuleChecks().from_customer_request(event)
+        self.__validate_api_key__(checks, event)
+
+        # create a version of the event without api key
+        loggable_event = copy.deepcopy(event)
+        loggable_event.pop("apikey")
+
+        # check cache if allowed
+        if self.__use_cache__:
+            results = self.__get_item_from_cache__(loggable_event)
+            logging.info(f"Found item in cache: {results}")
+            if results is not None:
+                logging.info(json.dumps({"method": "mock.get_data_from_alpha_vantage"
+                                            , "action": "return_value", "data": results,
+                                         "event": loggable_event}))
+                return results
+        json_response = dict()
+        json_response["success"] = False
         json_response["limit_reached"] = False
         json_response["status_code"] = 200
         if "symbol" in event:
             json_response["symbol"] = event["symbol"]
+        json_response["error_message"] = "Could not find requested data"
         return json_response
