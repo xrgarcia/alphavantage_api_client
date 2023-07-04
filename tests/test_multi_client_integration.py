@@ -715,3 +715,125 @@ def test_get_all_commodities():
     assert not all_commodities.limit_reached, f"limit_reached is true {all_commodities.error_message}"
     assert len(all_commodities.data), f"data is empty, we should have {name} prices"
     assert name == "Global Price Index of All Commodities", f"You are not testing {name}"
+
+
+@pytest.mark.integration
+def test_get_real_gdp():
+    client = AlphavantageClient()
+    event = {
+        "interval": "quarterly"
+    }
+    real_gdp = client.get_real_gdp(event)
+    name = real_gdp.name
+    assert real_gdp.success, f"success was found to be False: {real_gdp.error_message}"
+    assert not real_gdp.limit_reached, f"limit_reached is true {real_gdp.error_message}"
+    assert len(real_gdp.data), f"data is empty, we should have {name} prices"
+    assert name == "Real Gross Domestic Product", f"You are not testing {name}"
+
+
+@pytest.mark.integration
+def test_get_real_gdp_csv():
+    client = AlphavantageClient()
+    event = {
+        "interval": "quarterly",
+        "datatype": "csv"
+    }
+    real_gdp_csv = client.get_real_gdp(event)
+    name = real_gdp_csv.name
+    assert real_gdp_csv.success, f"success was found to be False: {real_gdp_csv.error_message}"
+    assert not real_gdp_csv.limit_reached, f"limit_reached is true {real_gdp_csv.error_message}"
+    assert len(real_gdp_csv.csv), f"CSV should be populated {name}"
+
+
+@pytest.mark.integration
+def test_get_real_gdp_per_capita():
+    client = AlphavantageClient()
+    real_gdp_per_capita = client.get_real_gdp_per_capita()
+    name = real_gdp_per_capita.name
+    assert real_gdp_per_capita.success, f"success was found to be False: {real_gdp_per_capita.error_message}"
+    assert not real_gdp_per_capita.limit_reached, f"limit_reached is true {real_gdp_per_capita.error_message}"
+    assert len(real_gdp_per_capita.data), f"data is empty, we should have {name} prices"
+    assert name == "Real Gross Domestic Product per Capita", f"You are not testing {name}"
+
+
+@pytest.mark.integration
+def test_get_treasury_yield():
+    client = AlphavantageClient()
+
+    treasury_yield = client.get_treasury_yield()
+    name = treasury_yield.name
+    assert treasury_yield.success, f"success was found to be False: {treasury_yield.error_message}"
+    assert not treasury_yield.limit_reached, f"limit_reached is true {treasury_yield.error_message}"
+    assert len(treasury_yield.data), f"data is empty, we should have {name}"
+    assert name.endswith("Treasury Constant Maturity Rate"), f"You are not testing {name}"
+
+@pytest.mark.integration
+def test_get_federal_funds_rate():
+    client = AlphavantageClient()
+    treasury_yield = client.get_federal_funds_rate()
+    name = treasury_yield.name
+    assert treasury_yield.success, f"success was found to be False: {treasury_yield.error_message}"
+    assert not treasury_yield.limit_reached, f"limit_reached is true {treasury_yield.error_message}"
+    assert len(treasury_yield.data), f"data is empty, we should have {name}"
+    assert name == "Effective Federal Funds Rate", f"You are not testing {name}"
+
+@pytest.mark.integration
+def test_get_cpi():
+    client = AlphavantageClient()
+    cpi = client.get_cpi()
+    name = cpi.name
+    assert cpi.success, f"success was found to be False: {cpi.error_message}"
+    assert not cpi.limit_reached, f"limit_reached is true {cpi.error_message}"
+    assert len(cpi.data), f"data is empty, we should have {name}"
+    assert name == "Consumer Price Index for all Urban Consumers", f"You are not testing {name}"
+
+@pytest.mark.integration
+def test_get_inflation():
+    client = AlphavantageClient()
+    inflation = client.get_cpi()
+    name = inflation.name
+    assert inflation.success, f"success was found to be False: {inflation.error_message}"
+    assert not inflation.limit_reached, f"limit_reached is true {inflation.error_message}"
+    assert len(inflation.data), f"data is empty, we should have {name}"
+    assert name == "Consumer Price Index for all Urban Consumers", f"You are not testing {name}"
+
+@pytest.mark.integration
+def test_get_retail_sales():
+    client = AlphavantageClient()
+    retail_sales = client.get_retails_sales()
+    name = retail_sales.name
+    assert retail_sales.success, f"success was found to be False: {retail_sales.error_message}"
+    assert not retail_sales.limit_reached, f"limit_reached is true {retail_sales.error_message}"
+    assert len(retail_sales.data), f"data is empty, we should have {name}"
+    assert name == "Advance Retail Sales: Retail Trade", f"You are not testing {name}"
+
+@pytest.mark.integration
+def test_get_durable_goods_orders():
+    client = AlphavantageClient()
+    durable_goods_orders = client.get_durable_goods_orders()
+    name = durable_goods_orders.name
+    assert durable_goods_orders.success, f"success was found to be False: {durable_goods_orders.error_message}"
+    assert not durable_goods_orders.limit_reached, f"limit_reached is true {durable_goods_orders.error_message}"
+    assert len(durable_goods_orders.data), f"data is empty, we should have {name}"
+    assert name == "Manufacturer New Orders: Durable Goods", f"You are not testing {name}"
+
+@pytest.mark.integration
+def test_get_unemployment():
+    client = AlphavantageClient()
+    unemployment = client.get_unemployment()
+    name = unemployment.name
+    assert unemployment.success, f"success was found to be False: {unemployment.error_message}"
+    assert not unemployment.limit_reached, f"limit_reached is true {unemployment.error_message}"
+    assert len(unemployment.data), f"data is empty, we should have {name}"
+    assert name == "Unemployment Rate", f"You are not testing {name}"
+
+@pytest.mark.integration
+def test_get_nonfarm_payroll():
+    client = AlphavantageClient()
+    nonfarm_payroll = client.get_nonfarm_payroll()
+    name = nonfarm_payroll.name
+    assert nonfarm_payroll.success, f"success was found to be False: {nonfarm_payroll.error_message}"
+    assert not nonfarm_payroll.limit_reached, f"limit_reached is true {nonfarm_payroll.error_message}"
+    assert len(nonfarm_payroll.data), f"data is empty, we should have {name}"
+    assert name == "Total Nonfarm Payroll", f"You are not testing {name}"
+
