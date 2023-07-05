@@ -6,8 +6,12 @@ import logging
 
 class TestMultiClientLimitReached(BaseTestSuite):
 
+    def setup_class(cls):
+        # turn retry off so we can hit limit
+        cls.__client__ = AlphavantageClient()
+
     def get_client(self) -> AlphavantageClient:
-        return AlphavantageClient().clear_cache().should_retry_once(False) # turn retry off so we can hit limit
+        return self.__client__
 
     @pytest.mark.limit
     def test_canReachLimitJson(self):
