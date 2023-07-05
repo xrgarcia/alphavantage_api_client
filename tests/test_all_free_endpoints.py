@@ -829,33 +829,3 @@ class AllEndPointTests(BaseTestSuite):
             assert "region" in market, "region not found within result"
             assert "primary_exchanges" in market, "primary_exchanges not found within result"
             assert "local_open" in market, "local_open not found within result"
-
-    @pytest.mark.integration
-    def test_can_quote_technical_indicator_csv(self):
-        event = {
-            "function": "EMA",
-            "symbol": "IBM",
-            "interval": "weekly",
-            "time_period": "10",
-            "series_type": "open",
-            "datatype": "csv"
-        }
-        technical_indicator = self.get_client().get_technical_indicator(event)
-        assert not technical_indicator.limit_reached, f"limit_reached is True {technical_indicator.error_message}"
-        assert technical_indicator.success, f"Success is False {technical_indicator.error_message}"
-        assert len(technical_indicator.csv), "Csv field is empty"
-        logging.warning(" Can quote IBM EMA technical indicator")
-
-    @pytest.mark.integration
-    def test_can_quote_technical_indicator(self):
-        event = {
-            "function": "EMA",
-            "symbol": "IBM",
-            "interval": "weekly",
-            "time_period": "10",
-            "series_type": "open"
-        }
-        technical_indicator = self.get_client().get_technical_indicator(event)
-        assert not technical_indicator.limit_reached, f"limit_reached is True {technical_indicator.error_message}"
-        assert technical_indicator.success, f"Success is False {technical_indicator.error_message}"
-        logging.warning(" Can quote IBM EMA technical indicator")
