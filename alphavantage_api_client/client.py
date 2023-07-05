@@ -2161,3 +2161,437 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.parse_obj(json_response)
 
+    def get_minus_di(self, event: dict) -> Quote:
+        """
+        This API returns the minus directional indicator (MINUS_DI) values.
+        See also: http://www.investopedia.com/articles/technical/02/050602.asp
+                : http://www.fmlabs.com/reference/default.htm?url=DI.htm
+
+        Args:
+            event: dict
+
+        Returns: Quote
+
+        """
+        defaults = {
+            "function": "MINUS_DI",
+            "interval": "daily",
+            "time_period": "60",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
+    def get_plus_di(self, event: dict) -> Quote:
+        """
+        This API returns the plus directional indicator (PLUS_DI) values.
+        See also: http://www.investopedia.com/articles/technical/02/050602.asp
+                : http://www.fmlabs.com/reference/default.htm?url=DI.htm
+
+        Args:
+            event: dict
+
+        Returns: Quote
+
+        """
+        defaults = {
+            "function": "PLUS_DI",
+            "interval": "daily",
+            "time_period": "60",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
+    def get_minus_dm(self, event: dict) -> Quote:
+        """
+        This API returns the minus directional movement (MINUS_DM) values.
+        See also: http://www.investopedia.com/articles/technical/02/050602.asp
+
+        Args:
+            event: dict
+
+        Returns: Quote
+
+        """
+        defaults = {
+            "function": "MINUS_DM",
+            "interval": "daily",
+            "time_period": "60",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
+    def get_plus_dm(self, event: dict) -> Quote:
+        """
+        This API returns the plus directional movement (PLUS_DM) values.
+        See also: http://www.investopedia.com/articles/technical/02/050602.asp
+
+        Args:
+            event: dict
+
+        Returns: Quote
+
+        """
+        defaults = {
+            "function": "PLUS_DM",
+            "interval": "daily",
+            "time_period": "60",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
+    def get_bbands(self, event: dict) -> Quote:
+        """
+        This API returns the Bollinger bands (BBANDS) values.
+        See also: http://www.investopedia.com/articles/technical/04/030304.asp
+                : http://www.fmlabs.com/reference/default.htm?url=Bollinger.htm
+
+        Args:
+            event: dict
+
+        Returns: Quote
+
+        """
+        defaults = {
+            "function": "BBANDS",
+            "interval": "daily",
+            "time_period": "60",
+            "series_type": "close",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
+    def get_midpoint(self, event: dict) -> Quote:
+        """
+        This API returns the midpoint (MIDPOINT) values. MIDPOINT = (highest value + lowest value)/2.
+
+        Args:
+            event: dict
+
+        Returns: Quote
+
+        """
+        defaults = {
+            "function": "MIDPOINT",
+            "interval": "daily",
+            "time_period": "60",
+            "series_type": "close",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
+    def get_midprice(self, event: dict) -> Quote:
+        """
+        This API returns the midpoint price (MIDPRICE) values. MIDPRICE = (highest high + lowest low)/2.
+
+        Args:
+            event: dict
+
+        Returns: Quote
+
+        """
+        defaults = {
+            "function": "MIDPRICE",
+            "interval": "daily",
+            "time_period": "60",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
+    def get_sar(self, event: dict) -> Quote:
+        """
+        This API returns the parabolic SAR (SAR) values. See also: Investopedia article and mathematical reference.
+
+        Args:
+            event: dict
+
+        Returns: Quote
+
+        """
+        defaults = {
+            "function": "SAR",
+            "interval": "daily",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
+    def get_trange(self, event: dict) -> Quote:
+        """
+        This API returns the true range (TRANGE) values.
+        See also: http://www.fmlabs.com/reference/default.htm?url=TR.htm
+
+        Args:
+            event: dict
+
+        Returns: Quote
+
+        """
+        defaults = {
+            "function": "TRANGE",
+            "interval": "daily",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
+    def get_atr(self, event: dict) -> Quote:
+        """
+        This API returns the average true range (ATR) values.
+        See also: http://www.investopedia.com/articles/trading/08/average-true-range.asp
+                : http://www.fmlabs.com/reference/default.htm?url=ATR.htm
+
+        Args:
+            event: dict
+
+        Returns: Quote
+
+        """
+        defaults = {
+            "function": "ATR",
+            "interval": "daily",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
+    def get_natr(self, event: dict) -> Quote:
+        """
+        This API returns the normalized average true range (NATR) values.
+
+        Args:
+            event: dict
+
+        Returns: Quote
+
+        """
+        defaults = {
+            "function": "NATR",
+            "interval": "daily",
+            "time_period": "60",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
+    def get_ad(self, event: dict) -> Quote:
+        """
+        This API returns the Chaikin A/D line (AD) values.
+        See also: http://www.investopedia.com/articles/active-trading/031914/understanding-chaikin-oscillator.asp
+                : http://www.fmlabs.com/reference/default.htm?url=AccumDist.htm
+
+        Args:
+            event: dict
+
+        Returns: Quote
+
+        """
+        defaults = {
+            "function": "AD",
+            "interval": "daily",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
+    def get_adosc(self, event: dict) -> Quote:
+        """
+        This API returns the Chaikin A/D oscillator (ADOSC) values.
+        See also: http://www.investopedia.com/articles/active-trading/031914/understanding-chaikin-oscillator.asp
+                : http://www.fmlabs.com/reference/default.htm?url=AccumDist.htm
+
+        Args:
+            event: dict
+
+        Returns: Quote
+
+        """
+        defaults = {
+            "function": "AD",
+            "interval": "daily",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
+    def get_obv(self, event: dict) -> Quote:
+        """
+        This API returns the on balance volume (OBV) values.
+        See also: http://www.investopedia.com/articles/technical/100801.asp
+                : http://www.fmlabs.com/reference/default.htm?url=OBV.htm
+
+        Args:
+            event: dict
+
+        Returns: Quote
+
+        """
+        defaults = {
+            "function": "OBV",
+            "interval": "daily",
+            "datatype": "json"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
+    def get_ht_trendline(self, event: dict) -> Quote:
+        """
+        This API returns the Hilbert transform, instantaneous trendline (HT_TRENDLINE) values.
+
+        Args:
+            event: dict
+
+        Returns: Quote
+
+        """
+        defaults = {
+            "function": "HT_TRENDLINE",
+            "interval": "daily",
+            "datatype": "json",
+            "series_type": "close"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
+    def get_ht_sine(self, event: dict) -> Quote:
+        """
+        This API returns the Hilbert transform, sine wave (HT_SINE) values.
+
+        Args:
+            event: dict
+
+        Returns: Quote
+
+        """
+        defaults = {
+            "function": "HT_SINE",
+            "interval": "daily",
+            "datatype": "json",
+            "series_type": "close"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
+    def get_ht_trendmode(self, event: dict) -> Quote:
+        """
+        This API returns the Hilbert transform, trend vs cycle mode (HT_TRENDMODE) values.
+
+        Args:
+            event: dict
+
+        Returns: Quote
+
+        """
+        defaults = {
+            "function": "HT_TRENDMODE",
+            "interval": "daily",
+            "datatype": "json",
+            "series_type": "close"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
+    def get_ht_dcperiod(self, event: dict) -> Quote:
+        """
+        This API returns the Hilbert transform, dominant cycle period (HT_DCPERIOD) values.
+
+        Args:
+            event: dict
+
+        Returns: Quote
+
+        """
+        defaults = {
+            "function": "HT_TRENDMODE",
+            "interval": "daily",
+            "datatype": "json",
+            "series_type": "close"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
+    def get_ht_dcphase(self, event: dict) -> Quote:
+        """
+        This API returns the Hilbert transform, dominant cycle period (HT_DCPERIOD) values.
+
+        Args:
+            event: dict
+
+        Returns: Quote
+
+        """
+        defaults = {
+            "function": "HT_DCPHASE",
+            "interval": "daily",
+            "datatype": "json",
+            "series_type": "close"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
+    def get_ht_phasor(self, event: dict) -> Quote:
+        """
+        This API returns the Hilbert transform, phasor components (HT_PHASOR) values.
+
+        Args:
+            event: dict
+
+        Returns: Quote
+
+        """
+        defaults = {
+            "function": "HT_PHASOR",
+            "interval": "daily",
+            "datatype": "json",
+            "series_type": "close"
+        }
+        json_request = self.__create_api_request_from__(defaults, event)
+        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
+
+        return Quote.parse_obj(json_response)
+
+
