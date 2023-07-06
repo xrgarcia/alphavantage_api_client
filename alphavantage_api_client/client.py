@@ -1610,10 +1610,8 @@ The latest data point is the price information for the week (or partial week) co
         """
         defaults = {
             "function": "VWAP",
-            "interval": "daily",
-            "datatype": "json",
-            "time_period": "60",
-            "series_type": "close"
+            "interval": "60min",
+            "datatype": "json"
         }
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
