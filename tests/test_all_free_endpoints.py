@@ -1124,4 +1124,128 @@ class AllEndPointTests(BaseTestSuite):
         assert len(sma.data), f"data is empty, we should have data for {name}"
         assert name == "Absolute Price Oscillator (APO)", f"You are testing the wrong end point"
 
+    @pytest.mark.technical_indicator
+    def test_get_ppo(self):
+        event = {
+            "symbol": "TSLA"
+        }
+        sma = self.get_client().get_ppo(event)
+        assert len(sma.meta_data), f"meta_data is empty"
+        assert len(sma.meta_data['2: Indicator']), f"2: Indicator is missing from technical indicator"
+        name = sma.meta_data["2: Indicator"]
+        assert sma.success, f"success was found to be False: {sma.error_message}"
+        assert not sma.limit_reached, f"limit_reached is true {sma.error_message}"
+        assert len(sma.data), f"data is empty, we should have data for {name}"
+        assert name == "Percentage Price Oscillator (PPO)", f"You are testing the wrong end point"
 
+    @pytest.mark.technical_indicator
+    def test_get_mom(self):
+        event = {
+            "symbol": "TSLA"
+        }
+        sma = self.get_client().get_mom(event)
+        assert len(sma.meta_data), f"meta_data is empty"
+        assert len(sma.meta_data['2: Indicator']), f"2: Indicator is missing from technical indicator"
+        name = sma.meta_data["2: Indicator"]
+        assert sma.success, f"success was found to be False: {sma.error_message}"
+        assert not sma.limit_reached, f"limit_reached is true {sma.error_message}"
+        assert len(sma.data), f"data is empty, we should have data for {name}"
+        assert name == "Momentum (MOM)", f"You are testing the wrong end point"
+
+    @pytest.mark.technical_indicator
+    def test_get_bop(self):
+        event = {
+            "symbol": "TSLA"
+        }
+        sma = self.get_client().get_bop(event)
+        assert len(sma.meta_data), f"meta_data is empty"
+        assert len(sma.meta_data['2: Indicator']), f"2: Indicator is missing from technical indicator"
+        name = sma.meta_data["2: Indicator"]
+        assert sma.success, f"success was found to be False: {sma.error_message}"
+        assert not sma.limit_reached, f"limit_reached is true {sma.error_message}"
+        assert len(sma.data), f"data is empty, we should have data for {name}"
+        assert name == "Balance Of Power (BOP)", f"You are testing the wrong end point"
+
+    @pytest.mark.technical_indicator
+    def test_get_cci(self):
+        event = {
+            "symbol": "TSLA"
+        }
+        sma = self.get_client().get_bop(event)
+        assert len(sma.meta_data), f"meta_data is empty"
+        assert len(sma.meta_data['2: Indicator']), f"2: Indicator is missing from technical indicator"
+        name = sma.meta_data["2: Indicator"]
+        assert sma.success, f"success was found to be False: {sma.error_message}"
+        assert not sma.limit_reached, f"limit_reached is true {sma.error_message}"
+        assert len(sma.data), f"data is empty, we should have data for {name}"
+        assert name == "Balance Of Power (BOP)", f"You are testing the wrong end point"
+
+    @pytest.mark.technical_indicator
+    def test_get_cmo(self):
+        event = {
+            "symbol": "TSLA"
+        }
+        sma = self.get_client().get_cmo(event)
+        assert len(sma.meta_data), f"meta_data is empty"
+        assert len(sma.meta_data['2: Indicator']), f"2: Indicator is missing from technical indicator"
+        name = sma.meta_data["2: Indicator"]
+        assert sma.success, f"success was found to be False: {sma.error_message}"
+        assert not sma.limit_reached, f"limit_reached is true {sma.error_message}"
+        assert len(sma.data), f"data is empty, we should have data for {name}"
+        assert name == "Chande Momentum Oscillator (CMO)", f"You are testing the wrong end point"
+
+    @pytest.mark.technical_indicator
+    def test_get_roc(self):
+        event = {
+            "symbol": "TSLA"
+        }
+        sma = self.get_client().get_roc(event)
+        assert len(sma.meta_data), f"meta_data is empty"
+        assert len(sma.meta_data['2: Indicator']), f"2: Indicator is missing from technical indicator"
+        name = sma.meta_data["2: Indicator"]
+        assert sma.success, f"success was found to be False: {sma.error_message}"
+        assert not sma.limit_reached, f"limit_reached is true {sma.error_message}"
+        assert len(sma.data), f"data is empty, we should have data for {name}"
+        assert name == "Rate of change : ((price/prevPrice)-1)*100", f"You are testing the wrong end point"
+
+    @pytest.mark.technical_indicator
+    def test_get_rocr(self):
+        event = {
+            "symbol": "TSLA"
+        }
+        sma = self.get_client().get_rocr(event)
+        assert len(sma.meta_data), f"meta_data is empty"
+        assert len(sma.meta_data['2: Indicator']), f"2: Indicator is missing from technical indicator"
+        name = sma.meta_data["2: Indicator"]
+        assert sma.success, f"success was found to be False: {sma.error_message}"
+        assert not sma.limit_reached, f"limit_reached is true {sma.error_message}"
+        assert len(sma.data), f"data is empty, we should have data for {name}"
+        assert name == "Rate of change ratio: (price/prevPrice)", f"You are testing the wrong end point"
+
+    @pytest.mark.technical_indicator
+    def test_get_aroon(self):
+        event = {
+            "symbol": "TSLA"
+        }
+        sma = self.get_client().get_aroon(event)
+        assert len(sma.meta_data), f"meta_data is empty"
+        assert len(sma.meta_data['2: Indicator']), f"2: Indicator is missing from technical indicator"
+        name = sma.meta_data["2: Indicator"]
+        assert sma.success, f"success was found to be False: {sma.error_message}"
+        assert not sma.limit_reached, f"limit_reached is true {sma.error_message}"
+        assert len(sma.data), f"data is empty, we should have data for {name}"
+        assert name == "Aroon (AROON)", f"You are testing the wrong end point"
+
+    @pytest.mark.technical_indicator
+    def test_get_aroonosc(self):
+        event = {
+            "symbol": "TSLA"
+        }
+        sma = self.get_client().get_aroonosc(event)
+        assert len(sma.meta_data), f"meta_data is empty"
+        assert len(sma.meta_data['2: Indicator']), f"2: Indicator is missing from technical indicator"
+        name = sma.meta_data["2: Indicator"]
+        assert sma.success, f"success was found to be False: {sma.error_message}"
+        assert not sma.limit_reached, f"limit_reached is true {sma.error_message}"
+        assert len(sma.data), f"data is empty, we should have data for {name}"
+        assert name == "Aroon Oscillator (AROONOSC)", f"You are testing the wrong end point"
