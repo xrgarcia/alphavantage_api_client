@@ -541,9 +541,7 @@ class AlphavantageClient:
 
     def get_crypto_exchange_rates(self, event: dict) -> CurrencyQuote:
         """
-        This API returns the monthly historical time series for a digital currency (e.g., BTC) traded on a specific
-         market (e.g., CNY/Chinese Yuan), refreshed daily at midnight (UTC). Prices and volumes are quoted
-         in both the market-specific currency and USD.
+        This API returns the realtime exchange rate for any pair of digital currency (e.g., Bitcoin) or physical currency (e.g., USD).
 
         Args:
             event (dict): A Dictionary of parameters that will be passed to the api.
@@ -2115,7 +2113,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.parse_obj(json_response)
 
-    def get_trix(self, event: dict) -> Quote:
+    def get_ultosc(self, event: dict) -> Quote:
         """
         This API returns the ultimate oscillator (ULTOSC) values.
         See also: http://www.fmlabs.com/reference/default.htm?url=UltimateOsc.htm
@@ -2372,7 +2370,8 @@ The latest data point is the price information for the week (or partial week) co
         defaults = {
             "function": "ATR",
             "interval": "daily",
-            "datatype": "json"
+            "datatype": "json",
+            "time_period": "60"
         }
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
@@ -2435,7 +2434,7 @@ The latest data point is the price information for the week (or partial week) co
 
         """
         defaults = {
-            "function": "AD",
+            "function": "ADOSC",
             "interval": "daily",
             "datatype": "json"
         }
@@ -2540,7 +2539,7 @@ The latest data point is the price information for the week (or partial week) co
 
         """
         defaults = {
-            "function": "HT_TRENDMODE",
+            "function": "HT_DCPERIOD",
             "interval": "daily",
             "datatype": "json",
             "series_type": "close"

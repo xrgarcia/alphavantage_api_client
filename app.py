@@ -7,9 +7,12 @@ logging.basicConfig(level=logging.INFO)
 
 if __name__ == "__main__":
     event = {
-        "symbol": "TSLA"
+        "from_currency": "BTC",
+        "to_currency": "CNY"
     }
-    result = {}
-    client = AlphavantageClient()
-    global_quote = client.get_global_quote(event)
-    print(global_quote.json())
+    currency_quote = AlphavantageClient().get_crypto_exchange_rates(event)
+    assert not currency_quote.limit_reached, f"limit_reached should not be true {currency_quote.error_message}"
+    assert currency_quote.success, f"success is false {currency_quote.error_message}"
+    assert len(currency_quote.data), "Data{} property is empty but should have information"
+    logging.warning(
+        f" Successfully quoted cryptocurrency symbol {event['from_currency']} to {event['to_currency']} in JSON")
