@@ -34,4 +34,4 @@ jobs:
           echo "Removing Internal Client Code"
           rm -rf ./alphavantage_api_client
           echo "Starting App Tests"
-          pytest -vv -raPp -m "limit"
+           pytest -vv -raPp -k "test_single_client_limit_reached"

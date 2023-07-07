@@ -43,4 +43,4 @@ jobs:
       run: |
         pytest -vv -raPp -k "test_mock_client_units"
         pytest -vv -raPp -k "test_single_client_integration"
-        pytest -vv -raPp -k "test_single_client_integration"
+        pytest -vv -raPp -k "test_multi_client_integration"
