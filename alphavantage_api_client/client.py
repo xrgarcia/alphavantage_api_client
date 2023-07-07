@@ -168,7 +168,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event_dict)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return GlobalQuote.parse_obj(json_response)
+        return GlobalQuote.model_validate(json_response)
 
     def get_daily_quote(self, event: dict) -> Quote:
         """
@@ -188,7 +188,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_daily_adjusted_quote(self, event: dict) -> Quote:
         """
@@ -207,7 +207,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_weekly_quote(self, event: dict) -> Quote:
         """
@@ -226,7 +226,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_weekly_adjusted_quote(self, event: dict) -> Quote:
         """
@@ -244,7 +244,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_monthly_quote(self, event: dict) -> Quote:
         """
@@ -262,7 +262,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_monthly_adjusted_quote(self, event: dict) -> Quote:
         """
@@ -280,7 +280,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_intraday_quote(self, event: dict) -> Quote:
         """ Intraday time series data covering extended trading hours.
@@ -311,7 +311,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event_dict)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_income_statement(self, event: dict) -> AccountingReport:
         """
@@ -342,7 +342,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event_dict)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return AccountingReport.parse_obj(json_response)
+        return AccountingReport.model_validate(json_response)
 
     def get_balance_sheet(self, event: dict) -> AccountingReport:
         defaults = {
@@ -360,7 +360,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event_dict)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return AccountingReport.parse_obj(json_response)
+        return AccountingReport.model_validate(json_response)
 
     def get_cash_flow(self, event: dict) -> AccountingReport:
         """
@@ -389,7 +389,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event_dict)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return AccountingReport.parse_obj(json_response)
+        return AccountingReport.model_validate(json_response)
 
     def get_earnings(self, event: Union[str, dict]) -> AccountingReport:
         """
@@ -419,7 +419,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event_dict)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return AccountingReport.parse_obj(json_response)
+        return AccountingReport.model_validate(json_response)
 
     def get_company_overview(self, event: dict) -> CompanyOverview:
         """
@@ -447,7 +447,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event_dict)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return CompanyOverview.parse_obj(json_response)
+        return CompanyOverview.model_validate(json_response)
 
     def get_crypto_intraday(self, event: dict) -> CurrencyQuote:
         """
@@ -471,7 +471,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
         # print(json.dumps(json_response))
-        return CurrencyQuote.parse_obj(json_response)
+        return CurrencyQuote.model_validate(json_response)
 
     def get_crypto_daily(self, event: dict) -> CurrencyQuote:
         """
@@ -493,7 +493,7 @@ class AlphavantageClient:
         }
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
-        return CurrencyQuote.parse_obj(json_response)
+        return CurrencyQuote.model_validate(json_response)
 
     def get_crypto_weekly(self, event: dict) -> CurrencyQuote:
         """
@@ -515,7 +515,7 @@ class AlphavantageClient:
         }
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
-        return CurrencyQuote.parse_obj(json_response)
+        return CurrencyQuote.model_validate(json_response)
 
     def get_crypto_monthly(self, event: dict) -> CurrencyQuote:
         """
@@ -537,7 +537,7 @@ class AlphavantageClient:
         }
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
-        return CurrencyQuote.parse_obj(json_response)
+        return CurrencyQuote.model_validate(json_response)
 
     def get_crypto_exchange_rates(self, event: dict) -> CurrencyQuote:
         """
@@ -556,7 +556,7 @@ class AlphavantageClient:
         }
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
-        return CurrencyQuote.parse_obj(json_response)
+        return CurrencyQuote.model_validate(json_response)
 
     def get_real_gdp(self, event: dict = None) -> EconomicIndicator:
         """
@@ -581,7 +581,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return EconomicIndicator.parse_obj(json_response)
+        return EconomicIndicator.model_validate(json_response)
 
     def get_treasury_yield(self, event: dict = None) -> EconomicIndicator:
         """
@@ -611,7 +611,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return EconomicIndicator.parse_obj(json_response)
+        return EconomicIndicator.model_validate(json_response)
 
     def get_federal_funds_rate(self, event: dict = None) -> EconomicIndicator:
         """
@@ -637,7 +637,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return EconomicIndicator.parse_obj(json_response)
+        return EconomicIndicator.model_validate(json_response)
 
     def get_cpi(self, event: dict = None) -> EconomicIndicator:
         """
@@ -664,7 +664,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return EconomicIndicator.parse_obj(json_response)
+        return EconomicIndicator.model_validate(json_response)
 
     def get_inflation(self, event: dict = None) -> EconomicIndicator:
         """
@@ -688,7 +688,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return EconomicIndicator.parse_obj(json_response)
+        return EconomicIndicator.model_validate(json_response)
 
     def get_retails_sales(self, event: dict = None) -> EconomicIndicator:
         """
@@ -714,7 +714,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return EconomicIndicator.parse_obj(json_response)
+        return EconomicIndicator.model_validate(json_response)
 
     def get_durable_goods_orders(self, event: dict = None) -> EconomicIndicator:
         """
@@ -740,7 +740,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return EconomicIndicator.parse_obj(json_response)
+        return EconomicIndicator.model_validate(json_response)
 
     def get_unemployment(self, event: dict = None) -> EconomicIndicator:
         """
@@ -769,7 +769,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return EconomicIndicator.parse_obj(json_response)
+        return EconomicIndicator.model_validate(json_response)
 
     def get_nonfarm_payroll(self, event: dict = None) -> EconomicIndicator:
         """
@@ -796,7 +796,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return EconomicIndicator.parse_obj(json_response)
+        return EconomicIndicator.model_validate(json_response)
 
     def get_real_gdp_per_capita(self, event: dict = None) -> EconomicIndicator:
         """
@@ -821,7 +821,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return EconomicIndicator.parse_obj(json_response)
+        return EconomicIndicator.model_validate(json_response)
 
     def get_technical_indicator(self, event: dict) -> Quote:
         """
@@ -843,7 +843,7 @@ class AlphavantageClient:
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
         json_response["indicator"] = event.get("function")
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
 
 
@@ -984,7 +984,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return TickerSearch.parse_obj(json_response)
+        return TickerSearch.model_validate(json_response)
 
     def get_market_status(self) -> MarketStatus:
         """
@@ -998,7 +998,7 @@ class AlphavantageClient:
         }
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return MarketStatus.parse_obj(json_response)
+        return MarketStatus.model_validate(json_response)
 
     def get_top_gainers_and_losers(self) -> MarketMovers:
         """
@@ -1011,7 +1011,7 @@ class AlphavantageClient:
         }
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return MarketMovers.parse_obj(json_response)
+        return MarketMovers.model_validate(json_response)
 
     def get_earnings_calendar(self, event: dict) -> EarningsCalendar:
         """
@@ -1034,7 +1034,7 @@ class AlphavantageClient:
         items = list(reader)
         json_response['data'] = items
 
-        return EarningsCalendar.parse_obj(json_response)
+        return EarningsCalendar.model_validate(json_response)
 
     def get_ipo_calendar(self) -> IpoCalendar:
         """
@@ -1056,7 +1056,7 @@ class AlphavantageClient:
         items = list(reader)
         json_response['data'] = items
 
-        return IpoCalendar.parse_obj(json_response)
+        return IpoCalendar.model_validate(json_response)
 
     def get_news_and_sentiment(self, event: dict) -> NewsAndSentiment:
         """
@@ -1079,7 +1079,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return NewsAndSentiment.parse_obj(json_response)
+        return NewsAndSentiment.model_validate(json_response)
 
     def get_forex_exchange_rates(self, event: dict) -> CurrencyQuote:
         """
@@ -1095,7 +1095,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return CurrencyQuote.parse_obj(json_response)
+        return CurrencyQuote.model_validate(json_response)
 
     def get_forex_intraday(self, event: dict) -> CurrencyQuote:
         """
@@ -1113,7 +1113,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return CurrencyQuote.parse_obj(json_response)
+        return CurrencyQuote.model_validate(json_response)
 
     def get_forex_daily(self, event: dict) -> CurrencyQuote:
         """
@@ -1131,7 +1131,7 @@ class AlphavantageClient:
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return CurrencyQuote.parse_obj(json_response)
+        return CurrencyQuote.model_validate(json_response)
 
     def get_forex_weekly(self, event: dict) -> CurrencyQuote:
         """
@@ -1150,7 +1150,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return CurrencyQuote.parse_obj(json_response)
+        return CurrencyQuote.model_validate(json_response)
 
     def get_forex_monthly(self, event: dict) -> CurrencyQuote:
         """
@@ -1171,7 +1171,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return CurrencyQuote.parse_obj(json_response)
+        return CurrencyQuote.model_validate(json_response)
 
     def get_crude_oil_wti_prices(self, event) -> Commodity:
         """
@@ -1195,7 +1195,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Commodity.parse_obj(json_response)
+        return Commodity.model_validate(json_response)
 
     def get_crude_oil_brent_prices(self, event: dict) -> Commodity:
         """
@@ -1217,7 +1217,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Commodity.parse_obj(json_response)
+        return Commodity.model_validate(json_response)
 
     def get_natural_gas_prices(self, event: dict) -> Commodity:
         """
@@ -1239,7 +1239,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Commodity.parse_obj(json_response)
+        return Commodity.model_validate(json_response)
 
     def get_copper_prices(self, event: dict) -> Commodity:
         """
@@ -1261,7 +1261,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Commodity.parse_obj(json_response)
+        return Commodity.model_validate(json_response)
 
     def get_aluminum_prices(self, event: dict) -> Commodity:
         """
@@ -1283,7 +1283,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Commodity.parse_obj(json_response)
+        return Commodity.model_validate(json_response)
 
     def get_wheat_prices(self, event: dict) -> Commodity:
         """
@@ -1305,7 +1305,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Commodity.parse_obj(json_response)
+        return Commodity.model_validate(json_response)
 
     def get_corn_prices(self, event: dict) -> Commodity:
         """
@@ -1327,7 +1327,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Commodity.parse_obj(json_response)
+        return Commodity.model_validate(json_response)
 
     def get_cotton_prices(self, event: dict) -> Commodity:
         """
@@ -1349,7 +1349,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Commodity.parse_obj(json_response)
+        return Commodity.model_validate(json_response)
 
     def get_sugar_prices(self, event: dict) -> Commodity:
         """
@@ -1372,7 +1372,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Commodity.parse_obj(json_response)
+        return Commodity.model_validate(json_response)
 
     def get_coffee_prices(self, event: dict) -> Commodity:
         """
@@ -1395,7 +1395,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Commodity.parse_obj(json_response)
+        return Commodity.model_validate(json_response)
 
     def get_all_commodity_prices(self, event: dict) -> Commodity:
         """
@@ -1418,7 +1418,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Commodity.parse_obj(json_response)
+        return Commodity.model_validate(json_response)
 
     def get_sma(self, event: dict) -> Quote:
         """
@@ -1441,7 +1441,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_ema(self, event: dict) -> Quote:
         """
@@ -1463,7 +1463,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_wma(self, event: dict) -> Quote:
         """
@@ -1485,7 +1485,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_dema(self, event: dict) -> Quote:
         """
@@ -1508,7 +1508,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_tema(self, event: dict) -> Quote:
         """
@@ -1530,7 +1530,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_trima(self, event: dict) -> Quote:
         """
@@ -1552,7 +1552,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_kama(self, event: dict) -> Quote:
         """
@@ -1573,7 +1573,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_mama(self, event: dict) -> Quote:
         """
@@ -1594,7 +1594,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_vwap(self, event: dict) -> Quote:
         """
@@ -1614,7 +1614,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_t3(self, event: dict) -> Quote:
         """
@@ -1636,7 +1636,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_macd(self, event: dict) -> Quote:
         """
@@ -1659,7 +1659,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_macdext(self, event: dict) -> Quote:
         """
@@ -1682,7 +1682,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_stoch(self, event: dict) -> Quote:
         """
@@ -1704,7 +1704,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_stockhf(self, event: dict) -> Quote:
         """
@@ -1725,7 +1725,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_rsi(self, event: dict) -> Quote:
         """
@@ -1748,7 +1748,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_stochrsi(self, event: dict) -> Quote:
         """
@@ -1770,7 +1770,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_willr(self, event: dict) -> Quote:
         """
@@ -1792,7 +1792,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_adx(self, event: dict) -> Quote:
         """
@@ -1815,7 +1815,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_adxr(self, event: dict) -> Quote:
         """
@@ -1837,7 +1837,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_apo(self, event: dict) -> Quote:
         """
@@ -1860,7 +1860,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_ppo(self, event: dict) -> Quote:
         """
@@ -1883,7 +1883,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_mom(self, event: dict) -> Quote:
         """
@@ -1907,7 +1907,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_bop(self, event: dict) -> Quote:
         """
@@ -1927,7 +1927,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_cci(self, event: dict) -> Quote:
         """
@@ -1950,7 +1950,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_cmo(self, event: dict) -> Quote:
         """
@@ -1973,7 +1973,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_roc(self, event: dict) -> Quote:
         """
@@ -1996,7 +1996,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_rocr(self, event: dict) -> Quote:
         """
@@ -2019,7 +2019,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_aroon(self, event: dict) -> Quote:
         """
@@ -2042,7 +2042,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_aroonosc(self, event: dict) -> Quote:
         """
@@ -2064,7 +2064,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_mfi(self, event: dict) -> Quote:
         """
@@ -2087,7 +2087,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_trix(self, event: dict) -> Quote:
         """
@@ -2111,7 +2111,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_ultosc(self, event: dict) -> Quote:
         """
@@ -2132,7 +2132,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_dx(self, event: dict) -> Quote:
         """
@@ -2155,7 +2155,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_minus_di(self, event: dict) -> Quote:
         """
@@ -2178,7 +2178,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_plus_di(self, event: dict) -> Quote:
         """
@@ -2201,7 +2201,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_minus_dm(self, event: dict) -> Quote:
         """
@@ -2223,7 +2223,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_plus_dm(self, event: dict) -> Quote:
         """
@@ -2245,7 +2245,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_bbands(self, event: dict) -> Quote:
         """
@@ -2269,7 +2269,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_midpoint(self, event: dict) -> Quote:
         """
@@ -2291,7 +2291,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_midprice(self, event: dict) -> Quote:
         """
@@ -2312,7 +2312,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_sar(self, event: dict) -> Quote:
         """
@@ -2332,7 +2332,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_trange(self, event: dict) -> Quote:
         """
@@ -2353,7 +2353,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_atr(self, event: dict) -> Quote:
         """
@@ -2376,7 +2376,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_natr(self, event: dict) -> Quote:
         """
@@ -2397,7 +2397,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_ad(self, event: dict) -> Quote:
         """
@@ -2419,7 +2419,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_adosc(self, event: dict) -> Quote:
         """
@@ -2441,7 +2441,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_obv(self, event: dict) -> Quote:
         """
@@ -2463,7 +2463,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_ht_trendline(self, event: dict) -> Quote:
         """
@@ -2484,7 +2484,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_ht_sine(self, event: dict) -> Quote:
         """
@@ -2505,7 +2505,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_ht_trendmode(self, event: dict) -> Quote:
         """
@@ -2526,7 +2526,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_ht_dcperiod(self, event: dict) -> Quote:
         """
@@ -2547,7 +2547,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_ht_dcphase(self, event: dict) -> Quote:
         """
@@ -2568,7 +2568,7 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
     def get_ht_phasor(self, event: dict) -> Quote:
         """
@@ -2589,6 +2589,6 @@ The latest data point is the price information for the week (or partial week) co
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
-        return Quote.parse_obj(json_response)
+        return Quote.model_validate(json_response)
 
 

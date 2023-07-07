@@ -1,18 +1,28 @@
 import logging
 
-from alphavantage_api_client import AlphavantageClient
+from alphavantage_api_client import AlphavantageClient, CurrencyQuote
 import json
+from pydantic import BaseModel, Field, model_validator
+from typing import Optional
 
-logging.basicConfig(level=logging.INFO)
 
-if __name__ == "__main__":
-    event = {
-        "from_currency": "BTC",
-        "to_currency": "CNY"
+# JSON data
+json_reponse = {
+    "Realtime Currency Exchange Rate": {
+        "1. From_Currency Code": "BTC",
+        "2. From_Currency Name": "Bitcoin",
+        "3. To_Currency Code": "CNY",
+        "4. To_Currency Name": "Chinese Yuan",
+        "5. Exchange Rate": "219029.70000000",
+        "6. Last Refreshed": "2023-07-07 17:15:53",
+        "7. Time Zone": "UTC",
+        "8. Bid Price": "219027.78000000",
+        "9. Ask Price": "219035.95000000"
     }
-    currency_quote = AlphavantageClient().get_crypto_exchange_rates(event)
-    assert not currency_quote.limit_reached, f"limit_reached should not be true {currency_quote.error_message}"
-    assert currency_quote.success, f"success is false {currency_quote.error_message}"
-    assert len(currency_quote.data), "Data{} property is empty but should have information"
-    logging.warning(
-        f" Successfully quoted cryptocurrency symbol {event['from_currency']} to {event['to_currency']} in JSON")
+}
+
+# Convert JSON data to Pydantic BaseModel using model_validate_json
+user = CurrencyQuote.model_validate(json_reponse)
+
+# Print the user object
+print(user)

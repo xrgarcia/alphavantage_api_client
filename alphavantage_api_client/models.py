@@ -1,5 +1,5 @@
 import pydantic
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError, model_validator
 from typing import Optional
 import copy
 
@@ -16,7 +16,7 @@ class BaseResponse(BaseModel):
     limit_reached: bool
     status_code: int
     error_message: Optional[str] = Field(None, alias='Error Message')
-    csv: Optional[str]
+    csv: Optional[str] = None
 
 
 class BaseQuote(BaseResponse):
@@ -48,8 +48,8 @@ class EarningsCalendarItem(BaseModel):
     name: str
     report_date: str = Field(str,alias='reportDate')
     fiscal_date_ending: str = Field(str,alias='fiscalDateEnding')
-    estimate: Optional[float]
-    currency: Optional[str]
+    estimate: Optional[float] = None
+    currency: Optional[str] = None
 
 class IpoCalendarItem(BaseModel):
     symbol: str
@@ -57,8 +57,8 @@ class IpoCalendarItem(BaseModel):
     ipo_date: str = Field(str,alias="ipoDate")
     price_range_low: Optional[float] = Field(float, alias="priceRangeLow")
     price_range_high: Optional[float] = Field(float, alias="priceRangeHigh")
-    currency: Optional[str]
-    exchange: Optional[str]
+    currency: Optional[str] = None
+    exchange: Optional[str] = None
 
 class IpoCalendar(BaseResponse):
     data: Optional[list[IpoCalendarItem]] = Field([])
@@ -71,7 +71,7 @@ class CurrencyQuote(BaseResponse):
     data: Optional[dict] = Field({})
     meta_data: Optional[dict] = Field({}, alias='Meta Data')
 
-    @pydantic.root_validator(pre=True)
+    @model_validator(mode="before")
     def normalize_fields(cls, values):
         return {
             "data" if k.startswith("Time Series FX (")
@@ -94,7 +94,7 @@ class Quote(BaseQuote):
     data: Optional[dict] = {}
     meta_data: Optional[dict] = Field({}, alias='Meta Data')
 
-    @pydantic.root_validator(pre=True)
+    @model_validator(mode="before")
     def normalize_fields(cls, values):
         return {
             "data" if k.startswith("Weekly Adjusted Time Series")
@@ -176,7 +176,7 @@ class AccountingReport(BaseQuote):
     annualReports: list = Field(default=[], alias="annualReports")
     quarterlyReports: list = Field(default=[], alias="quarterlyReports")
 
-    @pydantic.root_validator(pre=True)
+    @model_validator(mode="before")
     def normalize_fields(cls, values):
         annual_report_fields = ["annualEarnings"]
         quarterly_report_fields = ["quarterlyEarnings"]
@@ -208,10 +208,10 @@ class AccountingReport(BaseQuote):
 
 
 class EconomicIndicator(BaseResponse):
-    name: Optional[str]
-    interval: Optional[str]
-    unit: Optional[str]
-    data: Optional[list]
+    name: Optional[str] = None
+    interval: Optional[str] = None
+    unit: Optional[str] = None
+    data: Optional[list] = None
 
 
 class CompanyOverview(BaseQuote):
