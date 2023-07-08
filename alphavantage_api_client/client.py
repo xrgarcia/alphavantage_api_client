@@ -14,7 +14,19 @@ import hashlib
 from typing import Optional, Union
 import csv
 
+""" Python wrapper around alpha vantage api
 
+Create a simple python wrapper around alpha vantage api. Normalize responses so you have consistency across end points. 
+Provide direct access to each end point so customers who already use the API can have the flexibility. Make it easy 
+to debug, so users can track down issues quickly.
+
+    Typical usage example: 
+        
+        client = AlphavantageClient()
+        or 
+        client = AlphavantageClient().should_retry_once().use_simple_cache()
+
+"""
 class ApiKeyNotFound(Exception):
 
     def __init__(self, message: str):
@@ -150,16 +162,15 @@ class AlphavantageClient:
         return self
 
     def get_global_quote(self, event: Union[str, dict]) -> GlobalQuote:
-        """ Lightweight access to obtain stock quote data
+        """ A lightweight alternative to the time series APIs
 
-        A lightweight alternative to the time series APIs, this service returns the price and volume information
-        for a token of your choice.
+        This service returns the price and volume information
+        for the equity of your choice.
         Args:
-            event (dict): A ``dict`` containing the parameters supported by the api.
-            Minimum required value is ``symbol (str)``
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
-            :rtype: GlobalQuote
+            A GlobalQuote for the requested equity
 
         """
 
@@ -172,15 +183,18 @@ class AlphavantageClient:
         return GlobalQuote.model_validate(json_response)
 
     def get_daily_quote(self, event: Union[str, dict]) -> Quote:
-        """
-        This API returns raw (as-traded) daily time series (date, daily open, daily high, daily low, daily close, daily
-        volume) of the global equity specified, covering 20+ years of historical data. If you are also interested in
-        split/dividend-adjusted historical data, please use the Daily Adjusted API, which covers adjusted close values
-        and historical split and dividend events.
-        Args:
-            event: dict, required
+        """ As traded daily time series price history
 
-        Returns: Quote
+        Includes: date, daily open, daily high, daily low, daily close, daily
+        volume for your specified equity covering 20+ years of historical data. If you are also interested in
+        split/dividend-adjusted historical data, please use the get_daily_adjusted_quote(...), which covers adjusted
+        close values and historical split and dividend events.
+
+        Args:
+            event: A ticker symbol str OR dict of parameters to be sent to the API
+
+        Returns:
+            The Quote for the requested equity
 
         """
         # default params
@@ -192,16 +206,18 @@ class AlphavantageClient:
         return Quote.model_validate(json_response)
 
     def get_daily_adjusted_quote(self, event: Union[str, dict]) -> Quote:
+        """ As-traded daily open/high/low/close/volume values
+
+        Daily adjusted close values, and historical split/dividend events of the global equity specified, covering
+        20+ years of historical data.
+
+        Args:
+            event: A ticker symbol str OR dict of parameters to be sent to the API
+
+        Returns:
+            The Quote for the requested equity
+
         """
-                This API returns raw (as-traded) daily open/high/low/close/volume values,
-                daily adjusted close values, and historical split/dividend events of the global
-                equity specified, covering 20+ years of historical data.
-                Args:
-                    event: dict, required
-
-                Returns: Quote
-
-                """
         # default params
         defaults = {"datatype": "json", "function": "TIME_SERIES_DAILY_ADJUSTED",
                     "outputsize": "compact"}
@@ -211,16 +227,18 @@ class AlphavantageClient:
         return Quote.model_validate(json_response)
 
     def get_weekly_quote(self, event: Union[str, dict]) -> Quote:
+        """ weekly time series trading data
+
+        This API returns weekly time series (last trading day of each week, weekly open, weekly high, weekly low,
+        weekly close, weekly volume) of the global equity specified, covering 20+ years of historical data.
+
+        Args:
+            event: A ticker symbol str OR dict of parameters to be sent to the API
+
+        Returns:
+            The Quote for the requested equitygit
+
         """
-                        This API returns weekly time series (last trading day of each week, weekly open,
-                        weekly high, weekly low, weekly close, weekly volume) of the global equity
-                        specified, covering 20+ years of historical data.
-                        Args:
-                            event: dict, required
-
-                        Returns: Quote
-
-                        """
         # default params
         defaults = {"datatype": "json", "function": "TIME_SERIES_WEEKLY",
                     "outputsize": "compact"}

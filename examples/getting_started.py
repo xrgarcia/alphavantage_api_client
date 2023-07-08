@@ -7,7 +7,7 @@ def sample_global_quote():
     global_quote = client.get_global_quote("TSLA")
     if not global_quote.success:
         raise ValueError(f"{global_quote.error_message}")
-    print(global_quote.json())  # convenience method that will convert to json
+    print(global_quote.model_dump_json())  # convenience method that will convert to json
     print(f"stock price: ${global_quote.get_price()}")  # convenience method to get stock price
     print(f"trade volume: {global_quote.get_volume()}")  # convenience method to get volume
     print(f"low price: ${global_quote.get_low_price()}")  # convenience method to get low price for the day
@@ -58,7 +58,7 @@ def sample_accounting_reports():
     for accounting_report in reports:
         if not accounting_report.success:
             raise ValueError(f"{accounting_report.error_message}")
-        print(accounting_report.json())
+        print(accounting_report.model_dump_json())
         print(accounting_report.quarterlyReports)  # array of  all quarterly report
         print(accounting_report.annualReports)  # array of all annual reports
         print(accounting_report.get_most_recent_annual_report())  # get the most recent annual report
@@ -70,7 +70,7 @@ def sample_intraday_quote():
     quote = client.get_intraday_quote("TSLA")
     if not quote.success:
         raise ValueError(f"{quote.error_message}")
-    print(quote.json())
+    print(quote.model_dump_json())
     print(f"success: {quote.success}")  # injected by this library to show success
     print(quote.data)  # all data from alpha vantage
     print(quote.get_most_recent_value())  # most recent quote
