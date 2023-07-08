@@ -236,7 +236,7 @@ class AlphavantageClient:
             event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
-            The Quote for the requested equitygit
+            The Quote for the requested equity
 
         """
         # default params
@@ -248,16 +248,19 @@ class AlphavantageClient:
         return Quote.model_validate(json_response)
 
     def get_weekly_adjusted_quote(self, event: Union[str, dict]) -> Quote:
+        """ weekly adjusted time series trading data
+
+        This API returns weekly adjusted time series (last trading day of each week, weekly open, weekly high,
+        weekly low, weekly close, weekly adjusted close, weekly volume, weekly dividend) of the global equity
+        specified, covering 20+ years of historical data.
+
+        Args:
+            event: A ticker symbol str OR dict of parameters to be sent to the API
+
+        Returns:
+            The Quote for the requested equity
+
         """
-                        This API returns weekly adjusted time series (last trading day of each week, weekly open,
-                        weekly high, weekly low, weekly close, weekly adjusted close, weekly volume, weekly dividend)
-                        of the global equity specified, covering 20+ years of historical data.
-                        Args:
-                            event: dict, required
-
-                        Returns: Quote
-
-                        """
         # default params
         defaults = {"datatype": "json", "function": "TIME_SERIES_WEEKLY_ADJUSTED"}
         json_request = self.__create_api_request_from__(defaults, event)
@@ -266,16 +269,19 @@ class AlphavantageClient:
         return Quote.model_validate(json_response)
 
     def get_monthly_quote(self, event: Union[str, dict]) -> Quote:
+        """ monthly time series trading data
+
+        This API returns monthly time series (last trading day of each month, monthly open, monthly high,
+        monthly low, monthly close, monthly volume) of the global equity specified, covering 20+ years
+        of historical data.
+
+        Args:
+            event: A ticker symbol str OR dict of parameters to be sent to the API
+
+        Returns:
+            The Quote for the requested equity
+
         """
-                        This API returns monthly time series (last trading day of each month, monthly open,
-                        monthly high, monthly low, monthly close, monthly volume) of the global equity specified,
-                        covering 20+ years of historical data.
-                        Args:
-                            event: dict, required
-
-                        Returns: Quote
-
-                        """
         # default params
         defaults = {"datatype": "json", "function": "TIME_SERIES_MONTHLY"}
         json_request = self.__create_api_request_from__(defaults, event)
@@ -284,16 +290,19 @@ class AlphavantageClient:
         return Quote.model_validate(json_response)
 
     def get_monthly_adjusted_quote(self, event: Union[str, dict]) -> Quote:
+        """ monthly adjusted time series trading data
+
+        This API returns monthly adjusted time series (last trading day of each month, monthly open, monthly high,
+        monthly low, monthly close, monthly adjusted close, monthly volume, monthly dividend) of the equity specified,
+        covering 20+ years of historical data.
+
+        Args:
+            event: A ticker symbol str OR dict of parameters to be sent to the API
+
+        Returns:
+            The Quote for the requested equity
+
         """
-                        This API returns monthly time series (last trading day of each month, monthly open,
-                        monthly high, monthly low, monthly close, monthly volume) of the global equity specified,
-                        covering 20+ years of historical data.
-                        Args:
-                            event: dict, required
-
-                        Returns: Quote
-
-                        """
         # default params
         defaults = {"datatype": "json", "function": "TIME_SERIES_MONTHLY_ADJUSTED"}
         json_request = self.__create_api_request_from__(defaults, event)
@@ -304,18 +313,17 @@ class AlphavantageClient:
     def get_intraday_quote(self, event: Union[str, dict]) -> Quote:
         """ Intraday time series data covering extended trading hours.
 
-        This API returns intraday time series of the equity specified, covering extended trading hours where applicable
-        (e.g., 4:00am to 8:00pm Eastern Time for the US market). The intraday data is derived from the Securities
-        Information Processor (SIP) market-aggregated data. You can query both raw (as-traded) and
-        split/dividend-adjusted intraday data from this endpoint.  This API returns the most recent 1-2 months of
-        intraday data and is best suited for short-term/medium-term charting and trading strategy development.
-        If you are targeting a deeper intraday history, please use the Extended Intraday API.
+        Covering extended trading hours when applicable (e.g., 4:00am to 8:00pm Eastern Time for the US market).
+        The intraday data is derived from the Securities Information Processor (SIP) market-aggregated data.
+        You can query both raw (as-traded) and split/dividend-adjusted intraday data from this endpoint.
+        This API returns the most recent 1-2 months of intraday data and is best suited for short-term/medium-term
+        charting and trading strategy development.
+
         Args:
-            event (dict): A Dictionary of parameters that will be passed to the api.
-            Minimum required is ``symbol`` = ``str``
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
-            :rtype: Quote
+             The Quote for the requested equity
 
         """
         # default params
@@ -333,17 +341,16 @@ class AlphavantageClient:
         return Quote.model_validate(json_response)
 
     def get_income_statement(self, event: Union[str, dict]) -> AccountingReport:
-        """
-        This API returns the annual and quarterly income statements for the company of interest, with
-        normalized fields mapped to GAAP and IFRS taxonomies of the SEC. Data is generally refreshed on the same day
-        a company reports its latest earnings and financials.
+        """ annual and quarterly income statements for the company of interest
+
+        Includes normalized fields mapped to GAAP and IFRS taxonomies of the SEC. Data is generally
+        refreshed on the same day a company reports its latest earnings and financials.
 
         Args:
-            event (dict): A Dictionary of parameters that will be passed to the api.
-            Minimum required is ``symbol`` = ``str``
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
-            :rtype: AccountingReport
+            The AccountingReport for the requested equity
 
         """
 
@@ -364,6 +371,18 @@ class AlphavantageClient:
         return AccountingReport.model_validate(json_response)
 
     def get_balance_sheet(self, event: Union[str, dict]) -> AccountingReport:
+        """ annual and quarterly balance sheets for the company of interest
+
+        Includes normalized fields mapped to GAAP and IFRS taxonomies of the SEC. Data is generally refreshed on the
+        same day a company reports its latest earnings and financials.
+
+        Args:
+            event: A ticker symbol str OR dict of parameters to be sent to the API
+
+        Returns:
+            The AccountingReport for the requested equity
+
+        """
         defaults = {
             "function": "BALANCE_SHEET",
             "datatype": "json"
@@ -382,16 +401,15 @@ class AlphavantageClient:
         return AccountingReport.model_validate(json_response)
 
     def get_cash_flow(self, event: Union[str, dict]) -> AccountingReport:
-        """
-        This API returns the annual and quarterly cash flow for the company of interest, with normalized fields
-        mapped to GAAP and IFRS taxonomies of the SEC. Data is generally refreshed on the same day a company reports
-        its latest earnings and financials.
+        """ annual and quarterly cash flow for the company of interest
+
+        Includes normalized fields mapped to GAAP and IFRS taxonomies of the SEC. Data is generally refreshed on
+        the same day a company reports its latest earnings and financials.
         Args:
-            event (dict): A Dictionary of parameters that will be passed to the api.
-            Minimum required is ``symbol`` = ``str``
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
-            :rtype: AccountingReport
+            The AccountingReport for the requested equity
 
         """
         defaults = {
@@ -411,16 +429,15 @@ class AlphavantageClient:
         return AccountingReport.model_validate(json_response)
 
     def get_earnings(self, event: Union[str, Union[str, dict]]) -> AccountingReport:
-        """
-        This API returns the annual and quarterly earnings (EPS) for the company of interest. Quarterly data also
-        includes analyst estimates and surprise metrics.
+        """ annual and quarterly earnings (EPS) for the company of interest
+
+        The quarterly data also includes analyst estimates and surprise metrics.
 
         Args:
-            event (dict): A Dictionary of parameters that will be passed to the api.
-            Minimum required is ``symbol`` = ``str``
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
-            :rtype: AccountingReport
+            The AccountingReport for the requested equity
 
         """
         defaults = {
@@ -441,16 +458,15 @@ class AlphavantageClient:
         return AccountingReport.model_validate(json_response)
 
     def get_company_overview(self, event: Union[str, dict]) -> CompanyOverview:
-        """
-        This API returns the company information, financial ratios, and other key metrics for the equity specified.
+        """ company information, financial ratios, and other key metrics for the equity specified.
+
         Data is generally refreshed on the same day a company reports its latest earnings and financials.
 
         Args:
-            event (dict): A Dictionary of parameters that will be passed to the api.
-            Minimum required is ``symbol`` = ``str``
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
-            Return a CompanyOverview Object
+            The CompanyOverview for the requested equity
 
         """
         defaults = {
@@ -469,16 +485,15 @@ class AlphavantageClient:
         return CompanyOverview.model_validate(json_response)
 
     def get_crypto_intraday(self, event: Union[str, dict]) -> CurrencyQuote:
-        """
-        This API returns intraday time series (timestamp, open, high, low, close, volume) of the cryptocurrency
-        specified, updated realtime.
+        """ Returns crypto intraday time series price data
+
+        Includes: timestamp, open, high, low, close, volume of the cryptocurrency specified, updated realtime.
 
         Args:
-            event (dict): A Dictionary of parameters that will be passed to the api.
-            Minimum required is ``symbol`` = (``str``)
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
-            :rtype: CurrencyQuote
+            The CurrencyQuote for the requested equity
 
         """
         defaults = {
