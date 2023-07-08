@@ -79,7 +79,7 @@ class AlphavantageClient:
             if default_key not in dest_obj or dest_obj[default_key] is None:
                 dest_obj[default_key] = default_values[default_key]
 
-    def __create_api_request_from__(self, defaults: dict, event: dict):
+    def __create_api_request_from__(self, defaults: dict, event: Union[str, dict]):
         """
 
         Args:
@@ -89,7 +89,12 @@ class AlphavantageClient:
         Returns:
             :rtype: dict
         """
-        if event is not None:
+        event_dict = event
+        if isinstance(event, str):
+            event_dict = {
+                "symbol": event
+            }
+        if event_dict is not None:
             json_request = event.copy()
         else:
             json_request = {}
@@ -157,20 +162,16 @@ class AlphavantageClient:
             :rtype: GlobalQuote
 
         """
-        event_dict = event
-        if isinstance(event, str):
-            event_dict = {
-                "symbol": event
-            }
+
         defaults = {
             "function": "GLOBAL_QUOTE"
         }
-        json_request = self.__create_api_request_from__(defaults, event_dict)
+        json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return GlobalQuote.model_validate(json_response)
 
-    def get_daily_quote(self, event: dict) -> Quote:
+    def get_daily_quote(self, event: Union[str, dict]) -> Quote:
         """
         This API returns raw (as-traded) daily time series (date, daily open, daily high, daily low, daily close, daily
         volume) of the global equity specified, covering 20+ years of historical data. If you are also interested in
@@ -190,7 +191,7 @@ class AlphavantageClient:
 
         return Quote.model_validate(json_response)
 
-    def get_daily_adjusted_quote(self, event: dict) -> Quote:
+    def get_daily_adjusted_quote(self, event: Union[str, dict]) -> Quote:
         """
                 This API returns raw (as-traded) daily open/high/low/close/volume values,
                 daily adjusted close values, and historical split/dividend events of the global
@@ -209,7 +210,7 @@ class AlphavantageClient:
 
         return Quote.model_validate(json_response)
 
-    def get_weekly_quote(self, event: dict) -> Quote:
+    def get_weekly_quote(self, event: Union[str, dict]) -> Quote:
         """
                         This API returns weekly time series (last trading day of each week, weekly open,
                         weekly high, weekly low, weekly close, weekly volume) of the global equity
@@ -228,7 +229,7 @@ class AlphavantageClient:
 
         return Quote.model_validate(json_response)
 
-    def get_weekly_adjusted_quote(self, event: dict) -> Quote:
+    def get_weekly_adjusted_quote(self, event: Union[str, dict]) -> Quote:
         """
                         This API returns weekly adjusted time series (last trading day of each week, weekly open,
                         weekly high, weekly low, weekly close, weekly adjusted close, weekly volume, weekly dividend)
@@ -246,7 +247,7 @@ class AlphavantageClient:
 
         return Quote.model_validate(json_response)
 
-    def get_monthly_quote(self, event: dict) -> Quote:
+    def get_monthly_quote(self, event: Union[str, dict]) -> Quote:
         """
                         This API returns monthly time series (last trading day of each month, monthly open,
                         monthly high, monthly low, monthly close, monthly volume) of the global equity specified,
@@ -264,7 +265,7 @@ class AlphavantageClient:
 
         return Quote.model_validate(json_response)
 
-    def get_monthly_adjusted_quote(self, event: dict) -> Quote:
+    def get_monthly_adjusted_quote(self, event: Union[str, dict]) -> Quote:
         """
                         This API returns monthly time series (last trading day of each month, monthly open,
                         monthly high, monthly low, monthly close, monthly volume) of the global equity specified,
@@ -282,7 +283,7 @@ class AlphavantageClient:
 
         return Quote.model_validate(json_response)
 
-    def get_intraday_quote(self, event: dict) -> Quote:
+    def get_intraday_quote(self, event: Union[str, dict]) -> Quote:
         """ Intraday time series data covering extended trading hours.
 
         This API returns intraday time series of the equity specified, covering extended trading hours where applicable
@@ -313,7 +314,7 @@ class AlphavantageClient:
 
         return Quote.model_validate(json_response)
 
-    def get_income_statement(self, event: dict) -> AccountingReport:
+    def get_income_statement(self, event: Union[str, dict]) -> AccountingReport:
         """
         This API returns the annual and quarterly income statements for the company of interest, with
         normalized fields mapped to GAAP and IFRS taxonomies of the SEC. Data is generally refreshed on the same day
@@ -344,7 +345,7 @@ class AlphavantageClient:
 
         return AccountingReport.model_validate(json_response)
 
-    def get_balance_sheet(self, event: dict) -> AccountingReport:
+    def get_balance_sheet(self, event: Union[str, dict]) -> AccountingReport:
         defaults = {
             "function": "BALANCE_SHEET",
             "datatype": "json"
@@ -362,7 +363,7 @@ class AlphavantageClient:
 
         return AccountingReport.model_validate(json_response)
 
-    def get_cash_flow(self, event: dict) -> AccountingReport:
+    def get_cash_flow(self, event: Union[str, dict]) -> AccountingReport:
         """
         This API returns the annual and quarterly cash flow for the company of interest, with normalized fields
         mapped to GAAP and IFRS taxonomies of the SEC. Data is generally refreshed on the same day a company reports
@@ -391,7 +392,7 @@ class AlphavantageClient:
 
         return AccountingReport.model_validate(json_response)
 
-    def get_earnings(self, event: Union[str, dict]) -> AccountingReport:
+    def get_earnings(self, event: Union[str, Union[str, dict]]) -> AccountingReport:
         """
         This API returns the annual and quarterly earnings (EPS) for the company of interest. Quarterly data also
         includes analyst estimates and surprise metrics.
@@ -421,7 +422,7 @@ class AlphavantageClient:
 
         return AccountingReport.model_validate(json_response)
 
-    def get_company_overview(self, event: dict) -> CompanyOverview:
+    def get_company_overview(self, event: Union[str, dict]) -> CompanyOverview:
         """
         This API returns the company information, financial ratios, and other key metrics for the equity specified.
         Data is generally refreshed on the same day a company reports its latest earnings and financials.
@@ -449,7 +450,7 @@ class AlphavantageClient:
 
         return CompanyOverview.model_validate(json_response)
 
-    def get_crypto_intraday(self, event: dict) -> CurrencyQuote:
+    def get_crypto_intraday(self, event: Union[str, dict]) -> CurrencyQuote:
         """
         This API returns intraday time series (timestamp, open, high, low, close, volume) of the cryptocurrency
         specified, updated realtime.
@@ -473,7 +474,7 @@ class AlphavantageClient:
         # print(json.dumps(json_response))
         return CurrencyQuote.model_validate(json_response)
 
-    def get_crypto_daily(self, event: dict) -> CurrencyQuote:
+    def get_crypto_daily(self, event: Union[str, dict]) -> CurrencyQuote:
         """
         This API returns the daily historical time series for a digital currency (e.g., BTC)
         traded on a specific market (e.g., CNY/Chinese Yuan), refreshed daily at midnight (UTC). Prices and
@@ -495,7 +496,7 @@ class AlphavantageClient:
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
         return CurrencyQuote.model_validate(json_response)
 
-    def get_crypto_weekly(self, event: dict) -> CurrencyQuote:
+    def get_crypto_weekly(self, event: Union[str, dict]) -> CurrencyQuote:
         """
         This API returns the daily historical time series for a digital currency (e.g., BTC)
         traded on a specific market (e.g., CNY/Chinese Yuan), refreshed daily at midnight (UTC). Prices and
@@ -517,7 +518,7 @@ class AlphavantageClient:
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
         return CurrencyQuote.model_validate(json_response)
 
-    def get_crypto_monthly(self, event: dict) -> CurrencyQuote:
+    def get_crypto_monthly(self, event: Union[str, dict]) -> CurrencyQuote:
         """
         This API returns the monthly historical time series for a digital currency (e.g., BTC) traded on a specific
          market (e.g., CNY/Chinese Yuan), refreshed daily at midnight (UTC). Prices and volumes are quoted
@@ -966,7 +967,7 @@ class AlphavantageClient:
 
         return self
 
-    def search_ticker(self, event: dict) -> TickerSearch:
+    def search_ticker(self, event: Union[str, dict]) -> TickerSearch:
         """
         We've got you covered! The Search Endpoint returns the best-matching symbols and market information based
         on keywords of your choice. The search results also contain match scores that provide you with the full
@@ -1013,7 +1014,7 @@ class AlphavantageClient:
 
         return MarketMovers.model_validate(json_response)
 
-    def get_earnings_calendar(self, event: dict) -> EarningsCalendar:
+    def get_earnings_calendar(self, event: Union[str, dict]) -> EarningsCalendar:
         """
         This API returns a list of company earnings expected in the next 3, 6, or 12 months.
         Returns:
@@ -1443,7 +1444,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_ema(self, event: dict) -> Quote:
+    def get_ema(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the exponential moving average (EMA) values.
         See also: http://www.fmlabs.com/reference/default.htm?url=ExpMA.htm
@@ -1465,7 +1466,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_wma(self, event: dict) -> Quote:
+    def get_wma(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the exponential moving average (EMA) values.
         See also: http://www.fmlabs.com/reference/default.htm?url=ExpMA.htm
@@ -1487,7 +1488,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_dema(self, event: dict) -> Quote:
+    def get_dema(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the double exponential moving average (DEMA) values.
         See also: http://www.investopedia.com/articles/trading/10/double-exponential-moving-average.asp
@@ -1510,7 +1511,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_tema(self, event: dict) -> Quote:
+    def get_tema(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the triple exponential moving average (TEMA) values.
         See also: http://www.fmlabs.com/reference/default.htm?url=TEMA.htm
@@ -1532,7 +1533,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_trima(self, event: dict) -> Quote:
+    def get_trima(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the triple exponential moving average (TEMA) values.
         See also: http://www.fmlabs.com/reference/default.htm?url=TEMA.htm
@@ -1554,7 +1555,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_kama(self, event: dict) -> Quote:
+    def get_kama(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the Kaufman adaptive moving average (KAMA) values.
         Args:
@@ -1575,7 +1576,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_mama(self, event: dict) -> Quote:
+    def get_mama(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the MESA adaptive moving average (MAMA) values.
         Args:
@@ -1596,7 +1597,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_vwap(self, event: dict) -> Quote:
+    def get_vwap(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the volume weighted average price (VWAP) for intraday time series.
         See also: https://www.investopedia.com/terms/v/vwap.asp
@@ -1616,7 +1617,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_t3(self, event: dict) -> Quote:
+    def get_t3(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the triple exponential moving average (T3) values.
         See also: http://www.fmlabs.com/reference/default.htm?url=T3.htm
@@ -1638,7 +1639,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_macd(self, event: dict) -> Quote:
+    def get_macd(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the moving average convergence / divergence (MACD) values.
         See also: http://www.investopedia.com/articles/forex/05/macddiverge.asp
@@ -1661,7 +1662,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_macdext(self, event: dict) -> Quote:
+    def get_macdext(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the moving average convergence / divergence values with controllable moving average type.
         See also: http://www.investopedia.com/articles/forex/05/macddiverge.asp
@@ -1684,7 +1685,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_stoch(self, event: dict) -> Quote:
+    def get_stoch(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the stochastic oscillator (STOCH) values.
         See also: https://www.investopedia.com/terms/s/stochasticoscillator.asp
@@ -1706,7 +1707,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_stockhf(self, event: dict) -> Quote:
+    def get_stockhf(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the stochastic fast (STOCHF) values.
         See also: http://www.investopedia.com/university/indicator_oscillator/ind_osc8.asp
@@ -1727,7 +1728,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_rsi(self, event: dict) -> Quote:
+    def get_rsi(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the relative strength index (RSI) values.
         See also: http://www.investopedia.com/articles/technical/071601.asp
@@ -1750,7 +1751,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_stochrsi(self, event: dict) -> Quote:
+    def get_stochrsi(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the stochastic relative strength index (STOCHRSI) values.
         See also: http://www.fmlabs.com/reference/default.htm?url=StochRSI.htm
@@ -1772,7 +1773,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_willr(self, event: dict) -> Quote:
+    def get_willr(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the Williams' %R (WILLR) values.
         See also: http://www.fmlabs.com/reference/default.htm?url=WilliamsR.htm
@@ -1794,7 +1795,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_adx(self, event: dict) -> Quote:
+    def get_adx(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the average directional movement index (ADX) values.
         See also: http://www.investopedia.com/articles/trading/07/adx-trend-indicator.asp
@@ -1817,7 +1818,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_adxr(self, event: dict) -> Quote:
+    def get_adxr(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the average directional movement index rating (ADXR) values.
         See also: http://www.fmlabs.com/reference/default.htm?url=ADXR.htm
@@ -1839,7 +1840,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_apo(self, event: dict) -> Quote:
+    def get_apo(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the absolute price oscillator (APO) values.
         See also: http://www.fmlabs.com/reference/default.htm?url=PriceOscillator.htm
@@ -1862,7 +1863,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_ppo(self, event: dict) -> Quote:
+    def get_ppo(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the percentage price oscillator (PPO) values.
         See also: http://www.investopedia.com/articles/investing/051214/use-percentage-price-oscillator-elegant-indicator-picking-stocks.asp
@@ -1885,7 +1886,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_mom(self, event: dict) -> Quote:
+    def get_mom(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the momentum (MOM) values.
         See also: http://www.investopedia.com/articles/technical/03/070203.asp
@@ -1909,7 +1910,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_bop(self, event: dict) -> Quote:
+    def get_bop(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the balance of power (BOP) values.
 
@@ -1929,7 +1930,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_cci(self, event: dict) -> Quote:
+    def get_cci(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the commodity channel index (CCI) values.
         See also: http://www.investopedia.com/articles/trading/05/041805.asp
@@ -1952,7 +1953,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_cmo(self, event: dict) -> Quote:
+    def get_cmo(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the Chande momentum oscillator (CMO) values.
         See also: http://www.fmlabs.com/reference/default.htm?url=CMO.htm
@@ -1975,7 +1976,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_roc(self, event: dict) -> Quote:
+    def get_roc(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the rate of change (ROC) values.
         See also: http://www.investopedia.com/articles/technical/092401.asp
@@ -1998,7 +1999,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_rocr(self, event: dict) -> Quote:
+    def get_rocr(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the rate of change ratio (ROCR) values.
         See also: http://www.investopedia.com/articles/technical/092401.asp
@@ -2021,7 +2022,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_aroon(self, event: dict) -> Quote:
+    def get_aroon(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the Aroon (AROON) values.
         See also: http://www.investopedia.com/articles/trading/06/aroon.asp
@@ -2044,7 +2045,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_aroonosc(self, event: dict) -> Quote:
+    def get_aroonosc(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the Aroon oscillator (AROONOSC) values.
         See also: http://www.fmlabs.com/reference/default.htm?url=AroonOscillator.htm
@@ -2066,7 +2067,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_mfi(self, event: dict) -> Quote:
+    def get_mfi(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the money flow index (MFI) values.
         See also: http://www.investopedia.com/articles/technical/03/072303.asp
@@ -2089,7 +2090,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_trix(self, event: dict) -> Quote:
+    def get_trix(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the 1-day rate of change of a triple smooth exponential moving average (TRIX) values.
         See also: http://www.investopedia.com/articles/technical/02/092402.asp
@@ -2113,7 +2114,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_ultosc(self, event: dict) -> Quote:
+    def get_ultosc(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the ultimate oscillator (ULTOSC) values.
         See also: http://www.fmlabs.com/reference/default.htm?url=UltimateOsc.htm
@@ -2134,7 +2135,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_dx(self, event: dict) -> Quote:
+    def get_dx(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the directional movement index (DX) values.
         See also: http://www.investopedia.com/articles/technical/02/050602.asp
@@ -2157,7 +2158,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_minus_di(self, event: dict) -> Quote:
+    def get_minus_di(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the minus directional indicator (MINUS_DI) values.
         See also: http://www.investopedia.com/articles/technical/02/050602.asp
@@ -2180,7 +2181,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_plus_di(self, event: dict) -> Quote:
+    def get_plus_di(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the plus directional indicator (PLUS_DI) values.
         See also: http://www.investopedia.com/articles/technical/02/050602.asp
@@ -2203,7 +2204,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_minus_dm(self, event: dict) -> Quote:
+    def get_minus_dm(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the minus directional movement (MINUS_DM) values.
         See also: http://www.investopedia.com/articles/technical/02/050602.asp
@@ -2225,7 +2226,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_plus_dm(self, event: dict) -> Quote:
+    def get_plus_dm(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the plus directional movement (PLUS_DM) values.
         See also: http://www.investopedia.com/articles/technical/02/050602.asp
@@ -2247,7 +2248,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_bbands(self, event: dict) -> Quote:
+    def get_bbands(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the Bollinger bands (BBANDS) values.
         See also: http://www.investopedia.com/articles/technical/04/030304.asp
@@ -2271,7 +2272,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_midpoint(self, event: dict) -> Quote:
+    def get_midpoint(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the midpoint (MIDPOINT) values. MIDPOINT = (highest value + lowest value)/2.
 
@@ -2293,7 +2294,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_midprice(self, event: dict) -> Quote:
+    def get_midprice(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the midpoint price (MIDPRICE) values. MIDPRICE = (highest high + lowest low)/2.
 
@@ -2314,7 +2315,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_sar(self, event: dict) -> Quote:
+    def get_sar(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the parabolic SAR (SAR) values. See also: Investopedia article and mathematical reference.
 
@@ -2334,7 +2335,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_trange(self, event: dict) -> Quote:
+    def get_trange(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the true range (TRANGE) values.
         See also: http://www.fmlabs.com/reference/default.htm?url=TR.htm
@@ -2355,7 +2356,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_atr(self, event: dict) -> Quote:
+    def get_atr(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the average true range (ATR) values.
         See also: http://www.investopedia.com/articles/trading/08/average-true-range.asp
@@ -2378,7 +2379,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_natr(self, event: dict) -> Quote:
+    def get_natr(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the normalized average true range (NATR) values.
 
@@ -2399,7 +2400,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_ad(self, event: dict) -> Quote:
+    def get_ad(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the Chaikin A/D line (AD) values.
         See also: http://www.investopedia.com/articles/active-trading/031914/understanding-chaikin-oscillator.asp
@@ -2421,7 +2422,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_adosc(self, event: dict) -> Quote:
+    def get_adosc(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the Chaikin A/D oscillator (ADOSC) values.
         See also: http://www.investopedia.com/articles/active-trading/031914/understanding-chaikin-oscillator.asp
@@ -2443,7 +2444,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_obv(self, event: dict) -> Quote:
+    def get_obv(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the on balance volume (OBV) values.
         See also: http://www.investopedia.com/articles/technical/100801.asp
@@ -2465,7 +2466,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_ht_trendline(self, event: dict) -> Quote:
+    def get_ht_trendline(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the Hilbert transform, instantaneous trendline (HT_TRENDLINE) values.
 
@@ -2486,7 +2487,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_ht_sine(self, event: dict) -> Quote:
+    def get_ht_sine(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the Hilbert transform, sine wave (HT_SINE) values.
 
@@ -2507,7 +2508,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_ht_trendmode(self, event: dict) -> Quote:
+    def get_ht_trendmode(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the Hilbert transform, trend vs cycle mode (HT_TRENDMODE) values.
 
@@ -2528,7 +2529,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_ht_dcperiod(self, event: dict) -> Quote:
+    def get_ht_dcperiod(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the Hilbert transform, dominant cycle period (HT_DCPERIOD) values.
 
@@ -2549,7 +2550,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_ht_dcphase(self, event: dict) -> Quote:
+    def get_ht_dcphase(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the Hilbert transform, dominant cycle period (HT_DCPERIOD) values.
 
@@ -2570,7 +2571,7 @@ The latest data point is the price information for the week (or partial week) co
 
         return Quote.model_validate(json_response)
 
-    def get_ht_phasor(self, event: dict) -> Quote:
+    def get_ht_phasor(self, event: Union[str, dict]) -> Quote:
         """
         This API returns the Hilbert transform, phasor components (HT_PHASOR) values.
 
