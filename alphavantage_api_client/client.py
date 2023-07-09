@@ -27,6 +27,8 @@ to debug, so users can track down issues quickly.
         client = AlphavantageClient().should_retry_once().use_simple_cache()
 
 """
+
+
 class ApiKeyNotFound(Exception):
 
     def __init__(self, message: str):
@@ -60,13 +62,13 @@ class AlphavantageClient:
             self.__api_key__ = ""
 
     def __build_url_from_args__(self, event: dict):
-        """
+        """ private method to construct a url from requested api configuration
 
         Args:
-            event:
+            event: the params
 
         Returns:
-            :rtype: str
+            a string in url format
         """
         url = f'https://www.alphavantage.co/query?'
         # build url from event
@@ -76,14 +78,14 @@ class AlphavantageClient:
         return url
 
     def __inject_values__(self, default_values: dict, dest_obj: dict):
-        """
+        """ private method: inserts values into the destination dict. This will not overwrite values
 
         Args:
-            default_values:
-            dest_obj:
+            default_values: The required values to be inserted into the dest_obj
+            dest_obj: the dict to be hydrated with the default_values
 
         Returns:
-            :rtype: None
+            None
 
         """
         # inject defaults for missing values
@@ -92,15 +94,7 @@ class AlphavantageClient:
                 dest_obj[default_key] = default_values[default_key]
 
     def __create_api_request_from__(self, defaults: dict, event: Union[str, dict]):
-        """
 
-        Args:
-            defaults:
-            event:
-
-        Returns:
-            :rtype: dict
-        """
         event_dict = event
         if isinstance(event, str):
             event_dict = {
@@ -115,15 +109,35 @@ class AlphavantageClient:
         return json_request
 
     def should_retry_once(self, retry: bool = True):
+        """ Retry api call when limit reached has been detected
+
+        At present the Alpha Vantage API only allows 5 calls per min with a free account. This means you would need to
+        build retry logic to maximize your calls.  We have already done that for you! As a result, the client
+        will calculate the time from the last call and pause up to a minute before making a subsequent call.
+
+        Args:
+            retry: Flag to indicate whether you want to retry when limit has been reached
+
+        Returns:
+            AlphavantageClient
+
+        """
         self.__retry__ = retry
 
         return self
 
     def use_simple_cache(self, use_cache: bool = True, max_cache_size: int = 100):
-        """
+        """ First in / First Out Cache to reduce the amount of calls you need to make to the alpha vantage api
+
+        An In-Memory Caching mechanism where your parameters (i.e. symbol, function, interval, format, etc) are used as
+        a key into a dictionary. This is similar to how SQL uses the SQL statement to cache it's responses. If you
+        have already requested data with those attributes then it will simply return it from the cache. The cache will
+        continue to grow until you call the clear_cache()
+
+
         First in First Out Cache
         Args:
-            use_cache:
+            use_cache: Flag to indicate whether you want to turn on caching
             max_cache_size: Max size of the cache.
 
         Returns:
@@ -135,6 +149,17 @@ class AlphavantageClient:
         return self
 
     def get_internal_metrics(self) -> dict:
+        """ Obtain the total calls, retry setting and the first successful attempt
+
+        We want to provide you will some usefull statistics that may help you troubleshoot or understand your usage.
+
+        Returns:
+            A dict of relevaant details about your usage
+            totals calls - how many total calls have been made by the client
+            retry - your retry flag
+            first_successful_attempt - the time as a float
+
+        """
         total_calls = self.__total_calls__
         retry = self.__retry__
         first_successful_attempt = self.__first_successful_attempt__
@@ -146,14 +171,19 @@ class AlphavantageClient:
         return metrics
 
     def with_api_key(self, api_key: str):
-        """Specify the API Key when you are storing it somewhere other than in ini file or environment variable
+        """Specify your alpha vantage API Key
 
-        When you are storing your api key somewhere other than ~/.alphavantage or ALPHAVANTAGE_API_KEY env variable
+        There are a few ways you can specify your alpha vantage api key:
+        1. This method ;-)
+        2. ~/.alphavantage
+        3. ALPHAVANTAGE_API_KEY env variable
+        4. within each request event dict using the same key name as the api expects (i.e. apiKey)
+
         Args:
-            api_key (str): Your api key from alphavantage
+            api_key (str): Your api key from alpha vantage
 
         Returns:
-            :rtype: AlphavantageClient
+            This AlphavantageClient
         """
         if api_key is None or len(api_key) == 0:
             raise ApiKeyNotFound("API Key is null or empty. Please specify a valid api key")
@@ -518,7 +548,7 @@ class AlphavantageClient:
             Minimum required is ``symbol`` = (``str``)
 
         Returns:
-            :rtype: CurrencyQuote
+            The CurrencyQuote for the requested equity
 
         """
         defaults = {
@@ -530,17 +560,16 @@ class AlphavantageClient:
         return CurrencyQuote.model_validate(json_response)
 
     def get_crypto_weekly(self, event: Union[str, dict]) -> CurrencyQuote:
-        """
-        This API returns the daily historical time series for a digital currency (e.g., BTC)
-        traded on a specific market (e.g., CNY/Chinese Yuan), refreshed daily at midnight (UTC). Prices and
+        """ Returns the daily historical time series for a digital currency (e.g., BTC)
+
+        As traded on a specific market (e.g., CNY/Chinese Yuan), refreshed daily at midnight (UTC). Prices and
         volumes are quoted in both the market-specific currency and USD.
 
         Args:
-            event (dict): A Dictionary of parameters that will be passed to the api.
-            Minimum required is ``symbol`` = (``str``)
+            event: A dict of parameters that will be passed to the api.
 
         Returns:
-            :rtype: CurrencyQuote
+            The CurrencyQuote for the requested equity
 
         """
         defaults = {
@@ -552,17 +581,15 @@ class AlphavantageClient:
         return CurrencyQuote.model_validate(json_response)
 
     def get_crypto_monthly(self, event: Union[str, dict]) -> CurrencyQuote:
-        """
-        This API returns the monthly historical time series for a digital currency (e.g., BTC) traded on a specific
-         market (e.g., CNY/Chinese Yuan), refreshed daily at midnight (UTC). Prices and volumes are quoted
-         in both the market-specific currency and USD.
+        """ Returns the monthly historical time series for a digital currency (e.g., BTC)
+
+        Refreshed daily at midnight (UTC). Prices and volumes are quoted in both the market-specific currency and USD.
 
         Args:
-            event (dict): A Dictionary of parameters that will be passed to the api.
-            Minimum required is ``symbol`` = (``str``)
+            event: A dict of parameters that will be passed to the api.
 
         Returns:
-            :rtype: CurrencyQuote
+            The CurrencyQuote for the requested equity
 
         """
         defaults = {
@@ -573,16 +600,14 @@ class AlphavantageClient:
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
         return CurrencyQuote.model_validate(json_response)
 
-    def get_crypto_exchange_rates(self, event: dict) -> CurrencyQuote:
-        """
-        This API returns the realtime exchange rate for any pair of digital currency (e.g., Bitcoin) or physical currency (e.g., USD).
+    def get_currency_exchange_rates(self, event: dict) -> CurrencyQuote:
+        """ returns the exchange rate for any pair of digital currency (e.g., Bitcoin) or physical currency (e.g., USD).
 
         Args:
-            event (dict): A Dictionary of parameters that will be passed to the api.
-            Minimum required is ``symbol`` = (``str``)
+            event: A Dictionary of parameters that will be passed to the api.
 
         Returns:
-            :rtype: CurrencyQuote
+            The CurrencyQuote for the requested equity
 
         """
         defaults = {
@@ -879,8 +904,6 @@ class AlphavantageClient:
 
         return Quote.model_validate(json_response)
 
-
-
     def get_data_from_alpha_vantage(self, event: dict, should_retry: bool = False) -> dict:
         """
         This is the underlying function that talks to alphavantage api.  Feel free to pass in any parameters supported
@@ -1114,22 +1137,6 @@ class AlphavantageClient:
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return NewsAndSentiment.model_validate(json_response)
-
-    def get_forex_exchange_rates(self, event: dict) -> CurrencyQuote:
-        """
-        This API returns the realtime exchange rate for a pair of digital currency (e.g., Bitcoin)
-        and physical currency (e.g., USD).
-        Returns: CurrencyQuote
-
-        """
-        defaults = {
-            "function": "CURRENCY_EXCHANGE_RATE",
-            "datatype": "json"
-        }
-        json_request = self.__create_api_request_from__(defaults, event)
-        json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
-
-        return CurrencyQuote.model_validate(json_response)
 
     def get_forex_intraday(self, event: dict) -> CurrencyQuote:
         """
@@ -2624,5 +2631,3 @@ The latest data point is the price information for the week (or partial week) co
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return Quote.model_validate(json_response)
-
-
