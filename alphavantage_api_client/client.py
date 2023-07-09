@@ -618,18 +618,17 @@ class AlphavantageClient:
         return CurrencyQuote.model_validate(json_response)
 
     def get_real_gdp(self, event: dict = None) -> EconomicIndicator:
-        """
+        """ Returns the annual and quarterly Real GDP of the United States.
 
-        This API returns the annual and quarterly Real GDP of the United States.
         Source: U.S. Bureau of Economic Analysis, Real Gross Domestic Product, retrieved from FRED, Federal
         Reserve Bank of St. Louis. This data feed uses the FRED® API but is not endorsed or certified by the Federal
         Reserve Bank of St. Louis. By using this data feed, you agree to be bound by the FRED® API Terms of Use.
 
         Args:
-            event (dict): Not required. You can pass in any parameters supported by the api
+            event: Not required. You can pass in any parameters supported by the api
 
         Returns:
-            :rtype: EconomicIndicator
+            The EconomicIndicator for the requested equity
 
         """
         defaults = {
@@ -643,22 +642,19 @@ class AlphavantageClient:
         return EconomicIndicator.model_validate(json_response)
 
     def get_treasury_yield(self, event: dict = None) -> EconomicIndicator:
-        """
+        """ Returns the daily, weekly, and monthly US treasury yield of a given maturity timeline.
 
-        This API returns the daily, weekly, and monthly US treasury yield of a given maturity
-        timeline (e.g., 5 year, 30 year, etc).
         Source: Board of Governors of the Federal Reserve System (US), Market Yield on U.S. Treasury Securities
         at 3-month, 2-year, 5-year, 7-year, 10-year, and 30-year Constant Maturities, Quoted on an Investment Basis,
         retrieved from FRED, Federal Reserve Bank of St. Louis. This data feed uses the FRED® API but is not endorsed
         or certified by the Federal Reserve Bank of St. Louis. By using this data feed, you agree to be bound by the
         FRED® API Terms of Use.
 
-
         Args:
-            event (dict): Not required. You can pass in any parameters supported by the api
+            event: Not required. You can pass in any parameters supported by the api
 
         Returns:
-            :rtype: EconomicIndicator
+            The EconomicIndicator for the requested equity
 
         """
         defaults = {
@@ -673,8 +669,7 @@ class AlphavantageClient:
         return EconomicIndicator.model_validate(json_response)
 
     def get_federal_funds_rate(self, event: dict = None) -> EconomicIndicator:
-        """
-        This API returns the daily, weekly, and monthly federal funds rate (interest rate) of the United States.
+        """ returns the daily, weekly, and monthly federal funds rate (interest rate) of the United States.
 
         Source: Board of Governors of the Federal Reserve System (US), Federal Funds Effective Rate, retrieved from
         FRED, Federal Reserve Bank of St. Louis (https://fred.stlouisfed.org/series/FEDFUNDS). This data feed uses the
@@ -682,10 +677,10 @@ class AlphavantageClient:
         you agree to be bound by the FRED® API Terms of Use.
 
         Args:
-            event (dict): Not required. You can pass in any parameters supported by the api
+            event: Not required. You can pass in any parameters supported by the api
 
         Returns:
-            :rtype: EconomicIndicator
+            The EconomicIndicator for the requested equity
 
         """
         defaults = {
@@ -699,20 +694,19 @@ class AlphavantageClient:
         return EconomicIndicator.model_validate(json_response)
 
     def get_cpi(self, event: dict = None) -> EconomicIndicator:
-        """
-        This API returns the monthly and semiannual consumer price index (CPI) of the United States. CPI is widely
-        regarded as the barometer of inflation levels in the broader economy.
+        """ Returns the monthly and semiannual consumer price index (CPI) of the United States.
 
+        CPI is widely regarded as the barometer of inflation levels in the broader economy.
         Source: U.S. Bureau of Labor Statistics, Consumer Price Index for All Urban Consumers: All Items in U.S. City
         Average, retrieved from FRED, Federal Reserve Bank of St. Louis. This data feed uses the FRED® API but is not
         endorsed or certified by the Federal Reserve Bank of St. Louis. By using this data feed, you agree to be
         bound by the FRED® API Terms of Use.
 
         Args:
-            event (dict): Not required. You can pass in any parameters supported by the api
+            event: Not required. You can pass in any parameters supported by the api
 
         Returns:
-            :rtype: EconomicIndicator
+            The EconomicIndicator for the requested equity
 
         """
         defaults = {
@@ -726,18 +720,17 @@ class AlphavantageClient:
         return EconomicIndicator.model_validate(json_response)
 
     def get_inflation(self, event: dict = None) -> EconomicIndicator:
-        """
-        This API returns the annual inflation rates (consumer prices) of the United States.
+        """ Returns the annual inflation rates (consumer prices) of the United States.
 
         Source: World Bank, Inflation, consumer prices for the United States, retrieved from FRED, Federal Reserve Bank
         of St. Louis. This data feed uses the FRED® API but is not endorsed or certified by the Federal Reserve
         Bank of St. Louis. By using this data feed, you agree to be bound by the FRED® API Terms of Use.
 
         Args:
-            event (dict): Not required. You can pass in any parameters supported by the api
+            event: Not required. You can pass in any parameters supported by the api
 
         Returns:
-            :rtype: EconomicIndicator
+            The EconomicIndicator for the requested equity
 
         """
         defaults = {
@@ -750,20 +743,18 @@ class AlphavantageClient:
         return EconomicIndicator.model_validate(json_response)
 
     def get_retails_sales(self, event: dict = None) -> EconomicIndicator:
-        """
-        This API returns the monthly Advance Retail Sales: Retail Trade data of the United States.
+        """ returns the monthly Advance Retail Sales: Retail Trade data of the United States.
 
         Source: U.S. Census Bureau, Advance Retail Sales: Retail Trade, retrieved from FRED,
         Federal Reserve Bank of St. Louis (https://fred.stlouisfed.org/series/RSXFSN). This data feed uses the FRED®
         API but is not endorsed or certified by the Federal Reserve Bank of St. Louis. By using this data feed, you
         agree to be bound by the FRED® API Terms of Use.
 
-
         Args:
-            event (dict): Not required. You can pass in any parameters supported by the api
+            event: Not required. You can pass in any parameters supported by the api
 
         Returns:
-            :rtype: EconomicIndicator
+            The EconomicIndicator for the requested equity
 
         """
         defaults = {
@@ -776,20 +767,18 @@ class AlphavantageClient:
         return EconomicIndicator.model_validate(json_response)
 
     def get_durable_goods_orders(self, event: dict = None) -> EconomicIndicator:
-        """
-        This API returns the monthly manufacturers' new orders of durable goods in the United States.
+        """ Returns the monthly manufacturers' new orders of durable goods in the United States.
 
         Source: U.S. Census Bureau, Manufacturers' New Orders: Durable Goods, retrieved from FRED, Federal Reserve
         Bank of St. Louis (https://fred.stlouisfed.org/series/UMDMNO). This data feed uses the FRED® API but is not
         endorsed or certified by the Federal Reserve Bank of St. Louis. By using this data feed, you agree to be bound
         by the FRED® API Terms of Use.
 
-
         Args:
             event (dict): Not required. You can pass in any parameters supported by the api
 
         Returns:
-            :rtype: EconomicIndicator
+            The EconomicIndicator for the requested equity
 
         """
         defaults = {
@@ -802,23 +791,22 @@ class AlphavantageClient:
         return EconomicIndicator.model_validate(json_response)
 
     def get_unemployment(self, event: dict = None) -> EconomicIndicator:
-        """
-        This API returns the monthly unemployment data of the United States. The unemployment rate represents the
-        number of unemployed as a percentage of the labor force. Labor force data are restricted to people 16 years of
-        age and older, who currently reside in 1 of the 50 states or the District of Columbia, who do not reside in
-        institutions (e.g., penal and mental facilities, homes for the aged), and who are not on active duty in the
-        Armed Forces (source).
+        """ Returns the monthly unemployment data of the United States.
+
+        The unemployment rate represents the number of unemployed as a percentage of the labor force. Labor force
+        data are restricted to people 16 years of age and older, who currently reside in 1 of the 50 states or the
+        District of Columbia, who do not reside in institutions (e.g., penal and mental facilities, homes for the aged),
+        and who are not on active duty in the Armed Forces (source).
 
         Source: U.S. Bureau of Labor Statistics, Unemployment Rate, retrieved from FRED, Federal Reserve Bank of
         St. Louis. This data feed uses the FRED® API but is not endorsed or certified by the Federal Reserve Bank of
         St. Louis. By using this data feed, you agree to be bound by the FRED® API Terms of Use.
 
-
         Args:
-            event (dict): Not required. You can pass in any parameters supported by the api
+            event: Not required. You can pass in any parameters supported by the api
 
         Returns:
-            :rtype: EconomicIndicator
+            The EconomicIndicator for the requested equity
 
         """
         defaults = {
@@ -831,21 +819,20 @@ class AlphavantageClient:
         return EconomicIndicator.model_validate(json_response)
 
     def get_nonfarm_payroll(self, event: dict = None) -> EconomicIndicator:
-        """
-        This API returns the monthly US All Employees: Total Nonfarm (commonly known as Total Nonfarm Payroll),
-        a measure of the number of U.S. workers in the economy that excludes proprietors, private household employees,
-        unpaid volunteers, farm employees, and the unincorporated self-employed.
+        """ Returns the monthly US All Employees Nonfarm, a measure of the number of U.S.
+
+        Workers in the economy that excludes proprietors, private household employees, unpaid volunteers,
+        farm employees, and the unincorporated self-employed.
 
         Source: U.S. Bureau of Labor Statistics, All Employees, Total Nonfarm, retrieved from FRED, Federal Reserve
         Bank of St. Louis. This data feed uses the FRED® API but is not endorsed or certified by the Federal Reserve
         Bank of St. Louis. By using this data feed, you agree to be bound by the FRED® API Terms of Use.
 
-
         Args:
-            event (dict): Not required. You can pass in any parameters supported by the api
+            event: Not required. You can pass in any parameters supported by the api
 
         Returns:
-            :rtype: EconomicIndicator
+            The EconomicIndicator for the requested equity
 
         """
         defaults = {
@@ -858,16 +845,14 @@ class AlphavantageClient:
         return EconomicIndicator.model_validate(json_response)
 
     def get_real_gdp_per_capita(self, event: dict = None) -> EconomicIndicator:
-        """
-
-        This API returns the quarterly Real GDP per Capita data of the United States.
+        """ Returns the quarterly Real GDP per Capita data of the United States.
 
         Source: U.S. Bureau of Economic Analysis, Real gross domestic product per capita, retrieved from FRED,
         Federal Reserve Bank of St. Louis. This data feed uses the FRED® API but is not endorsed or certified by the
         Federal Reserve Bank of St. Louis. By using this data feed, you agree to be bound by the FRED® API Terms of Use.
 
         Args:
-            event (dict): Not required. You can pass in any parameters supported by the api
+            event: Not required. You can pass in any parameters supported by the api
 
         Returns:
             :rtype: EconomicIndicator
@@ -905,15 +890,16 @@ class AlphavantageClient:
         return Quote.model_validate(json_response)
 
     def get_data_from_alpha_vantage(self, event: dict, should_retry: bool = False) -> dict:
-        """
-        This is the underlying function that talks to alphavantage api.  Feel free to pass in any parameters supported
-        by the api.  You will receive a dictionary with the response from the web api. In addition, you will obtain
-        the ``success``, ``error_message`` and ``limit_reached`` fields.
+        """ Underlying function that talks to alphavantage api.
+
+        Feel free to pass in any parameters supported by the api.  You will receive a dictionary with the response
+        from the web api. In addition, you will obtain the success, error_message and limit_reached fields.
         Args:
-            event (dictionary): The url parameters supported by the web api
+            event: dict of the url parameters supported by the web api
 
         Returns:
-            :rtype: dict
+            A dict of the response from alpha vantage api. success, error_message and limit_reached fields are injected
+            into the dict for your reference.
 
         """
         # validate api key and insert into the request if needed
@@ -945,7 +931,7 @@ class AlphavantageClient:
             self.__first_successful_attempt__ = time.perf_counter()
             return result
 
-        # not all calls will have a symbol in the call to alphavantage.... if so we can to capture it.
+        # not all calls will have a symbol in the call to alphavantage.... if so we can, capture it.
         if "symbol" in event:
             requested_data['symbol'] = event['symbol']
 
@@ -1019,19 +1005,26 @@ class AlphavantageClient:
         time.sleep(diff)
 
     def clear_cache(self):
+        """ Clear First in / First Out Cache
+
+        Returns:
+            Nothing
+
+        """
         self.__cache__.clear()
 
         return self
 
     def search_ticker(self, event: Union[str, dict]) -> TickerSearch:
-        """
-        We've got you covered! The Search Endpoint returns the best-matching symbols and market information based
-        on keywords of your choice. The search results also contain match scores that provide you with the full
+        """ The Search Endpoint returns the best-matching symbols and market information based on your keywords.
+
+        The search results also contain match scores that provide you with the full
         flexibility to develop your own search and filtering logic.
         Args:
             event: dict
 
-        Returns: TickerSearch
+        Returns:
+            TickerSearch
 
         """
         defaults = {
