@@ -1037,11 +1037,10 @@ class AlphavantageClient:
         return TickerSearch.model_validate(json_response)
 
     def get_market_status(self) -> MarketStatus:
-        """
-        This endpoint returns the current market status (open vs. closed) of major trading venues for equities,
-        forex, and cryptocurrencies around the world.
-        Returns:
+        """ Returns the current market status of major trading venues for equities, forex, and cryptocurrencies.
 
+        Returns:
+            The MarketStatus of your choice
         """
         json_request = {
             "function": "MARKET_STATUS"
@@ -1051,11 +1050,12 @@ class AlphavantageClient:
         return MarketStatus.model_validate(json_response)
 
     def get_top_gainers_and_losers(self) -> MarketMovers:
-        """
-        This endpoint returns the top 20 gainers, losers, and the most active traded tickers in the US market.
-        Returns:
+       """ Returns the top 20 gainers, losers, and the most active traded tickers in the US market.
+       
+       Returns:
+           The MarketMovers of your choice
 
-        """
+       """
         json_request = {
             "function": "TOP_GAINERS_LOSERS"
         }
@@ -1064,9 +1064,10 @@ class AlphavantageClient:
         return MarketMovers.model_validate(json_response)
 
     def get_earnings_calendar(self, event: Union[str, dict]) -> EarningsCalendar:
-        """
-        This API returns a list of company earnings expected in the next 3, 6, or 12 months.
+        """ Returns a list of company earnings expected in the next 3, 6, or 12 months.
+
         Returns:
+            The EarningsCalendar of your choice
 
         """
         defaults = {
@@ -1087,9 +1088,10 @@ class AlphavantageClient:
         return EarningsCalendar.model_validate(json_response)
 
     def get_ipo_calendar(self) -> IpoCalendar:
-        """
-        This API returns a list of company earnings expected in the next 3, 6, or 12 months.
+        """ Returns a list of company earnings expected in the next 3, 6, or 12 months.
+
         Returns:
+            The IpoCalendar of your choice
 
         """
         json_request = {
