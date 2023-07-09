@@ -1111,17 +1111,17 @@ class AlphavantageClient:
         return IpoCalendar.model_validate(json_response)
 
     def get_news_and_sentiment(self, event: dict) -> NewsAndSentiment:
-        """
-        Looking for market news signals to augment your trading strategy, or a global news
-        feed API for your web/mobile app? You've just found it. This API returns live and historical market news
-        & sentiment data derived from over 50 major financial news outlets around the world, covering stocks,
-        cryptocurrencies, forex, and a wide range of topics such as fiscal policy, mergers & acquisitions, IPOs, etc.
-        This API, combined with our core stock API, fundamental data, and technical indicator APIs, can provide you
-        with a 360-degree view of the financial market and the broader economy.
+        """ Returns live and historical market news & sentiment data
+
+        This API returns live and historical market news & sentiment data derived from over 50 major financial news
+        outlets around the world, covering stocks, cryptocurrencies, forex, and a wide range of topics such as fiscal
+        policy, mergers & acquisitions, IPOs, etc.
+
         Args:
             event: dict
 
         Returns:
+            The NewsAndSentiment of your choice
 
         """
         defaults = {
@@ -1134,10 +1134,13 @@ class AlphavantageClient:
         return NewsAndSentiment.model_validate(json_response)
 
     def get_forex_intraday(self, event: dict) -> CurrencyQuote:
-        """
-        This API returns intraday time series (timestamp, open, high, low, close) of the FX
-        currency pair specified, updated realtime.
+        """ returns intraday time series (timestamp, open, high, low, close) of the FX currency pair specified.
+
+        Args:
+            event: dict containing your params to the api
+
         Returns:
+            The CurrencyQuote of your choice
 
         """
         defaults = {
