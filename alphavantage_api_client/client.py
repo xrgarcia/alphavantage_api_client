@@ -1050,12 +1050,12 @@ class AlphavantageClient:
         return MarketStatus.model_validate(json_response)
 
     def get_top_gainers_and_losers(self) -> MarketMovers:
-       """ Returns the top 20 gainers, losers, and the most active traded tickers in the US market.
-       
-       Returns:
-           The MarketMovers of your choice
+        """ Returns the top 20 gainers, losers, and the most active traded tickers in the US market.
 
-       """
+        Returns:
+            The MarketMovers of your choice
+
+        """
         json_request = {
             "function": "TOP_GAINERS_LOSERS"
         }
