@@ -1540,13 +1540,15 @@ class AlphavantageClient:
         return Quote.model_validate(json_response)
 
     def get_wma(self, event: Union[str, dict]) -> Quote:
-        """
-        This API returns the exponential moving average (EMA) values.
-        See also: http://www.fmlabs.com/reference/default.htm?url=ExpMA.htm
-        Args:
-            event: dict
+        """ returns the exponential moving average (EMA) values.
 
-        Returns: Quote
+        See also: http://www.fmlabs.com/reference/default.htm?url=ExpMA.htm
+
+        Args:
+            event: dict containing your params to the api
+
+        Returns:
+            The Quote of your choice
 
         """
         defaults = {
@@ -1562,14 +1564,16 @@ class AlphavantageClient:
         return Quote.model_validate(json_response)
 
     def get_dema(self, event: Union[str, dict]) -> Quote:
-        """
-        This API returns the double exponential moving average (DEMA) values.
+        """ returns the double exponential moving average (DEMA) values.
+
         See also: http://www.investopedia.com/articles/trading/10/double-exponential-moving-average.asp
                 : http://www.fmlabs.com/reference/default.htm?url=DEMA.htm
-        Args:
-            event: dict
 
-        Returns: Quote
+        Args:
+            event: dict containing your params to the api
+
+        Returns:
+            The Quote of your choice
 
         """
         defaults = {
@@ -1585,13 +1589,15 @@ class AlphavantageClient:
         return Quote.model_validate(json_response)
 
     def get_tema(self, event: Union[str, dict]) -> Quote:
-        """
-        This API returns the triple exponential moving average (TEMA) values.
-        See also: http://www.fmlabs.com/reference/default.htm?url=TEMA.htm
-        Args:
-            event: dict
+        """ returns the triple exponential moving average (TEMA) values.
 
-        Returns: Quote
+        See also: http://www.fmlabs.com/reference/default.htm?url=TEMA.htm
+
+        Args:
+            event: dict containing your params to the api
+
+        Returns:
+            The Quote of your choice
 
         """
         defaults = {
@@ -1607,13 +1613,14 @@ class AlphavantageClient:
         return Quote.model_validate(json_response)
 
     def get_trima(self, event: Union[str, dict]) -> Quote:
-        """
-        This API returns the triple exponential moving average (TEMA) values.
+        """ returns the triple exponential moving average (TEMA) values.
+
         See also: http://www.fmlabs.com/reference/default.htm?url=TEMA.htm
         Args:
-            event: dict
+            event: dict containing your params to the api
 
-        Returns: Quote
+        Returns:
+            The Quote of your choice
 
         """
         defaults = {
@@ -1629,12 +1636,13 @@ class AlphavantageClient:
         return Quote.model_validate(json_response)
 
     def get_kama(self, event: Union[str, dict]) -> Quote:
-        """
-        This API returns the Kaufman adaptive moving average (KAMA) values.
-        Args:
-            event: dict
+        """ returns the Kaufman adaptive moving average (KAMA) values.
 
-        Returns: Quote
+        Args:
+            event: dict containing your params to the api
+
+        Returns:
+            The Quote of your choice
 
         """
         defaults = {
@@ -1650,12 +1658,13 @@ class AlphavantageClient:
         return Quote.model_validate(json_response)
 
     def get_mama(self, event: Union[str, dict]) -> Quote:
-        """
-        This API returns the MESA adaptive moving average (MAMA) values.
-        Args:
-            event: dict
+        """ returns the MESA adaptive moving average (MAMA) values.
 
-        Returns: Quote
+        Args:
+            event: dict containing your params to the api
+
+        Returns:
+            The Quote of your choice
 
         """
         defaults = {
@@ -1671,13 +1680,15 @@ class AlphavantageClient:
         return Quote.model_validate(json_response)
 
     def get_vwap(self, event: Union[str, dict]) -> Quote:
-        """
-        This API returns the volume weighted average price (VWAP) for intraday time series.
-        See also: https://www.investopedia.com/terms/v/vwap.asp
-        Args:
-            event: dict
+        """ returns the volume weighted average price (VWAP) for intraday time series.
 
-        Returns: Quote
+        See also: https://www.investopedia.com/terms/v/vwap.asp
+
+        Args:
+            event: dict containing your params to the api
+
+        Returns:
+            The Quote of your choice
 
         """
         defaults = {
@@ -1691,13 +1702,15 @@ class AlphavantageClient:
         return Quote.model_validate(json_response)
 
     def get_t3(self, event: Union[str, dict]) -> Quote:
-        """
-        This API returns the triple exponential moving average (T3) values.
-        See also: http://www.fmlabs.com/reference/default.htm?url=T3.htm
-        Args:
-            event: dict
+        """ returns the triple exponential moving average (T3) values.
 
-        Returns: Quote
+        See also: http://www.fmlabs.com/reference/default.htm?url=T3.htm
+
+        Args:
+            event: dict containing your params to the api
+
+        Returns:
+            The Quote of your choice
 
         """
         defaults = {
@@ -1713,14 +1726,16 @@ class AlphavantageClient:
         return Quote.model_validate(json_response)
 
     def get_macd(self, event: Union[str, dict]) -> Quote:
-        """
-        This API returns the moving average convergence / divergence (MACD) values.
+        """ returns the moving average convergence / divergence (MACD) values.
+
         See also: http://www.investopedia.com/articles/forex/05/macddiverge.asp
                 : http://www.fmlabs.com/reference/default.htm?url=MACD.htm
-        Args:
-            event: dict
 
-        Returns: Quote
+        Args:
+            event: dict containing your params to the api
+
+        Returns:
+            The Quote of your choice
 
         """
         defaults = {
@@ -1736,14 +1751,16 @@ class AlphavantageClient:
         return Quote.model_validate(json_response)
 
     def get_macdext(self, event: Union[str, dict]) -> Quote:
-        """
-        This API returns the moving average convergence / divergence values with controllable moving average type.
+        """ returns the moving average convergence / divergence values with controllable moving average type.
+
         See also: http://www.investopedia.com/articles/forex/05/macddiverge.asp
                 : http://www.fmlabs.com/reference/default.htm?url=MACD.htm
-        Args:
-            event: dict
 
-        Returns: Quote
+        Args:
+            event: dict containing your params to the api
+
+        Returns:
+            The Quote of your choice
 
         """
         defaults = {
@@ -1759,14 +1776,15 @@ class AlphavantageClient:
         return Quote.model_validate(json_response)
 
     def get_stoch(self, event: Union[str, dict]) -> Quote:
-        """
-        This API returns the stochastic oscillator (STOCH) values.
+        """ returns the stochastic oscillator (STOCH) values.
+
         See also: https://www.investopedia.com/terms/s/stochasticoscillator.asp
                 : http://www.fmlabs.com/reference/default.htm?url=StochasticOscillator.htm
         Args:
-            event: dict
+            event: dict containing your params to the api
 
-        Returns: Quote
+        Returns:
+            The Quote of your choice
 
         """
         defaults = {
