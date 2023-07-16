@@ -1624,7 +1624,7 @@ class AlphavantageClient:
         """returns the MESA adaptive moving average (MAMA) values.
 
         Args:
-            A ticker symbol str OR dict of parameters to be sent to the API
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
             The Quote of your choice
@@ -1648,7 +1648,7 @@ class AlphavantageClient:
         See also: https://www.investopedia.com/terms/v/vwap.asp
 
         Args:
-            A ticker symbol str OR dict of parameters to be sent to the API
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
             The Quote of your choice
@@ -1666,7 +1666,7 @@ class AlphavantageClient:
         See also: http://www.fmlabs.com/reference/default.htm?url=T3.htm
 
         Args:
-            A ticker symbol str OR dict of parameters to be sent to the API
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
             The Quote of your choice
@@ -1691,7 +1691,7 @@ class AlphavantageClient:
                 : http://www.fmlabs.com/reference/default.htm?url=MACD.htm
 
         Args:
-            A ticker symbol str OR dict of parameters to be sent to the API
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
             The Quote of your choice
@@ -1716,7 +1716,7 @@ class AlphavantageClient:
                 : http://www.fmlabs.com/reference/default.htm?url=MACD.htm
 
         Args:
-            A ticker symbol str OR dict of parameters to be sent to the API
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
             The Quote of your choice
@@ -1740,7 +1740,7 @@ class AlphavantageClient:
         See also: https://www.investopedia.com/terms/s/stochasticoscillator.asp
                 : http://www.fmlabs.com/reference/default.htm?url=StochasticOscillator.htm
         Args:
-            A ticker symbol str OR dict of parameters to be sent to the API
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
             The Quote of your choice
@@ -1763,7 +1763,7 @@ class AlphavantageClient:
         See also: http://www.investopedia.com/university/indicator_oscillator/ind_osc8.asp
                 : http://www.fmlabs.com/reference/default.htm?url=StochasticOscillator.htm
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -1780,7 +1780,7 @@ class AlphavantageClient:
         See also: http://www.investopedia.com/articles/technical/071601.asp
                 : http://www.fmlabs.com/reference/default.htm?url=RSI.htm
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -1803,7 +1803,7 @@ class AlphavantageClient:
         See also: http://www.fmlabs.com/reference/default.htm?url=StochRSI.htm
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
         """
@@ -1825,7 +1825,7 @@ class AlphavantageClient:
         See also: http://www.fmlabs.com/reference/default.htm?url=WilliamsR.htm
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -1848,7 +1848,7 @@ class AlphavantageClient:
         See also: http://www.investopedia.com/articles/trading/07/adx-trend-indicator.asp
                 : http://www.fmlabs.com/reference/default.htm?url=ADX.htm
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -1871,7 +1871,7 @@ class AlphavantageClient:
         See also: http://www.fmlabs.com/reference/default.htm?url=ADXR.htm
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -1893,7 +1893,7 @@ class AlphavantageClient:
         See also: http://www.fmlabs.com/reference/default.htm?url=PriceOscillator.htm
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -1917,7 +1917,7 @@ class AlphavantageClient:
                 : http://www.fmlabs.com/reference/default.htm?url=PriceOscillatorPct.htm
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -1940,7 +1940,7 @@ class AlphavantageClient:
                 : http://www.fmlabs.com/reference/default.htm?url=Momentum.htm
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -1961,7 +1961,7 @@ class AlphavantageClient:
         """returns the balance of power (BOP) values.
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -1979,7 +1979,7 @@ class AlphavantageClient:
                 : http://www.fmlabs.com/reference/default.htm?url=CCI.htm
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2001,7 +2001,7 @@ class AlphavantageClient:
         See also: http://www.fmlabs.com/reference/default.htm?url=CMO.htm
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2024,7 +2024,7 @@ class AlphavantageClient:
         See also: http://www.investopedia.com/articles/technical/092401.asp
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2047,7 +2047,7 @@ class AlphavantageClient:
         See also: http://www.investopedia.com/articles/technical/092401.asp
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2071,7 +2071,7 @@ class AlphavantageClient:
                 : http://www.fmlabs.com/reference/default.htm?url=Aroon.htm
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2093,7 +2093,7 @@ class AlphavantageClient:
         See also: http://www.fmlabs.com/reference/default.htm?url=AroonOscillator.htm
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2116,7 +2116,7 @@ class AlphavantageClient:
                 : http://www.fmlabs.com/reference/default.htm?url=MoneyFlowIndex.htm
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2139,7 +2139,7 @@ class AlphavantageClient:
                 : http://www.fmlabs.com/reference/default.htm?url=TRIX.htm
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2162,7 +2162,7 @@ class AlphavantageClient:
         See also: http://www.fmlabs.com/reference/default.htm?url=UltimateOsc.htm
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2180,7 +2180,7 @@ class AlphavantageClient:
                 : http://www.fmlabs.com/reference/default.htm?url=DX.htm
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2203,7 +2203,7 @@ class AlphavantageClient:
                 : http://www.fmlabs.com/reference/default.htm?url=DI.htm
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2226,7 +2226,7 @@ class AlphavantageClient:
                 : http://www.fmlabs.com/reference/default.htm?url=DI.htm
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2248,7 +2248,7 @@ class AlphavantageClient:
         See also: http://www.investopedia.com/articles/technical/02/050602.asp
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2270,7 +2270,7 @@ class AlphavantageClient:
         See also: http://www.investopedia.com/articles/technical/02/050602.asp
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2293,7 +2293,7 @@ class AlphavantageClient:
                 : http://www.fmlabs.com/reference/default.htm?url=Bollinger.htm
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2315,7 +2315,7 @@ class AlphavantageClient:
         
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2337,7 +2337,7 @@ class AlphavantageClient:
         
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2358,7 +2358,7 @@ class AlphavantageClient:
         
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2375,7 +2375,7 @@ class AlphavantageClient:
         See also: http://www.fmlabs.com/reference/default.htm?url=TR.htm
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2393,7 +2393,7 @@ class AlphavantageClient:
                 : http://www.fmlabs.com/reference/default.htm?url=ATR.htm
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2413,7 +2413,7 @@ class AlphavantageClient:
         """returns the normalized average true range (NATR) values.
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2436,7 +2436,7 @@ class AlphavantageClient:
                 : http://www.fmlabs.com/reference/default.htm?url=AccumDist.htm
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2454,7 +2454,7 @@ class AlphavantageClient:
                 : http://www.fmlabs.com/reference/default.htm?url=AccumDist.htm
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2472,7 +2472,7 @@ class AlphavantageClient:
                 : http://www.fmlabs.com/reference/default.htm?url=OBV.htm
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2487,7 +2487,7 @@ class AlphavantageClient:
         """returns the Hilbert transform, instantaneous trendline (HT_TRENDLINE) values.
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2507,7 +2507,7 @@ class AlphavantageClient:
         """returns the Hilbert transform, sine wave (HT_SINE) values.
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2527,7 +2527,7 @@ class AlphavantageClient:
         """returns the Hilbert transform, trend vs cycle mode (HT_TRENDMODE) values.
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2547,7 +2547,7 @@ class AlphavantageClient:
         """returns the Hilbert transform, dominant cycle period (HT_DCPERIOD) values.
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2567,7 +2567,7 @@ class AlphavantageClient:
         """returns the Hilbert transform, dominant cycle period (HT_DCPERIOD) values.
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
@@ -2587,7 +2587,7 @@ class AlphavantageClient:
         """returns the Hilbert transform, phasor components (HT_PHASOR) values.
 
         Args:
-            event: dict
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns: Quote
 
