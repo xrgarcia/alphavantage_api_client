@@ -474,20 +474,6 @@ class AllEndPointTests(BaseTestSuite):
     # todo - add tests for listing & delisting status
 
     @pytest.mark.integration
-    def test_get_forex_exchange_rates(self):
-        event = {
-            "from_currency": "USD",
-            "to_currency": "GBP"
-        }
-        quote = self.get_client().get_forex_exchange_rates(event)
-        # print(quote.json())
-        assert quote.success, f"success was found to be True which is unexpected: {quote.error_message}"
-        assert not quote.limit_reached, f"limit_reached is true {quote.error_message}"
-        assert len(quote.data), "data is not defined within response"
-
-
-
-    @pytest.mark.integration
     def test_get_forex_daily_rates(self):
         event = {
             "from_symbol": "EUR",
@@ -573,12 +559,12 @@ class AllEndPointTests(BaseTestSuite):
         logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
 
     @pytest.mark.integration
-    def test_can_quote_crypto_exchange_rates(self):
+    def test_can_quote_currency_exchange_rates(self):
         event = {
             "from_currency": "BTC",
             "to_currency": "CNY"
         }
-        currency_quote = self.get_client().get_crypto_exchange_rates(event)
+        currency_quote = self.get_client().get_currency_exchange_rates(event)
         assert not currency_quote.limit_reached, f"limit_reached should not be true {currency_quote.error_message}"
         assert currency_quote.success, f"success is false {currency_quote.error_message}"
         assert len(currency_quote.data), "Data{} property is empty but should have information"
