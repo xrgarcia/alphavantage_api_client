@@ -113,7 +113,7 @@ class AlphavantageClient:
     def __create_api_request_from__(self, defaults: dict, event: Union[str, dict]):
         event_dict = event
         if isinstance(event, str):
-            event_dict = {"symbol": event}
+            event_dict = {"symbol": event} #assume the symbol
         if event_dict is not None:
             json_request = event.copy()
         else:
@@ -516,13 +516,13 @@ class AlphavantageClient:
 
         return CompanyOverview.model_validate(json_response)
 
-    def get_crypto_intraday(self, event: Union[str, dict]) -> CurrencyQuote:
+    def get_crypto_intraday(self, event: dict) -> CurrencyQuote:
         """Returns crypto intraday time series price data
 
         Includes: timestamp, open, high, low, close, volume of the cryptocurrency specified, updated realtime.
 
         Args:
-            event: A ticker symbol str OR dict of parameters to be sent to the API
+            event: dict of parameters to be sent to the API
 
         Returns:
             The CurrencyQuote for the requested equity
@@ -539,15 +539,14 @@ class AlphavantageClient:
         # print(json.dumps(json_response))
         return CurrencyQuote.model_validate(json_response)
 
-    def get_crypto_daily(self, event: Union[str, dict]) -> CurrencyQuote:
-        """
-        This API returns the daily historical time series for a digital currency (e.g., BTC)
-        traded on a specific market (e.g., CNY/Chinese Yuan), refreshed daily at midnight (UTC). Prices and
-        volumes are quoted in both the market-specific currency and USD.
+    def get_crypto_daily(self, event: dict) -> CurrencyQuote:
+        """returns the daily historical time series for a digital currency (e.g., BTC)
+
+        refreshed daily at midnight (UTC). Prices and volumes are quoted in both the market-specific 
+        currency and USD traded on a specific market (e.g., CNY/Chinese Yuan)
 
         Args:
-            event (dict): A Dictionary of parameters that will be passed to the api.
-            Minimum required is ``symbol`` = (``str``)
+            event: A dict of parameters that will be passed to the api.
 
         Returns:
             The CurrencyQuote for the requested equity
@@ -558,7 +557,7 @@ class AlphavantageClient:
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
         return CurrencyQuote.model_validate(json_response)
 
-    def get_crypto_weekly(self, event: Union[str, dict]) -> CurrencyQuote:
+    def get_crypto_weekly(self, event: dict) -> CurrencyQuote:
         """Returns the daily historical time series for a digital currency (e.g., BTC)
 
         As traded on a specific market (e.g., CNY/Chinese Yuan), refreshed daily at midnight (UTC). Prices and
@@ -576,7 +575,7 @@ class AlphavantageClient:
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
         return CurrencyQuote.model_validate(json_response)
 
-    def get_crypto_monthly(self, event: Union[str, dict]) -> CurrencyQuote:
+    def get_crypto_monthly(self, event: dict) -> CurrencyQuote:
         """Returns the monthly historical time series for a digital currency (e.g., BTC)
 
         Refreshed daily at midnight (UTC). Prices and volumes are quoted in both the market-specific currency and USD.
@@ -1028,7 +1027,7 @@ class AlphavantageClient:
 
         return self
 
-    def search_ticker(self, event: Union[str, dict]) -> TickerSearch:
+    def search_ticker(self, event: dict) -> TickerSearch:
         """The Search Endpoint returns the best-matching symbols and market information based on your keywords.
 
         The search results also contain match scores that provide you with the full
@@ -1225,7 +1224,7 @@ class AlphavantageClient:
 
         return CurrencyQuote.model_validate(json_response)
 
-    def get_crude_oil_wti_prices(self, event) -> Commodity:
+    def get_crude_oil_wti_prices(self, event: dict) -> Commodity:
         """returns the West Texas Intermediate (WTI) crude oil prices in daily, weekly, and monthly horizons.
 
         Source: U.S. Energy Information Administration, Crude Oil Prices: West Texas Intermediate (WTI) - Cushing,
@@ -1455,13 +1454,13 @@ class AlphavantageClient:
 
         return Commodity.model_validate(json_response)
 
-    def get_sma(self, event: dict) -> Quote:
+    def get_sma(self, event: Union[str, dict]) -> Quote:
         """Returns the simple moving average (SMA) values.
 
         See also:   http://www.investopedia.com/articles/technical/052201.asp
                     http://www.fmlabs.com/reference/default.htm?url=SimpleMA.htm
         Args:
-            event: dict containing your params to the api
+            event:  A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
             The Quote of your choice
@@ -1485,7 +1484,7 @@ class AlphavantageClient:
         See also: http://www.fmlabs.com/reference/default.htm?url=ExpMA.htm
 
         Args:
-            event: dict containing your params to the api
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
             The Quote of your choice
@@ -1509,7 +1508,7 @@ class AlphavantageClient:
         See also: http://www.fmlabs.com/reference/default.htm?url=ExpMA.htm
 
         Args:
-            event: dict containing your params to the api
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
             The Quote of your choice
@@ -1534,7 +1533,7 @@ class AlphavantageClient:
                 : http://www.fmlabs.com/reference/default.htm?url=DEMA.htm
 
         Args:
-            event: dict containing your params to the api
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
             The Quote of your choice
@@ -1558,7 +1557,7 @@ class AlphavantageClient:
         See also: http://www.fmlabs.com/reference/default.htm?url=TEMA.htm
 
         Args:
-            event: dict containing your params to the api
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
             The Quote of your choice
@@ -1581,7 +1580,7 @@ class AlphavantageClient:
 
         See also: http://www.fmlabs.com/reference/default.htm?url=TEMA.htm
         Args:
-            event: dict containing your params to the api
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
             The Quote of your choice
@@ -1603,7 +1602,7 @@ class AlphavantageClient:
         """returns the Kaufman adaptive moving average (KAMA) values.
 
         Args:
-            event: dict containing your params to the api
+            event: A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
             The Quote of your choice
@@ -1625,7 +1624,7 @@ class AlphavantageClient:
         """returns the MESA adaptive moving average (MAMA) values.
 
         Args:
-            event: dict containing your params to the api
+            A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
             The Quote of your choice
@@ -1649,7 +1648,7 @@ class AlphavantageClient:
         See also: https://www.investopedia.com/terms/v/vwap.asp
 
         Args:
-            event: dict containing your params to the api
+            A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
             The Quote of your choice
@@ -1667,7 +1666,7 @@ class AlphavantageClient:
         See also: http://www.fmlabs.com/reference/default.htm?url=T3.htm
 
         Args:
-            event: dict containing your params to the api
+            A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
             The Quote of your choice
@@ -1692,7 +1691,7 @@ class AlphavantageClient:
                 : http://www.fmlabs.com/reference/default.htm?url=MACD.htm
 
         Args:
-            event: dict containing your params to the api
+            A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
             The Quote of your choice
@@ -1717,7 +1716,7 @@ class AlphavantageClient:
                 : http://www.fmlabs.com/reference/default.htm?url=MACD.htm
 
         Args:
-            event: dict containing your params to the api
+            A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
             The Quote of your choice
@@ -1741,7 +1740,7 @@ class AlphavantageClient:
         See also: https://www.investopedia.com/terms/s/stochasticoscillator.asp
                 : http://www.fmlabs.com/reference/default.htm?url=StochasticOscillator.htm
         Args:
-            event: dict containing your params to the api
+            A ticker symbol str OR dict of parameters to be sent to the API
 
         Returns:
             The Quote of your choice
