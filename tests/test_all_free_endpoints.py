@@ -8,7 +8,17 @@ import logging
 class AllEndPointTests(BaseTestSuite):
 
     @pytest.mark.integration
-    def test_can_get_global_quote_json(self):
+    def test_can_get_global_quote_str(self):
+        symbol = "tsla"
+        global_quote = self.get_client().get_global_quote(symbol)
+        assert global_quote.success, f"success was found to be {global_quote.success}: {global_quote.error_message}"
+        assert global_quote.symbol == symbol, "Response symbol doesn't matched requested symbol"
+        assert not global_quote.limit_reached, f"{global_quote.error_message}"
+        assert len(global_quote.data) > 0, "Response should have data but contains zero"
+        logging.warning(f" Can quote stock symbol in JSON {symbol}")
+
+    @pytest.mark.integration
+    def test_can_get_global_quote_dict(self):
         event = {
             "symbol": "tsla"
         }
@@ -21,7 +31,7 @@ class AllEndPointTests(BaseTestSuite):
         logging.warning(f" Can quote stock symbol in JSON {event.get('symbol', None)}")
 
     @pytest.mark.integration
-    def test_can_not_get_global_quote_json(self):
+    def test_can_not_get_global_quote_dict(self):
         event = {
             "symbol": "tsla2"
         }
@@ -32,6 +42,17 @@ class AllEndPointTests(BaseTestSuite):
         assert not global_quote.limit_reached, f"{global_quote.error_message}"
         assert not len(global_quote.data), "Response should have data but contains zero"
         logging.warning(f" Can Not quote stock symbol in JSON {event.get('symbol', None)}")
+    
+    @pytest.mark.integration
+    def test_can_not_get_global_quote_str(self):
+        symbol = "tsla2"
+
+        global_quote = self.get_client().get_global_quote(symbol)
+        assert not global_quote.success, f"success was found to be {global_quote.success}: {global_quote.error_message}"
+        assert global_quote.symbol == symbol, "Response symbol doesn't matched requested symbol"
+        assert not global_quote.limit_reached, f"{global_quote.error_message}"
+        assert not len(global_quote.data), "Response should have data but contains zero"
+        logging.warning(f" Can Not quote stock symbol in JSON {symbol}")
 
     @pytest.mark.integration
     def test_can_get_global_quote_csv(self):
@@ -47,7 +68,7 @@ class AllEndPointTests(BaseTestSuite):
         logging.warning(f" Can quote stock symbol in CSV {event.get('symbol', None)}")
 
     @pytest.mark.integration
-    def test_can_not_global_quote_wrong_symbol_json(self):
+    def test_can_not_global_quote_wrong_symbol_dict(self):
         event = {
             "symbol": "tsla2323"
         }
@@ -57,6 +78,16 @@ class AllEndPointTests(BaseTestSuite):
         assert not global_quote.limit_reached, f"{global_quote.error_message}"
         assert not len(global_quote.data), "Response should have data but contains zero"
         logging.warning(f" Can NOT quote stock symbol in JSON {event.get('symbol', None)}")
+
+    @pytest.mark.integration
+    def test_can_not_global_quote_wrong_symbol_str(self):
+        symbol = "tsla2323"
+        global_quote = self.get_client().get_global_quote(symbol)
+        assert not global_quote.success, f"success was found to be {global_quote.success}: {global_quote.error_message}"
+        assert global_quote.symbol == symbol, "Response symbol doesn't matched requested symbol"
+        assert not global_quote.limit_reached, f"{global_quote.error_message}"
+        assert not len(global_quote.data), "Response should have data but contains zero"
+        logging.warning(f" Can NOT quote stock symbol in JSON {symbol}")
 
     @pytest.mark.integration
     def test_can_not_global_quote_wrong_symbol_csv(self):
@@ -74,19 +105,30 @@ class AllEndPointTests(BaseTestSuite):
 
 
     @pytest.mark.integration
-    def test_can_quote_intraday(self):
+    def test_can_quote_intraday_dict(self):
         event = {
-            "symbol": "TSLA",
+             "symbol": "TSLA",
+            "datatype": "json",
+            "function": "TIME_SERIES_INTRADAY",
             "interval": "5min"
         }
         quote = self.get_client().get_intraday_quote(event)
         assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
         assert quote.success, f"success is false {quote.error_message}"
         assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
-        logging.warning(f" Successfully quoted cryptocurrency symbol {event['symbol']} in JSON")
+        logging.warning(f" Successfully quoted intraday[dict] symbol {event['symbol']} in JSON")
 
     @pytest.mark.integration
-    def test_can_quote_daily_adjusted(self):
+    def test_can_quote_intraday_str(self):
+        symbol = "TSLA"
+        quote = self.get_client().get_intraday_quote(symbol)
+        assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
+        assert quote.success, f"success is false {quote.error_message}"
+        assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
+        logging.warning(f" Successfully quoted intraday[str] symbol {symbol} in JSON")
+
+    @pytest.mark.integration
+    def test_can_quote_daily_adjusted_dict(self):
         event = {
             "symbol": "VZ"
         }
@@ -96,6 +138,16 @@ class AllEndPointTests(BaseTestSuite):
         assert quote.success, f"success is false {quote.error_message}"
         assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
         logging.warning(f" Successfully quoted symbol {event['symbol']} in JSON")
+
+    @pytest.mark.integration #here
+    def test_can_quote_daily_adjusted_str(self):
+        symbol = "VZ"
+        quote = self.get_client().get_daily_adjusted_quote(symbol)
+        # print(quote.json())
+        assert not quote.limit_reached, f"limit_reached should not be true {quote.error_message}"
+        assert quote.success, f"success is false {quote.error_message}"
+        assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
+        logging.warning(f" Successfully quoted symbol {symbol} in JSON")
 
     @pytest.mark.integration
     def test_can_quote_weekly(self):

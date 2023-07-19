@@ -111,10 +111,10 @@ class AlphavantageClient:
                 dest_obj[default_key] = default_values[default_key]
 
     def __create_api_request_from__(self, defaults: dict, event: Union[str, dict]):
-        event_dict = event
+        json_request = event
         if isinstance(event, str):
-            event_dict = {"symbol": event} #assume the symbol
-        if event_dict is not None:
+            json_request = {"symbol": event} #assume the symbol
+        elif json_request is not None:
             json_request = event.copy()
         else:
             json_request = {}
@@ -385,13 +385,9 @@ class AlphavantageClient:
             "datatype": "json",
             "function": "TIME_SERIES_INTRADAY",
             "interval": "60min",
-            "slice": "year1month1",
-            "outputsize": "compact",
+            "outputsize": "compact"
         }
-        event_dict = event
-        if isinstance(event, str):
-            event_dict = {"symbol": event}
-        json_request = self.__create_api_request_from__(defaults, event_dict)
+        json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
 
         return Quote.model_validate(json_response)
