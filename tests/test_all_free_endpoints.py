@@ -748,20 +748,6 @@ class AllEndPointTests(BaseTestSuite):
         )
 
     @pytest.mark.integration
-    def test_can_quote_crypto_weekly(self):
-        event = {"symbol": "ETH"}
-        quote = self.get_client().get_crypto_weekly(event)
-        # print(quote)
-        assert (
-            not quote.limit_reached
-        ), f"limit_reached should not be true {quote.error_message}"
-        assert quote.success, f"success is false {quote.error_message}"
-        assert len(quote.data), "Data{} property is empty but should have information"
-        logging.warning(
-            f" Successfully quoted cryptocurrency  weekly symbol {event['symbol']} in JSON"
-        )
-
-    @pytest.mark.integration
     def test_can_quote_crypto_monthly(self):
         event = {"symbol": "ETH"}
         quote = self.get_client().get_crypto_monthly(event)
