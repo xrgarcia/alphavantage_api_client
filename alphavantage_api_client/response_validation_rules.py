@@ -1,4 +1,3 @@
-import re
 class BaseValidationRuleChecks:
 
     def __init__(self):
