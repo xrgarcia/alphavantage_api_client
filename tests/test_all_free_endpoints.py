@@ -1084,7 +1084,7 @@ class AllEndPointTests(BaseTestSuite):
             assert "local_open" in market, "local_open not found within result"
 
     @pytest.mark.technical_indicator
-    def test_get_sma(self):
+    def test_get_sma_dict(self):
         event = {"symbol": "TSLA"}
         sma = self.get_client().get_sma(event)
         assert len(sma.meta_data), f"meta_data is empty"
@@ -1100,7 +1100,23 @@ class AllEndPointTests(BaseTestSuite):
         ), f"You are testing the wrong end point"
 
     @pytest.mark.technical_indicator
-    def test_get_ema(self):
+    def test_get_sma_str(self):
+        symbol = "TSLA"
+        sma = self.get_client().get_sma(symbol)
+        assert len(sma.meta_data), f"meta_data is empty"
+        assert len(
+            sma.meta_data["2: Indicator"]
+        ), f"2: Indicator is missing from technical indicator"
+        name = sma.meta_data["2: Indicator"]
+        assert sma.success, f"success was found to be False: {sma.error_message}"
+        assert not sma.limit_reached, f"limit_reached is true {sma.error_message}"
+        assert len(sma.data), f"data is empty, we should have data for {name}"
+        assert (
+            name == "Simple Moving Average (SMA)"
+        ), f"You are testing the wrong end point"
+
+    @pytest.mark.technical_indicator
+    def test_get_ema_dict(self):
         event = {"symbol": "TSLA"}
         sma = self.get_client().get_ema(event)
         assert len(sma.meta_data), f"meta_data is empty"
@@ -1116,7 +1132,23 @@ class AllEndPointTests(BaseTestSuite):
         ), f"You are testing the wrong end point"
 
     @pytest.mark.technical_indicator
-    def test_get_wma(self):
+    def test_get_ema_str(self):
+        symbol = "TSLA"
+        sma = self.get_client().get_ema(symbol)
+        assert len(sma.meta_data), f"meta_data is empty"
+        assert len(
+            sma.meta_data["2: Indicator"]
+        ), f"2: Indicator is missing from technical indicator"
+        name = sma.meta_data["2: Indicator"]
+        assert sma.success, f"success was found to be False: {sma.error_message}"
+        assert not sma.limit_reached, f"limit_reached is true {sma.error_message}"
+        assert len(sma.data), f"data is empty, we should have data for {name}"
+        assert (
+            name == "Exponential Moving Average (EMA)"
+        ), f"You are testing the wrong end point"
+
+    @pytest.mark.technical_indicator
+    def test_get_wma_dict(self):
         event = {"symbol": "TSLA"}
         sma = self.get_client().get_wma(event)
         assert len(sma.meta_data), f"meta_data is empty"
@@ -1132,7 +1164,23 @@ class AllEndPointTests(BaseTestSuite):
         ), f"You are testing the wrong end point"
 
     @pytest.mark.technical_indicator
-    def test_get_dema(self):
+    def test_get_wma_str(self):
+        symbol = "TSLA"
+        sma = self.get_client().get_wma(symbol)
+        assert len(sma.meta_data), f"meta_data is empty"
+        assert len(
+            sma.meta_data["2: Indicator"]
+        ), f"2: Indicator is missing from technical indicator"
+        name = sma.meta_data["2: Indicator"]
+        assert sma.success, f"success was found to be False: {sma.error_message}"
+        assert not sma.limit_reached, f"limit_reached is true {sma.error_message}"
+        assert len(sma.data), f"data is empty, we should have data for {name}"
+        assert (
+            name == "Weighted Moving Average (WMA)"
+        ), f"You are testing the wrong end point"
+
+    @pytest.mark.technical_indicator
+    def test_get_dema_dict(self):
         event = {"symbol": "TSLA"}
         sma = self.get_client().get_dema(event)
         assert len(sma.meta_data), f"meta_data is empty"
@@ -1148,7 +1196,23 @@ class AllEndPointTests(BaseTestSuite):
         ), f"You are testing the wrong end point"
 
     @pytest.mark.technical_indicator
-    def test_get_tema(self):
+    def test_get_dema_str(self):
+        symbol = "TSLA"
+        sma = self.get_client().get_dema(symbol)
+        assert len(sma.meta_data), f"meta_data is empty"
+        assert len(
+            sma.meta_data["2: Indicator"]
+        ), f"2: Indicator is missing from technical indicator"
+        name = sma.meta_data["2: Indicator"]
+        assert sma.success, f"success was found to be False: {sma.error_message}"
+        assert not sma.limit_reached, f"limit_reached is true {sma.error_message}"
+        assert len(sma.data), f"data is empty, we should have data for {name}"
+        assert (
+            name == "Double Exponential Moving Average (DEMA)"
+        ), f"You are testing the wrong end point"
+
+    @pytest.mark.technical_indicator
+    def test_get_tema_dict(self):
         event = {"symbol": "TSLA"}
         sma = self.get_client().get_tema(event)
         assert len(sma.meta_data), f"meta_data is empty"
@@ -1164,7 +1228,23 @@ class AllEndPointTests(BaseTestSuite):
         ), f"You are testing the wrong end point"
 
     @pytest.mark.technical_indicator
-    def test_get_trima(self):
+    def test_get_tema_str(self):
+        event = {"symbol": "TSLA"}
+        sma = self.get_client().get_tema(event)
+        assert len(sma.meta_data), f"meta_data is empty"
+        assert len(
+            sma.meta_data["2: Indicator"]
+        ), f"2: Indicator is missing from technical indicator"
+        name = sma.meta_data["2: Indicator"]
+        assert sma.success, f"success was found to be False: {sma.error_message}"
+        assert not sma.limit_reached, f"limit_reached is true {sma.error_message}"
+        assert len(sma.data), f"data is empty, we should have data for {name}"
+        assert (
+            name == "Triple Exponential Moving Average (TEMA)"
+        ), f"You are testing the wrong end point"
+
+    @pytest.mark.technical_indicator
+    def test_get_trima_dict(self):
         event = {"symbol": "TSLA"}
         sma = self.get_client().get_trima(event)
         assert len(sma.meta_data), f"meta_data is empty"
@@ -1180,7 +1260,23 @@ class AllEndPointTests(BaseTestSuite):
         ), f"You are testing the wrong end point"
 
     @pytest.mark.technical_indicator
-    def test_get_kama(self):
+    def test_get_trima_str(self):
+        symbol = "TSLA"
+        sma = self.get_client().get_trima(symbol)
+        assert len(sma.meta_data), f"meta_data is empty"
+        assert len(
+            sma.meta_data["2: Indicator"]
+        ), f"2: Indicator is missing from technical indicator"
+        name = sma.meta_data["2: Indicator"]
+        assert sma.success, f"success was found to be False: {sma.error_message}"
+        assert not sma.limit_reached, f"limit_reached is true {sma.error_message}"
+        assert len(sma.data), f"data is empty, we should have data for {name}"
+        assert (
+            name == "Triangular Exponential Moving Average (TRIMA)"
+        ), f"You are testing the wrong end point"
+
+    @pytest.mark.technical_indicator
+    def test_get_kama_dict(self):
         event = {"symbol": "TSLA"}
         sma = self.get_client().get_kama(event)
         assert len(sma.meta_data), f"meta_data is empty"
@@ -1196,7 +1292,23 @@ class AllEndPointTests(BaseTestSuite):
         ), f"You are testing the wrong end point"
 
     @pytest.mark.technical_indicator
-    def test_get_mama(self):
+    def test_get_kama_str(self):
+        symbol = "TSLA"
+        sma = self.get_client().get_kama(symbol)
+        assert len(sma.meta_data), f"meta_data is empty"
+        assert len(
+            sma.meta_data["2: Indicator"]
+        ), f"2: Indicator is missing from technical indicator"
+        name = sma.meta_data["2: Indicator"]
+        assert sma.success, f"success was found to be False: {sma.error_message}"
+        assert not sma.limit_reached, f"limit_reached is true {sma.error_message}"
+        assert len(sma.data), f"data is empty, we should have data for {name}"
+        assert (
+            name == "Kaufman Adaptive Moving Average (KAMA)"
+        ), f"You are testing the wrong end point"
+
+    @pytest.mark.technical_indicator
+    def test_get_mama_dict(self):
         event = {"symbol": "TSLA"}
         sma = self.get_client().get_mama(event)
         assert len(sma.meta_data), f"meta_data is empty"
@@ -1212,7 +1324,23 @@ class AllEndPointTests(BaseTestSuite):
         ), f"You are testing the wrong end point"
 
     @pytest.mark.technical_indicator
-    def test_get_vwap(self):
+    def test_get_mama_str(self):
+        event = {"symbol": "TSLA"}
+        sma = self.get_client().get_mama(event)
+        assert len(sma.meta_data), f"meta_data is empty"
+        assert len(
+            sma.meta_data["2: Indicator"]
+        ), f"2: Indicator is missing from technical indicator"
+        name = sma.meta_data["2: Indicator"]
+        assert sma.success, f"success was found to be False: {sma.error_message}"
+        assert not sma.limit_reached, f"limit_reached is true {sma.error_message}"
+        assert len(sma.data), f"data is empty, we should have data for {name}"
+        assert (
+            name == "MESA Adaptive Moving Average (MAMA)"
+        ), f"You are testing the wrong end point"
+
+    @pytest.mark.technical_indicator
+    def test_get_vwap_dict(self):
         event = {"symbol": "TSLA"}
         sma = self.get_client().get_vwap(event)
         assert len(sma.meta_data), f"meta_data is empty"
@@ -1228,7 +1356,23 @@ class AllEndPointTests(BaseTestSuite):
         ), f"You are testing the wrong end point"
 
     @pytest.mark.technical_indicator
-    def test_get_t3(self):
+    def test_get_vwap_str(self):
+        symbol = "TSLA"
+        sma = self.get_client().get_vwap(symbol)
+        assert len(sma.meta_data), f"meta_data is empty"
+        assert len(
+            sma.meta_data["2: Indicator"]
+        ), f"2: Indicator is missing from technical indicator"
+        name = sma.meta_data["2: Indicator"]
+        assert sma.success, f"success was found to be False: {sma.error_message}"
+        assert not sma.limit_reached, f"limit_reached is true {sma.error_message}"
+        assert len(sma.data), f"data is empty, we should have data for {name}"
+        assert (
+            name == "Volume Weighted Average Price (VWAP)"
+        ), f"You are testing the wrong end point"
+
+    @pytest.mark.technical_indicator
+    def test_get_t3_dict(self):
         event = {"symbol": "TSLA"}
         sma = self.get_client().get_t3(event)
         assert len(sma.meta_data), f"meta_data is empty"
@@ -1244,9 +1388,9 @@ class AllEndPointTests(BaseTestSuite):
         ), f"You are testing the wrong end point"
 
     @pytest.mark.technical_indicator
-    def test_get_t3(self):
-        event = {"symbol": "TSLA"}
-        sma = self.get_client().get_t3(event)
+    def test_get_t3_str(self):
+        symbol = "TSLA"
+        sma = self.get_client().get_t3(symbol)
         assert len(sma.meta_data), f"meta_data is empty"
         assert len(
             sma.meta_data["2: Indicator"]
@@ -1260,7 +1404,7 @@ class AllEndPointTests(BaseTestSuite):
         ), f"You are testing the wrong end point"
 
     @pytest.mark.technical_indicator
-    def test_get_macd(self):
+    def test_get_macd_dict(self):
         event = {"symbol": "TSLA"}
         sma = self.get_client().get_macd(event)
         assert len(sma.meta_data), f"meta_data is empty"
@@ -1276,7 +1420,23 @@ class AllEndPointTests(BaseTestSuite):
         ), f"You are testing the wrong end point"
 
     @pytest.mark.technical_indicator
-    def test_get_macdext(self):
+    def test_get_macd_str(self):
+        symbol = "TSLA"
+        sma = self.get_client().get_macd(symbol)
+        assert len(sma.meta_data), f"meta_data is empty"
+        assert len(
+            sma.meta_data["2: Indicator"]
+        ), f"2: Indicator is missing from technical indicator"
+        name = sma.meta_data["2: Indicator"]
+        assert sma.success, f"success was found to be False: {sma.error_message}"
+        assert not sma.limit_reached, f"limit_reached is true {sma.error_message}"
+        assert len(sma.data), f"data is empty, we should have data for {name}"
+        assert (
+            name == "Moving Average Convergence/Divergence (MACD)"
+        ), f"You are testing the wrong end point"
+
+    @pytest.mark.technical_indicator
+    def test_get_macdext_dict(self):
         event = {"symbol": "TSLA"}
         sma = self.get_client().get_macdext(event)
         assert len(sma.meta_data), f"meta_data is empty"
@@ -1292,7 +1452,23 @@ class AllEndPointTests(BaseTestSuite):
         ), f"You are testing the wrong end point"
 
     @pytest.mark.technical_indicator
-    def test_get_stoch(self):
+    def test_get_macdext_str(self):
+        symbol = "TSLA"
+        sma = self.get_client().get_macdext(symbol)
+        assert len(sma.meta_data), f"meta_data is empty"
+        assert len(
+            sma.meta_data["2: Indicator"]
+        ), f"2: Indicator is missing from technical indicator"
+        name = sma.meta_data["2: Indicator"]
+        assert sma.success, f"success was found to be False: {sma.error_message}"
+        assert not sma.limit_reached, f"limit_reached is true {sma.error_message}"
+        assert len(sma.data), f"data is empty, we should have data for {name}"
+        assert (
+            name == "MACD with Controllable MA Type (MACDEXT)"
+        ), f"You are testing the wrong end point"
+
+    @pytest.mark.technical_indicator
+    def test_get_stoch_dict(self):
         event = {"symbol": "TSLA"}
         sma = self.get_client().get_stoch(event)
         assert len(sma.meta_data), f"meta_data is empty"
@@ -1306,7 +1482,21 @@ class AllEndPointTests(BaseTestSuite):
         assert name == "Stochastic (STOCH)", f"You are testing the wrong end point"
 
     @pytest.mark.technical_indicator
-    def test_get_stochf(self):
+    def test_get_stoch_str(self):
+        symbol = "TSLA"
+        sma = self.get_client().get_stoch(symbol)
+        assert len(sma.meta_data), f"meta_data is empty"
+        assert len(
+            sma.meta_data["2: Indicator"]
+        ), f"2: Indicator is missing from technical indicator"
+        name = sma.meta_data["2: Indicator"]
+        assert sma.success, f"success was found to be False: {sma.error_message}"
+        assert not sma.limit_reached, f"limit_reached is true {sma.error_message}"
+        assert len(sma.data), f"data is empty, we should have data for {name}"
+        assert name == "Stochastic (STOCH)", f"You are testing the wrong end point"
+
+    @pytest.mark.technical_indicator
+    def test_get_stochf_dict(self):
         event = {"symbol": "TSLA"}
         sma = self.get_client().get_stockhf(event)
         assert len(sma.meta_data), f"meta_data is empty"
@@ -1322,7 +1512,23 @@ class AllEndPointTests(BaseTestSuite):
         ), f"You are testing the wrong end point"
 
     @pytest.mark.technical_indicator
-    def test_get_rsi(self):
+    def test_get_stochf_str(self):
+        symbol = "TSLA"
+        sma = self.get_client().get_stockhf(symbol)
+        assert len(sma.meta_data), f"meta_data is empty"
+        assert len(
+            sma.meta_data["2: Indicator"]
+        ), f"2: Indicator is missing from technical indicator"
+        name = sma.meta_data["2: Indicator"]
+        assert sma.success, f"success was found to be False: {sma.error_message}"
+        assert not sma.limit_reached, f"limit_reached is true {sma.error_message}"
+        assert len(sma.data), f"data is empty, we should have data for {name}"
+        assert (
+            name == "Stochastic Fast (STOCHF)"
+        ), f"You are testing the wrong end point"
+
+    @pytest.mark.technical_indicator
+    def test_get_rsi_dict(self):
         event = {"symbol": "TSLA"}
         sma = self.get_client().get_rsi(event)
         assert len(sma.meta_data), f"meta_data is empty"
@@ -1338,7 +1544,39 @@ class AllEndPointTests(BaseTestSuite):
         ), f"You are testing the wrong end point"
 
     @pytest.mark.technical_indicator
-    def test_get_stochrsi(self):
+    def test_get_rsi_str(self):
+        symbol = "TSLA"
+        sma = self.get_client().get_rsi(symbol)
+        assert len(sma.meta_data), f"meta_data is empty"
+        assert len(
+            sma.meta_data["2: Indicator"]
+        ), f"2: Indicator is missing from technical indicator"
+        name = sma.meta_data["2: Indicator"]
+        assert sma.success, f"success was found to be False: {sma.error_message}"
+        assert not sma.limit_reached, f"limit_reached is true {sma.error_message}"
+        assert len(sma.data), f"data is empty, we should have data for {name}"
+        assert (
+            name == "Relative Strength Index (RSI)"
+        ), f"You are testing the wrong end point"
+
+    @pytest.mark.technical_indicator
+    def test_get_stochrsi_dict(self):
+        event = {"symbol": "TSLA"}
+        sma = self.get_client().get_stochrsi(event)
+        assert len(sma.meta_data), f"meta_data is empty"
+        assert len(
+            sma.meta_data["2: Indicator"]
+        ), f"2: Indicator is missing from technical indicator"
+        name = sma.meta_data["2: Indicator"]
+        assert sma.success, f"success was found to be False: {sma.error_message}"
+        assert not sma.limit_reached, f"limit_reached is true {sma.error_message}"
+        assert len(sma.data), f"data is empty, we should have data for {name}"
+        assert (
+            name == "Stochastic Relative Strength Index (STOCHRSI)"
+        ), f"You are testing the wrong end point"
+
+    @pytest.mark.technical_indicator
+    def test_get_stochrsi_str(self):
         event = {"symbol": "TSLA"}
         sma = self.get_client().get_stochrsi(event)
         assert len(sma.meta_data), f"meta_data is empty"
