@@ -23,7 +23,7 @@ README = (HERE / "README.md").read_text()
 setup(
     name="alphavantage_api_client",
     version=client_version,
-    description="Interact with Alphavantage REST API",
+    description="Interact with Alpha Vantage REST API",
     long_description=README,
     long_description_content_type="text/markdown",
     url="https://github.com/xrgarcia/alphavantage-api-client",
