@@ -1,3 +1,4 @@
+import re
 class BaseValidationRuleChecks:
 
     def __init__(self):
@@ -103,6 +104,8 @@ class BaseValidationRuleChecks:
         rule_name = "has_not_reached_limit"
         response = self.__http_get_response__.text
         if " calls per minute " in response:
+            self.__rules__[rule_name] = True
+        elif " limit for your free API key" in response:
             self.__rules__[rule_name] = True
         else:
             self.__rules__[rule_name] = False

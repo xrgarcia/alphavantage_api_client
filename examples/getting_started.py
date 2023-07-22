@@ -163,4 +163,4 @@ def sample_direct_access():
 
 
 if __name__ == "__main__":
-    sample_direct_access()
+    sample_retry_when_limit_reached()
