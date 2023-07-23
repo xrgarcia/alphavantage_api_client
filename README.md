@@ -17,6 +17,8 @@ Create a simple python wrapper around [alpha vantage api](https://www.alphavanta
 * [Debugging / Logging](https://github.com/xrgarcia/alphavantage_api_client#debugging--logging)
 * [Retry / Cache](https://github.com/xrgarcia/alphavantage_api_client#retry-and-cache) (optimize your free account!)
 * [Our Wiki](https://github.com/xrgarcia/alphavantage_api_client/wiki)
+  - [Calculate free cash flow and free cash flow per share](https://github.com/xrgarcia/alphavantage_api_client/wiki/Calculating-Free-Cash-Flow)
+  - [Get Financial Statements and Company Details](https://github.com/xrgarcia/alphavantage_api_client/wiki/Company-Details)
 
 ## How to Install
 
