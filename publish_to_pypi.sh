@@ -1,1 +1,1 @@
-twine upload dist/* --verbose
+twine upload -u __token__ dist/* --verbose
