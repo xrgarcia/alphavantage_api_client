@@ -203,5 +203,19 @@ def calc_free_cash_flow_per_share():
     fcf_per_share = round(last_year_fcf / shares_outstanding, 2)
     print(f"Free Cash Flow per share for {symbol} was ${fcf_per_share} having shares outstanding of {shares_outstanding}b")
 
+def get_earnings_calendar():
+    client = AlphavantageClient()
+    #symbols = ["IBM", "AAPL", "AMZN", "MSFT", "TSLA", "SYM"]
+    symbols = ["MSFT"]
+    for symbol in symbols:
+        event = {
+            "symbol": symbol,
+            "horizon": "6month" #6 months so we are sure to get data
+        }
+        earnings_calendar = client.get_earnings_calendar(event)
+        print(earnings_calendar)
+            
+
+
 if __name__ == "__main__":
-    calc_free_cash_flow_per_share()
+    get_earnings_calendar()

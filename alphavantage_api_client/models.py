@@ -1,6 +1,6 @@
 import pydantic
-from pydantic import BaseModel, Field, ValidationError, model_validator
-from typing import Optional
+from pydantic import BaseModel, Field, ValidationError, model_validator, model_serializer
+from typing import Optional, Any
 import copy
 
 
@@ -50,6 +50,13 @@ class EarningsCalendarItem(BaseModel):
     fiscal_date_ending: str = Field(str,alias='fiscalDateEnding')
     estimate: Optional[float] = None
     currency: Optional[str] = None
+
+    @model_validator(mode="before")
+    def normalize_fields(cls, values):
+        if values['estimate'] == '':
+            values['estimate'] = None
+        return values
+    
 
 class IpoCalendarItem(BaseModel):
     symbol: str
