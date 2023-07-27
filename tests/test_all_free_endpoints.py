@@ -648,8 +648,10 @@ class AllEndPointTests(BaseTestSuite):
             not ipo_calendar.limit_reached
         ), f"limit_reached is true {ipo_calendar.error_message}"
         assert len(ipo_calendar.csv), "csv is not defined within response"
-        assert len(ipo_calendar.data), "data is not defined within response"
+        #we won't always have data
+        #assert len(ipo_calendar.data), "data is not defined within response"
 
+        # When we have data confirm the shape
         for item in ipo_calendar.data:
             assert len(item.symbol), "csv is not defined within response"
             assert len(item.ipo_date), "ipo_date is not defined within response"
