@@ -45,7 +45,6 @@ class BaseValidationRuleChecks:
         return len(self.__http_get_response__.text) > 0 \
                and "Error Message" not in self.__http_get_response__.text \
                and self.__http_get_response__.text != "{}"\
-               and "Note" not in self.__http_get_response__.text
 
 
     def expect_successful_response(self):
