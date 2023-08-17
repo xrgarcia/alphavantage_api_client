@@ -53,10 +53,12 @@ class EarningsCalendarItem(BaseModel):
 
     @model_validator(mode="before")
     def normalize_fields(cls, values):
-        if values['estimate'] == '':
+        estimate = values['estimate']
+        if estimate is None or len(estimate) == 0:
             values['estimate'] = None
+        if values['symbol'] is None or len(values['symbol']) == 0:
+            values['symbol'] = 'BADD'
         return values
-    
 
 class IpoCalendarItem(BaseModel):
     symbol: str
@@ -71,7 +73,7 @@ class IpoCalendar(BaseResponse):
     data: Optional[list[IpoCalendarItem]] = Field([])
 
 class EarningsCalendar(BaseResponse):
-    symbol: str
+    symbol: Optional[str] = None
     data: Optional[list[EarningsCalendarItem]] = Field([])
 
 class CurrencyQuote(BaseResponse):

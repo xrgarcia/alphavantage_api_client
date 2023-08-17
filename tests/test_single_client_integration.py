@@ -8,7 +8,8 @@ from .test_all_free_endpoints import AllEndPointTests
 class TestSingleClientIntegrationSuite(AllEndPointTests):
 
     def setup_class(cls):
-        cls.__client__ = AlphavantageClient()
+        #cls.__client__ = AlphavantageClient().use_simple_cache(True, 10000)
+        pass
 
     def teardown_class(cls):
         #cache = json.dumps(cls.__client__.__cache__)

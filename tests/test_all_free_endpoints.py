@@ -240,7 +240,6 @@ class AllEndPointTests(BaseTestSuite):
         assert len(quote.data), f"Did not return data for this symbol {quote.symbol}"
         logging.warning(f" Successfully quoted symbol {event['symbol']} in JSON")
 
-
     @pytest.mark.integration
     def test_can_quote_monthly_str(self):
         symbol = "VZ"
@@ -394,7 +393,9 @@ class AllEndPointTests(BaseTestSuite):
         assert (
             company_overview.success
         ), f"Unable to get comapny overview {company_overview.error_message}"
-        assert company_overview.symbol == symbol, f"Symbols are not equal {company_overview.symbol} : {symbol}"
+        assert (
+            company_overview.symbol == symbol
+        ), f"Symbols are not equal {company_overview.symbol} : {symbol}"
         assert not company_overview.limit_reached, "unexpected limit_reached"
         logging.warning(f" Can query company overview {symbol}")
 
@@ -460,8 +461,7 @@ class AllEndPointTests(BaseTestSuite):
         ), f"success was found to be false: {accounting_report.error_message}"
         assert not accounting_report.limit_reached, f"{accounting_report.error_message}"
         assert accounting_report.symbol == symbol, (
-            f"Symbols don't match "
-            f"{accounting_report.symbol} : {symbol}"
+            f"Symbols don't match " f"{accounting_report.symbol} : {symbol}"
         )
         logging.warning(f" Can query  income statement {symbol}")
 
@@ -553,7 +553,9 @@ class AllEndPointTests(BaseTestSuite):
         assert (
             not cash_flow.limit_reached
         ), f"limit_reached is true {cash_flow.error_message}"
-        assert cash_flow.symbol == symbol, f"Symbols do not match {cash_flow.symbol} : {symbol}"
+        assert (
+            cash_flow.symbol == symbol
+        ), f"Symbols do not match {cash_flow.symbol} : {symbol}"
         assert len(cash_flow.annualReports), "annualReports is empty"
         assert len(cash_flow.quarterlyReports), "quarterlyReports are empty"
         logging.warning(f" Can query  cash flow {symbol}")
@@ -575,7 +577,6 @@ class AllEndPointTests(BaseTestSuite):
         assert not len(cash_flow.annualReports), "annualReports are not empty"
         assert not len(cash_flow.quarterlyReports), "quarterlyReports are not empty"
         logging.warning(f" Can not query  cash flow {cash_flow.error_message}")
-        
 
     @pytest.mark.integration
     def test_can_not_query_cash_flow_csv(self):
@@ -613,7 +614,9 @@ class AllEndPointTests(BaseTestSuite):
         assert not earnings.limit_reached, f"{earnings.error_message}"
         assert len(earnings.quarterlyReports), "quarterlyReports is empty"
         assert len(earnings.annualReports), "annualReports is empty"
-        assert earnings.symbol == symbol, f"Symbols not equal {earnings.symbol} : {symbol}"
+        assert (
+            earnings.symbol == symbol
+        ), f"Symbols not equal {earnings.symbol} : {symbol}"
         logging.warning(f" Can query  earnings {symbol}")
 
     @pytest.mark.integration
@@ -664,8 +667,8 @@ class AllEndPointTests(BaseTestSuite):
         for symbol in symbols:
             event = {
                 "symbol": symbol,
-                "horizon": "6month" #6 months so we are sure to get data
-                }
+                "horizon": "6month",  # 6 months so we are sure to get data
+            }
             earnings_calendar = self.get_client().get_earnings_calendar(event)
             assert (
                 earnings_calendar.success
@@ -679,6 +682,23 @@ class AllEndPointTests(BaseTestSuite):
             for item in earnings_calendar.data:
                 # print(item.json())
                 pass
+
+    @pytest.mark.integration
+    def test_get_earnings_calendar_all(self):
+        event = {"horizon": "6month", "datatype":"csv"}  # 6 months so we are sure to get data
+        earnings_calendar = self.get_client().get_earnings_calendar(event)
+        assert (
+            earnings_calendar.success
+        ), f"success was found to be True which is unexpected: {earnings_calendar.error_message}"
+        assert (
+            not earnings_calendar.limit_reached
+        ), f"limit_reached is true {earnings_calendar.error_message}"
+        assert len(earnings_calendar.csv), "csv is not defined within response"
+        assert len(earnings_calendar.data), "data is not defined within response"
+
+        for item in earnings_calendar.data:
+            # print(item.json())
+            pass
 
     # todo - add tests for listing & delisting status
 
