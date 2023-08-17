@@ -685,8 +685,7 @@ class AllEndPointTests(BaseTestSuite):
 
     @pytest.mark.integration
     def test_get_earnings_calendar_all(self):
-        event = {"horizon": "6month", "datatype":"csv"}  # 6 months so we are sure to get data
-        earnings_calendar = self.get_client().get_earnings_calendar(event)
+        earnings_calendar = self.get_client().get_earnings_calendar()
         assert (
             earnings_calendar.success
         ), f"success was found to be True which is unexpected: {earnings_calendar.error_message}"

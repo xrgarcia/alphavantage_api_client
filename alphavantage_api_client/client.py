@@ -1064,7 +1064,7 @@ class AlphavantageClient:
 
         return MarketMovers.model_validate(json_response)
 
-    def get_earnings_calendar(self, event: Union[str, dict]) -> EarningsCalendar:
+    def get_earnings_calendar(self, event: Union[str, dict] = dict()) -> EarningsCalendar:
         """Returns a list of company earnings expected in the next 3, 6, or 12 months.
 
         Returns:
@@ -1076,6 +1076,8 @@ class AlphavantageClient:
             "horizon": "3month",
             "datatype": "csv",
         }
+        if event is None:
+            event = dict()
         json_request = self.__create_api_request_from__(defaults, event)
         json_response = self.get_data_from_alpha_vantage(json_request, self.__retry__)
         records = json_response["csv"].split("\n")
