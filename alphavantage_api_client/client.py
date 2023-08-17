@@ -1073,7 +1073,7 @@ class AlphavantageClient:
         """
         defaults = {
             "function": "EARNINGS_CALENDAR",
-            "horizon": "3month",
+            "horizon": "6month",
             "datatype": "csv",
         }
         if event is None:
