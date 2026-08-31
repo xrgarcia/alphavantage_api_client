@@ -33,7 +33,7 @@ class MockAlphavantageClient(AlphavantageClient):
         cache = json.loads(json_string)
         self.__cache__ = cache
 
-    def get_data_from_alpha_vantage(self, event: dict, should_retry: bool = False) -> dict:
+    def get_data_from_alpha_vantage(self, event: dict[str, str], should_retry: bool = False) -> dict:
         """
         This is the underlying function that talks to alphavantage api.  Feel free to pass in any parameters supported
         by the api.  You will receive a dictionary with the response from the web api. In addition, you will obtain
